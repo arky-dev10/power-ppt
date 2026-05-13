@@ -11,14 +11,21 @@ export default defineConfig({
           // Watch all presentation.json files and context.md across projects
           server.watcher.add('./projects/**/presentation.json');
           server.watcher.add('./projects');
+          server.watcher.add('./vetting/**/profile.json');
+          server.watcher.add('./vetting/**/report.json');
+          server.watcher.add('./vetting');
           server.watcher.on('change', (filePath) => {
-            if (filePath.endsWith('presentation.json') || filePath.endsWith('context.md')) {
+            if (
+              filePath.endsWith('presentation.json') ||
+              filePath.endsWith('context.md') ||
+              filePath.endsWith('profile.json') ||
+              filePath.endsWith('report.json')
+            ) {
               server.ws.send({ type: 'full-reload' });
             }
           });
-          // Also reload when a new project folder is added
           server.watcher.on('addDir', (filePath) => {
-            if (filePath.includes('/projects/')) {
+            if (filePath.includes('/projects/') || filePath.includes('/vetting/')) {
               server.ws.send({ type: 'full-reload' });
             }
           });

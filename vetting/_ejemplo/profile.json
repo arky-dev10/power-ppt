@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "slug": "_ejemplo",
+    "nombre": "Carlos Mendoza Ríos",
+    "cargo": "Candidato a Alcalde — Miraflores",
+    "tipo": "rival",
+    "eleccion": "Municipales 2026",
+    "fecha_inicio": "2026-05-13",
+    "analista": "Goberna"
+  },
+  "n1": {
+    "nombres": "Carlos Alberto",
+    "apellidos": "Mendoza Ríos",
+    "fecha_nacimiento": "1971-08-22",
+    "edad": 54,
+    "profesion_declarada": "Empresario",
+    "dni": "07812345",
+    "lugar_nacimiento": "Lima",
+    "pais_nacimiento": "Perú",
+    "nacionalidades": ["Peruana"],
+    "foto_actual": "",
+    "verificacion": {
+      "reniec": "verificado",
+      "infogob": "verificado",
+      "migraciones": "pendiente"
+    },
+    "notas": "Nombre consistente en todas las fuentes públicas."
+  },
+  "n2": {
+    "estado_civil": "Casado",
+    "hijos": 3,
+    "distrito_actual": "Miraflores",
+    "estudios": [
+      {
+        "nivel": "pregrado",
+        "titulo": "Ingeniería Industrial",
+        "institucion": "Universidad de Lima",
+        "año": 1995,
+        "verificado": true,
+        "fuente": "SUNEDU"
+      },
+      {
+        "nivel": "posgrado",
+        "titulo": "MBA",
+        "institucion": "ESAN",
+        "año": 2002,
+        "verificado": false,
+        "fuente": "pendiente SUNEDU"
+      }
+    ],
+    "etnia": "No declarada",
+    "historial_laboral": [
+      "2005–presente: Gerente General, Constructora Mendoza SAC",
+      "2000–2005: Subgerente Comercial, Inmobiliaria Pacífico"
+    ],
+    "trayectoria_politica": [
+      "2018: Candidato a regidor Miraflores (no elegido)",
+      "2010–2014: Militante partido Acción Popular"
+    ],
+    "posiciones_publicas": [
+      "Columna en El Comercio 2019: a favor de privatización parques"
+    ],
+    "notas": "MBA en ESAN sin verificar — requiere consulta SUNEDU."
+  },
+  "n3": {
+    "antecedentes_penales": [],
+    "antecedentes_policiales": [],
+    "procesos_fiscales": [
+      "2021: Investigación MP por presunta evasión tributaria — archivada sin cargos"
+    ],
+    "deudas_alimentarias": false,
+    "violencia_familiar": false,
+    "escandalos_mediaticos": [
+      "2022: Nota en Ojo Público sobre contratos de Constructora Mendoza con MML durante pandemia"
+    ],
+    "huella_digital": [
+      "Tuits eliminados en 2020 con comentarios sobre protestas sociales"
+    ],
+    "vulnerabilidades": [],
+    "notas": "Investigación fiscal archivada pero puede resurgir como titular negativo."
+  },
+  "n4": {
+    "ingresos_declarados": "S/ 180,000 anuales (declaración 2024)",
+    "empresas": [
+      "Constructora Mendoza SAC — titular 100%",
+      "Inmobiliaria Pacífico SRL — accionista 30%"
+    ],
+    "bienes_inmuebles": [
+      "Casa en Miraflores (SUNARP verificado)",
+      "Departamento en Santiago de Surco (SUNARP verificado)",
+      "Terreno en Lurín — origen por verificar"
+    ],
+    "bienes_muebles": ["2 vehículos registrados en SUNARP"],
+    "record_migratorio": "Múltiples viajes EE.UU., España, Panamá (últimos 5 años)",
+    "origen_fondos": "Aparentemente consistente con ingresos declarados — terreno Lurín sin justificar",
+    "conflictos_interes": [
+      "Constructora Mendoza tiene contratos con Municipalidad de Lima 2020–2022"
+    ],
+    "offshore": [],
+    "notas": "Conflicto de interés potencial si postula a cargo con poder sobre contratos municipales."
+  },
+  "n5": {
+    "antecedentes_medicos": [],
+    "salud_mental": "Sin información pública",
+    "capacidad_cognitiva": "Sin señales de alerta observables",
+    "adicciones": [],
+    "resistencia_fisica": "Agenda pública activa — sin señales de alerta",
+    "autodeclaracion": false,
+    "notas": "Nivel sin información suficiente. Requiere autodeclaración voluntaria."
+  },
+  "entorno": {
+    "conyuge": {
+      "nombre": "María Fernanda Lira de Mendoza",
+      "actividad": "Socia en Inmobiliaria Pacífico SRL",
+      "notas": "Participación empresarial activa — requiere mini-perfil 5N"
+    },
+    "hijos_mayores": [],
+    "padres_hermanos": [
+      "Hermano: Jorge Mendoza Ríos — funcionario MTPE hasta 2023"
+    ],
+    "socios": ["Ver empresas en N4"],
+    "financistas": ["Pendiente — verificar Registro de Aportantes JNE"],
+    "asesores": ["No identificados aún"],
+    "mentores": ["Vinculación histórica con sector empresarial de CONFIEP"]
+  },
+  "coherencia": {
+    "discurso_actual_vs_historico": [
+      "Hoy promete transparencia en contratos municipales — contradice historial de contratos propios con MML"
+    ],
+    "posiciones_cargos_previos": [],
+    "promesas_vs_cumplimiento": [],
+    "hoja_vida_vs_registros": [
+      "MBA declarado en hoja de vida — pendiente verificación SUNEDU"
+    ],
+    "imagen_publica_vs_privada": [
+      "Tuits eliminados sugieren posición distinta a imagen actual"
+    ]
+  }
+}

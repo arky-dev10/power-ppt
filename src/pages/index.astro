@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const projectsDir = path.join(process.cwd(), 'projects');
+const vettingDir  = path.join(process.cwd(), 'vetting');
 
 type Project = {
   slug: string;
@@ -42,6 +43,28 @@ const projects: Project[] = fs.existsSync(projectsDir)
       .sort((a, b) => b.modified.getTime() - a.modified.getTime())
   : [];
 
+type VettingCard = { slug: string; nombre: string; cargo: string; tipo: string; riesgo: string | null };
+const vettingProfiles: VettingCard[] = fs.existsSync(vettingDir)
+  ? fs.readdirSync(vettingDir, { withFileTypes: true })
+      .filter(d => d.isDirectory() && !d.name.startsWith('_') && !d.name.startsWith('.'))
+      .map(d => {
+        const profilePath = path.join(vettingDir, d.name, 'profile.json');
+        const reportPath  = path.join(vettingDir, d.name, 'report.json');
+        if (!fs.existsSync(profilePath)) return null;
+        const profile = JSON.parse(fs.readFileSync(profilePath, 'utf-8'));
+        const report  = fs.existsSync(reportPath) ? JSON.parse(fs.readFileSync(reportPath, 'utf-8')) : null;
+        return { slug: d.name, nombre: profile.meta.nombre, cargo: profile.meta.cargo, tipo: profile.meta.tipo, riesgo: report?.riesgo_global ?? null };
+      })
+      .filter(Boolean) as VettingCard[]
+  : [];
+
+const RIESGO_COLOR: Record<string, string> = {
+  alto: '#f87171', 'medio-alto': '#fb923c', medio: '#fbc02d', 'medio-bajo': '#a3e635', bajo: '#4ade80',
+};
+const TIPO_COLOR: Record<string, string> = {
+  'candidato-propio': '#4ade80', rival: '#f87171', aliado: '#60a5fa',
+};
+
 const templates = [
   { type: 'diagnóstico', name: 'Diagnóstico de situación', desc: 'Hero + KPIs + gráfico + mapa + propuestas' },
   { type: 'campaña', name: 'Campaña política', desc: 'Candidato + territorio + encuestas + ejes programáticos' },
@@ -60,7 +83,17 @@ function timeAgo(date: Date): string {
 ---
 
 <SelectorLayout>
-  <h1>Proyectos</h1>
+  <!-- Tool header -->
+  <div style="display:flex; gap:1rem; margin-bottom:2rem; flex-wrap:wrap;">
+    <a href="/" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:5px; border:1px solid rgba(251,192,45,0.35); color:#fbc02d; text-decoration:none;">Presentaciones</a>
+    <a href="/vetting" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:5px; border:1px solid rgba(248,250,252,0.08); color:#64748b; text-decoration:none;"
+      onmouseenter="this.style.borderColor='rgba(251,192,45,0.2)'; this.style.color='#94a3b8'"
+      onmouseleave="this.style.borderColor='rgba(248,250,252,0.08)'; this.style.color='#64748b'">
+      Perfiles 5N
+    </a>
+  </div>
+
+  <h1>Presentaciones</h1>
   <p class="subtitle">Selecciona un proyecto o crea uno nuevo con Claude.</p>
 
   <div class="grid">
@@ -82,6 +115,31 @@ function timeAgo(date: Date): string {
       <p>Nuevo proyecto<br/>vía Claude</p>
     </div>
   </div>
+
+  <!-- Vetting section preview -->
+  {vettingProfiles.length > 0 && (
+    <div style="margin-bottom:2.5rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+        <div class="section-title" style="margin-bottom:0;">Perfiles 5N activos</div>
+        <a href="/vetting" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#475569; text-decoration:none; transition:color 0.2s;"
+          onmouseenter="this.style.color='#fbc02d'" onmouseleave="this.style.color='#475569'">
+          Ver todos →
+        </a>
+      </div>
+      <div class="template-grid">
+        {vettingProfiles.slice(0, 3).map(v => (
+          <a href={`/vetting/${v.slug}`} class="template-card" style="text-decoration:none; cursor:pointer; display:flex; flex-direction:column; gap:0.3rem;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <span class="t-type" style={`color:${TIPO_COLOR[v.tipo] ?? '#64748b'};`}>{v.tipo}</span>
+              {v.riesgo && <div style={`width:7px; height:7px; border-radius:50%; background:${RIESGO_COLOR[v.riesgo] ?? '#64748b'};`}></div>}
+            </div>
+            <span class="t-name">{v.nombre}</span>
+            <span class="t-desc">{v.cargo}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
 
   <div class="templates-section">
     <div class="section-title">Templates disponibles</div>

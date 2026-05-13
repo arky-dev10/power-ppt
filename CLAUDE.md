@@ -361,3 +361,135 @@ npm run build
 | `←` `↑` | Slide anterior |
 | `Home` / `End` | Primer / último slide |
 | `Esc` | Cerrar modal |
+
+---
+
+## HERRAMIENTA: PERFIL 5N (standalone)
+
+Uso: vetting político y due diligence reputacional de cualquier candidato (propio, rival o aliado).
+Browser: `http://localhost:4321/vetting`
+
+### Activación
+
+Cuando el consultor diga alguna de estas frases:
+- "Nuevo perfil 5N de [nombre]"
+- "Analiza el perfil de [nombre]"
+- "Quiero hacer vetting de [nombre]"
+- "Perfil 5N para [nombre]"
+
+### PROTOCOLO 5N — paso a paso
+
+**PASO 1 — Datos iniciales**
+
+Preguntar:
+1. Nombre completo del candidato
+2. ¿Es candidato propio, rival o aliado?
+3. Cargo al que postula y elección
+4. ¿Hay documentos en `vetting/[slug]/research/`?
+
+Crear inmediatamente `vetting/[slug]/profile.json` con los datos meta.
+
+**PASO 2 — Recolección por niveles**
+
+Guiar nivel por nivel. Para cada uno mostrar las preguntas clave y registrar lo que el consultor sabe:
+
+```
+N1 — IDENTIDAD
+¿Nombre según DNI? ¿Fecha y lugar de nacimiento? ¿DNI? ¿Tiene otras nacionalidades?
+Fuentes a verificar: RENIEC, InfoGob, Migraciones
+
+N2 — TRAYECTORIA Y VIDA PERSONAL
+¿Estado civil, hijos? ¿Estudios (título, institución, año)? ¿Historial laboral últimos 10 años?
+¿Trayectoria política: cargos, militancias, candidaturas previas?
+Fuentes: SUNEDU (títulos), ROP/InfoGob JNE (militancias), SUNAT/MTPE (laboral)
+
+N3 — RIESGO LEGAL Y REPUTACIONAL
+¿Antecedentes penales, policiales, fiscales conocidos?
+¿Deudas alimentarias (REDAM)? ¿Procesos por violencia familiar?
+¿Escándalos mediáticos pasados o vigentes?
+¿Huella digital problemática (tuits borrados, videos, fotos)?
+Fuentes: Poder Judicial (CEJ), INPE, Ministerio Público, REDAM, medios
+
+N4 — SOLVENCIA Y PATRIMONIO
+¿Ingresos declarados vs. patrimonio visible?
+¿Empresas propias o participación accionaria?
+¿Inmuebles, vehículos? ¿Viajes frecuentes al exterior?
+¿Contratos con el Estado? ¿Estructuras offshore?
+Fuentes: SUNAT, SUNARP, Infocorp, Contraloría, Migraciones
+
+N5 — SALUD Y CAPACIDAD FUNCIONAL
+¿Condiciones médicas relevantes conocidas públicamente?
+¿Autodeclaración disponible? ¿Señales de alerta en agenda pública?
+(Tratar con discreción — solo información voluntaria o pública)
+
+ENTORNO
+¿Cónyuge con actividad empresarial o política?
+¿Socios comerciales activos? ¿Financistas de campaña conocidos?
+¿Asesores, operadores, mentores con historia problemática?
+Fuente: Registro de Aportantes JNE
+
+COHERENCIA
+¿Discurso actual vs. posiciones históricas documentadas?
+¿Promesas de campañas anteriores vs. cumplimiento real?
+¿Hoja de vida declarada vs. registros verificables?
+¿Tuits, columnas, entrevistas que contradicen posición actual?
+```
+
+**PASO 3 — Generar el reporte**
+
+Cuando el consultor diga "genera el reporte" o "analiza lo que tenemos":
+
+1. Evaluar semáforo por nivel (verde / amarillo / rojo) según criterios:
+
+| Nivel | Verde | Amarillo | Rojo |
+|-------|-------|----------|------|
+| N1 | Identidad consistente | Inconsistencias menores | Documentación cuestionable |
+| N2 | Trayectoria verificada al 100% | Algún título sin verificar | Títulos falsos o vacíos |
+| N3 | Sin antecedentes ni escándalos | Procesos resueltos / escándalo antiguo | Proceso activo / escándalo vigente |
+| N4 | Patrimonio coherente con ingresos | Inconsistencias menores | Offshore opacos / conflicto grave |
+| N5 | Apto, sin señales de riesgo | Condición declarada y controlada | Condición que compromete capacidad |
+| Entorno | Sin vínculos problemáticos | Vínculos con riesgo menor | Vínculos con personas o grupos vetados |
+| Coherencia | Discurso consistente | Contradicciones menores | Contradicción central entre discurso y hechos |
+
+2. Identificar los top 3 riesgos con:
+   - Probabilidad de que salga (alta / media / baja)
+   - Impacto si sale (alto / medio / bajo)
+   - Acción recomendada: mitigacion-inmediata / preparar-respuesta / monitorear / archivar
+   - Mensaje preparado + Vocero + Material de respaldo
+
+3. Escribir conclusión ejecutiva (3–5 líneas, enfocada en el riesgo principal y la recomendación accionable)
+
+4. Asignar riesgo global: alto / medio-alto / medio / medio-bajo / bajo
+
+5. Guardar en `vetting/[slug]/report.json`
+
+**PASO 4 — Revisión y ajuste**
+
+El browser en `/vetting/[slug]/` se actualiza automáticamente.
+El consultor puede pedir:
+- "Agrega este hallazgo al N3: ..."
+- "Reanaliza con esta nueva información"
+- "Cambia el riesgo de Coherencia a rojo porque..."
+
+### Archivos
+
+```
+vetting/
+  [slug]/
+    profile.json    ← datos del candidato (Claude edita)
+    report.json     ← análisis generado (Claude genera)
+    research/       ← documentos fuente (PDF, capturas, notas)
+    history/        ← snapshots opcionales
+```
+
+### Comandos naturales reconocidos
+
+| El consultor dice | Claude hace |
+|-------------------|-------------|
+| "Nuevo perfil 5N de [nombre]" | PASO 1 + crea profile.json |
+| "Muéstrame el estado de [nombre]" | Resume los datos ingresados por nivel |
+| "Genera el reporte de [nombre]" | PASO 3 completo → report.json |
+| "Agrega al perfil de [nombre]: ..." | Actualiza profile.json en el nivel correspondiente |
+| "Reanaliza [nombre] con este nuevo dato" | Actualiza report.json |
+| "¿Qué falta verificar de [nombre]?" | Lista fuentes con status "pendiente" |
+| "Snapshot del perfil de [nombre]" | Copia a `history/profile-YYYYMMDD-HHMM.json` |

@@ -1,0 +1,106 @@
+---
+import VettingLayout from '../../layouts/VettingLayout.astro';
+import fs from 'fs';
+import path from 'path';
+
+const vettingDir = path.join(process.cwd(), 'vetting');
+const profiles: any[] = [];
+
+if (fs.existsSync(vettingDir)) {
+  fs.readdirSync(vettingDir)
+    .filter(n => !n.startsWith('.') && !n.startsWith('_'))
+    .forEach(slug => {
+      const profilePath = path.join(vettingDir, slug, 'profile.json');
+      const reportPath  = path.join(vettingDir, slug, 'report.json');
+      if (!fs.existsSync(profilePath)) return;
+      const profile = JSON.parse(fs.readFileSync(profilePath, 'utf-8'));
+      const report  = fs.existsSync(reportPath)
+        ? JSON.parse(fs.readFileSync(reportPath, 'utf-8'))
+        : null;
+      profiles.push({ slug, profile, report });
+    });
+}
+
+const TIPO_LABEL: Record<string, string> = {
+  'candidato-propio': 'Propio', rival: 'Rival', aliado: 'Aliado',
+};
+const TIPO_COLOR: Record<string, string> = {
+  'candidato-propio': '#4ade80', rival: '#f87171', aliado: '#60a5fa',
+};
+const RIESGO_COLOR: Record<string, string> = {
+  alto: '#f87171', 'medio-alto': '#fb923c', medio: '#fbc02d',
+  'medio-bajo': '#a3e635', bajo: '#4ade80',
+};
+---
+
+<VettingLayout title="Perfiles 5N">
+  <div style="margin-bottom:2.5rem;">
+    <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#fbc02d; margin-bottom:0.75rem;">
+      Herramienta · Análisis del Candidato
+    </p>
+    <h1 style="font-family:'Inter Tight',sans-serif; font-weight:900; font-size:2.2rem; letter-spacing:-0.025em; color:#f8fafc; line-height:1.1;">
+      Perfil 5N
+    </h1>
+    <p style="font-size:0.9rem; color:#64748b; margin-top:0.5rem; line-height:1.6; max-width:480px;">
+      Vetting político y due diligence reputacional. Cinco niveles de análisis más capas de Entorno y Coherencia.
+    </p>
+    <div style="width:48px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin-top:1.25rem;"></div>
+  </div>
+
+  {profiles.length > 0 ? (
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1rem; margin-bottom:2rem;">
+      {profiles.map(({ slug, profile, report }) => (
+        <a href={`/vetting/${slug}`} style="display:block; background:rgba(10,21,56,0.6); border:1px solid rgba(251,192,45,0.12); border-radius:12px; padding:1.4rem; transition:border-color 0.2s, transform 0.2s; text-decoration:none;"
+          onmouseenter="this.style.borderColor='rgba(251,192,45,0.35)'; this.style.transform='translateY(-2px)'"
+          onmouseleave="this.style.borderColor='rgba(251,192,45,0.12)'; this.style.transform='translateY(0)'">
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:0.5rem; margin-bottom:0.6rem;">
+            <h2 style="font-family:'Inter Tight',sans-serif; font-weight:800; font-size:1.05rem; color:#f8fafc; line-height:1.2;">
+              {profile.meta.nombre}
+            </h2>
+            <span style={`font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; padding:0.2rem 0.5rem; border-radius:3px; flex-shrink:0; background:${TIPO_COLOR[profile.meta.tipo] ?? '#64748b'}22; color:${TIPO_COLOR[profile.meta.tipo] ?? '#64748b'};`}>
+              {TIPO_LABEL[profile.meta.tipo] ?? profile.meta.tipo}
+            </span>
+          </div>
+          <p style="font-size:0.78rem; color:#64748b; margin-bottom:0.75rem;">{profile.meta.cargo}</p>
+          {report ? (
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+              <div style={`width:7px; height:7px; border-radius:50%; background:${RIESGO_COLOR[report.riesgo_global] ?? '#64748b'};`}></div>
+              <span style={`font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:${RIESGO_COLOR[report.riesgo_global] ?? '#64748b'};`}>
+                Riesgo {report.riesgo_global?.replace('-', ' ')}
+              </span>
+              <span style="font-size:0.72rem; color:#334155; margin-left:auto;">{report.generado}</span>
+            </div>
+          ) : (
+            <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#334155;">Sin análisis</span>
+          )}
+        </a>
+      ))}
+    </div>
+  ) : (
+    <div style="background:rgba(10,21,56,0.4); border:1px solid rgba(251,192,45,0.08); border-radius:12px; padding:2rem; margin-bottom:2rem;">
+      <p style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:#334155; margin-bottom:0.75rem;">Sin perfiles aún</p>
+      <p style="font-size:0.85rem; color:#475569; line-height:1.6;">
+        Dile a Claude: <em style="color:#64748b;">"Nuevo perfil 5N para [nombre del candidato]"</em>
+      </p>
+    </div>
+  )}
+
+  <!-- Instrucciones Claude -->
+  <div style="background:rgba(5,10,30,0.8); border:1px solid rgba(248,250,252,0.05); border-radius:12px; padding:1.5rem;">
+    <p style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.3em; text-transform:uppercase; color:#334155; margin-bottom:1rem;">Cómo usar con Claude</p>
+    <div style="display:flex; flex-direction:column; gap:0.6rem;">
+      {[
+        ['Nuevo perfil', '"Nuevo perfil 5N de [nombre], candidato a [cargo], es [rival/aliado/propio]"'],
+        ['Ver estado', '"Muéstrame el estado del perfil de [nombre]"'],
+        ['Generar análisis', '"Genera el reporte 5N de [nombre] con lo que tenemos"'],
+        ['Agregar información', '"Agrega al perfil de [nombre]: [dato sobre N3, N4, etc.]"'],
+        ['Reanalizar', '"Reanaliza el reporte de [nombre] incluyendo este nuevo hallazgo: ..."'],
+      ].map(([cmd, phrase]) => (
+        <div style="display:grid; grid-template-columns:140px 1fr; gap:1rem; align-items:start;">
+          <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#475569; padding-top:0.1rem;">{cmd}</span>
+          <span style="font-size:0.8rem; color:#64748b; font-style:italic;">{phrase}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</VettingLayout>
