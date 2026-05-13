@@ -1,0 +1,16 @@
+---
+import PresentationLayout from '../../../layouts/PresentationLayout.astro';
+import SlideRenderer from '../../../components/SlideRenderer.astro';
+import { readOutput } from '../../../lib/workspaces.mjs';
+export const prerender = false;
+
+const id = Astro.params.id as string;
+const pres = readOutput(id, 'presentation.json');
+
+if (!pres) return new Response('No presentation', { status: 404 });
+---
+<PresentationLayout meta={pres.meta ?? { title: 'Presentación', subtitle: '' }} slideCount={pres.slides?.length ?? 0}>
+  {(pres.slides ?? []).map((slide: any, idx: number) => (
+    <SlideRenderer slide={slide} index={idx} />
+  ))}
+</PresentationLayout>

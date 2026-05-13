@@ -1,11 +1,37 @@
 // Auth middleware — bloquea acceso a rutas privadas si no hay sesión.
+// + Redirects de rutas viejas (/candidates, /vetting, /diagnostics, /[project])
+//   hacia /w/[id] correspondiente o a /library como fallback.
 import { defineMiddleware } from 'astro:middleware';
-import { authEnabled, isPublicPath, getSession } from './lib/auth.mjs';
+import { authEnabled, isPublicPath } from './lib/auth.mjs';
+
+// Redirect legacy paths to /w/[id] equivalents (post-migration)
+const LEGACY_REDIRECTS: Array<[RegExp, (m: RegExpMatchArray) => string]> = [
+  [/^\/candidates\/?$/,                   () => '/library?type=candidate'],
+  [/^\/vetting\/?$/,                      () => '/library?type=vetting'],
+  [/^\/diagnostics\/?$/,                  () => '/library?type=diagnostic'],
+  [/^\/candidates\/new\/?$/,              () => '/w/new?type=candidate'],
+  [/^\/candidates\/([^/]+)\/?$/,          (m) => `/w/${m[1]}`],
+  [/^\/candidates\/([^/]+)\/slides\/?$/,  (m) => `/w/${m[1]}/presentation`],
+  [/^\/vetting\/([^/]+)\/?$/,             (m) => `/w/vetting-${m[1]}`],
+  [/^\/diagnostics\/([^/]+)\/?$/,         (m) => `/w/diagnostic-${m[1]}`],
+];
+
+function legacyRedirect(pathname: string): string | null {
+  for (const [re, fn] of LEGACY_REDIRECTS) {
+    const m = pathname.match(re);
+    if (m) return fn(m);
+  }
+  return null;
+}
 
 export const onRequest = defineMiddleware(async (ctx, next) => {
-  if (!authEnabled()) return next();
-
   const url = new URL(ctx.request.url);
+
+  // Legacy redirects FIRST (independent of auth)
+  const legacy = legacyRedirect(url.pathname);
+  if (legacy) return ctx.redirect(legacy, 301);
+
+  if (!authEnabled()) return next();
   if (isPublicPath(url.pathname)) return next();
 
   // Wrap next() to get response, then attach session decision

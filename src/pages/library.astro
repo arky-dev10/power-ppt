@@ -1,0 +1,52 @@
+---
+import AppShell from '../layouts/AppShell.astro';
+import { listWorkspaces, WORKSPACE_TYPES } from '../lib/workspaces.mjs';
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const filterType = url.searchParams.get('type');
+
+let items = listWorkspaces();
+if (filterType) items = items.filter(w => w.type === filterType);
+
+const TYPE_COLOR: Record<string,string> = {
+  presentation: '#60a5fa', candidate: '#fbc02d', vetting: '#f87171',
+  diagnostic: '#4ade80', general: '#94a3b8',
+};
+---
+<AppShell title="Biblioteca — Goberna" narrow={true}>
+  <div style="margin-bottom:2rem;">
+    <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem;">Biblioteca</p>
+    <h1 style="font-family:'Inter Tight',sans-serif; font-weight:900; font-size:2rem;">
+      {filterType ? (WORKSPACE_TYPES as any)[filterType] ?? filterType : 'Todos los workspaces'}
+    </h1>
+    <p style="color:var(--text-dim); margin-top:0.5rem;">{items.length} workspace{items.length === 1 ? '' : 's'}</p>
+  </div>
+
+  <div style="display:flex; gap:0.4rem; margin-bottom:2rem; flex-wrap:wrap;">
+    <a href="/library" style={`font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; padding:0.4rem 0.85rem; border-radius:6px; border:1px solid ${!filterType ? 'rgba(251,192,45,0.4)' : 'var(--border)'}; color:${!filterType ? 'var(--gold)' : 'var(--text-dim)'};`}>Todos</a>
+    {Object.entries(WORKSPACE_TYPES).map(([k, label]) => (
+      <a href={`/library?type=${k}`} style={`font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; padding:0.4rem 0.85rem; border-radius:6px; border:1px solid ${filterType === k ? 'rgba(251,192,45,0.4)' : 'var(--border)'}; color:${filterType === k ? 'var(--gold)' : 'var(--text-dim)'};`}>{label}</a>
+    ))}
+  </div>
+
+  {items.length > 0 ? (
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1rem;">
+      {items.map(w => {
+        const color = TYPE_COLOR[w.type] ?? '#94a3b8';
+        return (
+          <a href={`/w/${w.id}`} style="display:block; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.4rem 1.4rem 1.2rem; transition:border-color 0.15s;"
+            onmouseenter="this.style.borderColor='rgba(251,192,45,0.35)'"
+            onmouseleave="this.style.borderColor='var(--border)'">
+            <h2 style="font-family:'Inter Tight',sans-serif; font-weight:800; font-size:1rem; margin-bottom:0.4rem;">{w.title}</h2>
+            <span style={`font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.15em; text-transform:uppercase; padding:0.15rem 0.45rem; border-radius:3px; background:${color}1a; color:${color};`}>
+              {(WORKSPACE_TYPES as any)[w.type] ?? w.type}
+            </span>
+          </a>
+        );
+      })}
+    </div>
+  ) : (
+    <p style="color:var(--text-faint); padding:2rem; text-align:center;">Sin items</p>
+  )}
+</AppShell>

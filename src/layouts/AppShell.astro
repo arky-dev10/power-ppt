@@ -1,0 +1,100 @@
+---
+const { title = 'Goberna · Workspaces', narrow = false } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@700;800;900&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@800&display=swap" rel="stylesheet" />
+  <style is:global>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050a1e;
+      --surface: rgba(10, 21, 56, 0.55);
+      --surface-strong: rgba(10, 21, 56, 0.85);
+      --border: rgba(248, 250, 252, 0.08);
+      --border-strong: rgba(248, 250, 252, 0.18);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --text-faint: #475569;
+      --gold: #fbc02d;
+      --amber: #ff9500;
+      --green: #4ade80;
+      --red: #f87171;
+      --blue: #60a5fa;
+      --purple: #c084fc;
+    }
+    html, body { height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; }
+    code, pre { font-family: 'JetBrains Mono', monospace; }
+
+    /* Top bar */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      height: 52px; padding: 0 1.25rem;
+      background: rgba(5, 10, 30, 0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .brand { display: flex; align-items: center; gap: 0.7rem; }
+    .brand svg polygon:first-of-type { stroke: var(--gold); }
+    .brand-name { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13px; letter-spacing: 0.18em; color: var(--text); }
+    .topnav { display: flex; gap: 0.4rem; }
+    .topnav a {
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--text-dim);
+      padding: 0.35rem 0.7rem; border-radius: 5px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .topnav a:hover { background: rgba(251,192,45,0.08); color: var(--gold); }
+    .topnav a.active { color: var(--gold); background: rgba(251,192,45,0.1); }
+    .logout-btn {
+      background: none; border: 1px solid var(--border);
+      color: var(--text-dim); padding: 0.35rem 0.75rem; border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+    main.narrow { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    main.full   { padding: 0; height: calc(100vh - 52px); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="/" class="brand">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <polygon points="16,2 30,26 2,26" fill="none" stroke-width="2.5" stroke-linejoin="round"/>
+        <polygon points="16,9 26,26 6,26" fill="rgba(251,192,45,0.08)" stroke="rgba(251,192,45,0.4)" stroke-width="1"/>
+      </svg>
+      <span class="brand-name">GOBERNA</span>
+    </a>
+    <nav class="topnav">
+      <a href="/" class={Astro.url.pathname === '/' ? 'active' : ''}>Workspaces</a>
+      <a href="/library" class={Astro.url.pathname.startsWith('/library') ? 'active' : ''}>Biblioteca</a>
+    </nav>
+    <form method="POST" action="/api/logout">
+      <button type="submit" class="logout-btn">Salir</button>
+    </form>
+  </header>
+
+  <main class={narrow ? 'narrow' : 'full'}>
+    <slot />
+  </main>
+</body>
+</html>

@@ -1,229 +1,88 @@
 ---
-import SelectorLayout from '../layouts/SelectorLayout.astro';
-import fs from 'node:fs';
-import path from 'node:path';
+import AppShell from '../layouts/AppShell.astro';
+import { listWorkspaces, WORKSPACE_TYPES } from '../lib/workspaces.mjs';
+export const prerender = false;
 
-const projectsDir = path.join(process.cwd(), 'projects');
-const vettingDir  = path.join(process.cwd(), 'vetting');
-const diagnosticsDir = path.join(process.cwd(), 'diagnostics');
+const workspaces = listWorkspaces();
 
-type Project = {
-  slug: string;
-  title: string;
-  subtitle: string;
-  slideCount: number;
-  modified: Date;
-  hasContext: boolean;
+const TYPE_COLOR: Record<string, string> = {
+  presentation: '#60a5fa',
+  candidate:    '#fbc02d',
+  vetting:      '#f87171',
+  diagnostic:   '#4ade80',
+  general:      '#94a3b8',
 };
 
-const projects: Project[] = fs.existsSync(projectsDir)
-  ? fs.readdirSync(projectsDir, { withFileTypes: true })
-      .filter(d => d.isDirectory())
-      .map(d => {
-        const pFile = path.join(projectsDir, d.name, 'presentation.json');
-        const contextFile = path.join(projectsDir, d.name, 'context.md');
-        let meta = { title: d.name, subtitle: '' };
-        let slideCount = 0;
-        if (fs.existsSync(pFile)) {
-          try {
-            const data = JSON.parse(fs.readFileSync(pFile, 'utf-8'));
-            meta = data.meta ?? meta;
-            slideCount = (data.slides ?? []).length;
-          } catch {}
-        }
-        const stat = fs.statSync(path.join(projectsDir, d.name));
-        return {
-          slug: d.name,
-          title: meta.title,
-          subtitle: meta.subtitle ?? '',
-          slideCount,
-          modified: stat.mtime,
-          hasContext: fs.existsSync(contextFile),
-        };
-      })
-      .sort((a, b) => b.modified.getTime() - a.modified.getTime())
-  : [];
-
-type VettingCard = { slug: string; nombre: string; cargo: string; tipo: string; riesgo: string | null };
-const vettingProfiles: VettingCard[] = fs.existsSync(vettingDir)
-  ? fs.readdirSync(vettingDir, { withFileTypes: true })
-      .filter(d => d.isDirectory() && !d.name.startsWith('_') && !d.name.startsWith('.'))
-      .map(d => {
-        const profilePath = path.join(vettingDir, d.name, 'profile.json');
-        const reportPath  = path.join(vettingDir, d.name, 'report.json');
-        if (!fs.existsSync(profilePath)) return null;
-        const profile = JSON.parse(fs.readFileSync(profilePath, 'utf-8'));
-        const report  = fs.existsSync(reportPath) ? JSON.parse(fs.readFileSync(reportPath, 'utf-8')) : null;
-        return { slug: d.name, nombre: profile.meta.nombre, cargo: profile.meta.cargo, tipo: profile.meta.tipo, riesgo: report?.riesgo_global ?? null };
-      })
-      .filter(Boolean) as VettingCard[]
-  : [];
-
-const RIESGO_COLOR: Record<string, string> = {
-  alto: '#f87171', 'medio-alto': '#fb923c', medio: '#fbc02d', 'medio-bajo': '#a3e635', bajo: '#4ade80',
-};
-const TIPO_COLOR: Record<string, string> = {
-  'candidato-propio': '#4ade80', rival: '#f87171', aliado: '#60a5fa',
-};
-
-type DiagCard = { slug: string; nombre: string; nivel: string; cargo: string; año: number };
-const diagnosticsItems: DiagCard[] = fs.existsSync(diagnosticsDir)
-  ? fs.readdirSync(diagnosticsDir, { withFileTypes: true })
-      .filter(d => d.isDirectory() && !d.name.startsWith('_') && !d.name.startsWith('.'))
-      .map(d => {
-        const tPath = path.join(diagnosticsDir, d.name, 'territorial.json');
-        if (!fs.existsSync(tPath)) return null;
-        const t = JSON.parse(fs.readFileSync(tPath, 'utf-8'));
-        return { slug: d.name, nombre: t.meta.nombre_territorio, nivel: t.meta.nivel, cargo: t.meta.eleccion_cargo, año: t.meta.eleccion_año };
-      }).filter(Boolean) as DiagCard[]
-  : [];
-
-const NIVEL_COLOR: Record<string,string> = {
-  distrital: '#60a5fa', provincial: '#fbc02d', regional: '#4ade80', nacional: '#c084fc',
-};
-
-const templates = [
-  { type: 'diagnóstico', name: 'Diagnóstico de situación', desc: 'Hero + KPIs + gráfico + mapa + propuestas' },
-  { type: 'campaña', name: 'Campaña política', desc: 'Candidato + territorio + encuestas + ejes programáticos' },
-  { type: 'propuesta', name: 'Propuesta de servicios', desc: 'Problema + solución + equipo + inversión' },
-];
-
-function timeAgo(date: Date): string {
-  const diff = Date.now() - date.getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 60) return `hace ${mins}m`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `hace ${hrs}h`;
-  const days = Math.floor(hrs / 24);
-  return `hace ${days}d`;
+function timeAgo(iso: string) {
+  if (!iso) return '';
+  const m = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  if (m < 1) return 'recién';
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h`;
+  return `${Math.floor(h / 24)}d`;
 }
 ---
-
-<SelectorLayout>
-  <!-- Tool header -->
-  <div style="display:flex; gap:1rem; margin-bottom:2rem; flex-wrap:wrap;">
-    <a href="/" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:5px; border:1px solid rgba(251,192,45,0.35); color:#fbc02d; text-decoration:none;">Presentaciones</a>
-    <a href="/candidates" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:5px; border:1px solid rgba(248,250,252,0.08); color:#64748b; text-decoration:none;"
-      onmouseenter="this.style.borderColor='rgba(251,192,45,0.2)'; this.style.color='#94a3b8'"
-      onmouseleave="this.style.borderColor='rgba(248,250,252,0.08)'; this.style.color='#64748b'">
-      Candidatos
-    </a>
-    <a href="/vetting" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:5px; border:1px solid rgba(248,250,252,0.08); color:#64748b; text-decoration:none;"
-      onmouseenter="this.style.borderColor='rgba(251,192,45,0.2)'; this.style.color='#94a3b8'"
-      onmouseleave="this.style.borderColor='rgba(248,250,252,0.08)'; this.style.color='#64748b'">
-      Perfiles 5N
-    </a>
-    <a href="/diagnostics" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:5px; border:1px solid rgba(248,250,252,0.08); color:#64748b; text-decoration:none;"
-      onmouseenter="this.style.borderColor='rgba(251,192,45,0.2)'; this.style.color='#94a3b8'"
-      onmouseleave="this.style.borderColor='rgba(248,250,252,0.08)'; this.style.color='#64748b'">
-      Diagnóstico Territorial
-    </a>
-  </div>
-
-  <h1>Presentaciones</h1>
-  <p class="subtitle">Selecciona un proyecto o crea uno nuevo con Claude.</p>
-
-  <div class="grid">
-    {projects.map(p => (
-      <a href={`/${p.slug}/`} class="card">
-        <div class="card-icon">📁</div>
-        <div class="card-title">{p.title}</div>
-        {p.subtitle && <div class="card-subtitle">{p.subtitle}</div>}
-        <div class="card-meta">
-          <span class="card-tag">{p.slideCount} slides</span>
-          {p.hasContext && <span class="card-tag">contexto</span>}
-          <span class="card-tag">{timeAgo(p.modified)}</span>
-          <span class="card-arrow">→</span>
-        </div>
+<AppShell title="Workspaces — Goberna" narrow={true}>
+  <section style="margin-bottom: 2.5rem;">
+    <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; margin-bottom: 0.4rem;">
+      <h1 style="font-family:'Inter Tight',sans-serif; font-weight:900; font-size:2.2rem; letter-spacing:-0.025em;">
+        Workspaces
+      </h1>
+      <a href="/w/new"
+        style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.65rem 1.4rem; border-radius:8px; background:linear-gradient(90deg,#fbc02d,#ff9500); color:#050a1e; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; transition:transform 0.05s;"
+        onmouseenter="this.style.transform='translateY(-1px)'"
+        onmouseleave="this.style.transform='translateY(0)'">
+        + Nuevo
       </a>
-    ))}
-    <div class="card new-card">
-      <span style="font-size:1.5rem; color:rgba(248,250,252,0.15);">+</span>
-      <p>Nuevo proyecto<br/>vía Claude</p>
     </div>
-  </div>
+    <p style="color:var(--text-dim); font-size:0.9rem; max-width:520px; line-height:1.5;">
+      Cada workspace es un espacio aislado para un proyecto: subes archivos, conversas con Claude, y los outputs se generan automáticamente.
+    </p>
+  </section>
 
-  <!-- Diagnostics section preview -->
-  {diagnosticsItems.length > 0 && (
-    <div style="margin-bottom:2rem;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-        <div class="section-title" style="margin-bottom:0;">Diagnósticos territoriales</div>
-        <a href="/diagnostics" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#475569; text-decoration:none;"
-          onmouseenter="this.style.color='#fbc02d'" onmouseleave="this.style.color='#475569'">Ver todos →</a>
-      </div>
-      <div class="template-grid">
-        {diagnosticsItems.slice(0,3).map(d => (
-          <a href={`/diagnostics/${d.slug}`} class="template-card" style="text-decoration:none; display:flex; flex-direction:column; gap:0.3rem;">
-            <span class="t-type" style={`color:${NIVEL_COLOR[d.nivel] ?? '#64748b'};`}>{d.nivel}</span>
-            <span class="t-name">{d.nombre}</span>
-            <span class="t-desc">{d.cargo} · {d.año}</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  )}
-
-  <!-- Vetting section preview -->
-  {vettingProfiles.length > 0 && (
-    <div style="margin-bottom:2.5rem;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-        <div class="section-title" style="margin-bottom:0;">Perfiles 5N activos</div>
-        <a href="/vetting" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#475569; text-decoration:none; transition:color 0.2s;"
-          onmouseenter="this.style.color='#fbc02d'" onmouseleave="this.style.color='#475569'">
-          Ver todos →
-        </a>
-      </div>
-      <div class="template-grid">
-        {vettingProfiles.slice(0, 3).map(v => (
-          <a href={`/vetting/${v.slug}`} class="template-card" style="text-decoration:none; cursor:pointer; display:flex; flex-direction:column; gap:0.3rem;">
-            <div style="display:flex; align-items:center; justify-content:space-between;">
-              <span class="t-type" style={`color:${TIPO_COLOR[v.tipo] ?? '#64748b'};`}>{v.tipo}</span>
-              {v.riesgo && <div style={`width:7px; height:7px; border-radius:50%; background:${RIESGO_COLOR[v.riesgo] ?? '#64748b'};`}></div>}
+  {workspaces.length > 0 ? (
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1rem;">
+      {workspaces.map(w => {
+        const color = TYPE_COLOR[w.type] ?? '#94a3b8';
+        const typeLabel = (WORKSPACE_TYPES as any)[w.type] ?? w.type;
+        return (
+          <a href={`/w/${w.id}`}
+            style="display:block; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.4rem 1.4rem 1.2rem; transition:border-color 0.15s, transform 0.15s; position:relative; overflow:hidden;"
+            onmouseenter="this.style.borderColor='rgba(251,192,45,0.35)'; this.style.transform='translateY(-2px)'"
+            onmouseleave="this.style.borderColor='var(--border)'; this.style.transform='translateY(0)'">
+            <div style={`position:absolute; top:0; left:0; right:0; height:3px; background:${color}; opacity:0.85;`}></div>
+            <div style="display:flex; align-items:flex-start; gap:0.5rem; justify-content:space-between; margin-bottom:0.6rem;">
+              <h2 style="font-family:'Inter Tight',sans-serif; font-weight:800; font-size:1.02rem; line-height:1.25;">
+                {w.title}
+              </h2>
+              <span style={`flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:8.5px; letter-spacing:0.15em; text-transform:uppercase; padding:0.18rem 0.5rem; border-radius:3px; background:${color}1a; color:${color};`}>
+                {typeLabel}
+              </span>
             </div>
-            <span class="t-name">{v.nombre}</span>
-            <span class="t-desc">{v.cargo}</span>
+            {w.tags && w.tags.length > 0 && (
+              <p style="font-size:0.78rem; color:var(--text-dim); margin-bottom:0.5rem;">
+                {w.tags.slice(0, 3).join(' · ')}
+              </p>
+            )}
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.75rem; padding-top:0.7rem; border-top:1px solid var(--border); font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; color:var(--text-faint);">
+              <span>{timeAgo(w.updated)}</span>
+              <span style="margin-left:auto; color:rgba(248,250,252,0.2);">→</span>
+            </div>
           </a>
-        ))}
-      </div>
+        );
+      })}
+    </div>
+  ) : (
+    <div style="background:var(--surface); border:1px dashed rgba(251,192,45,0.2); border-radius:14px; padding:3rem 2rem; text-align:center;">
+      <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.25em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem;">
+        Sin workspaces aún
+      </p>
+      <p style="color:var(--text-dim); margin-bottom:1.75rem;">Crea el primero para empezar a trabajar.</p>
+      <a href="/w/new"
+        style="display:inline-block; padding:0.7rem 1.5rem; border-radius:8px; background:linear-gradient(90deg,#fbc02d,#ff9500); color:#050a1e; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700;">
+        + Nuevo workspace
+      </a>
     </div>
   )}
-
-  <div class="templates-section">
-    <div class="section-title">Templates disponibles</div>
-    <div class="template-grid">
-      {templates.map(t => (
-        <div class="template-card">
-          <span class="t-type">{t.type}</span>
-          <span class="t-name">{t.name}</span>
-          <span class="t-desc">{t.desc}</span>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <div class="instructions">
-    <h3>Cómo crear un nuevo proyecto con Claude</h3>
-    <ol>
-      <li>
-        <span class="step-num">01</span>
-        <span>Abre Claude Code en esta carpeta: ejecuta <code>claude</code> en la terminal</span>
-      </li>
-      <li>
-        <span class="step-num">02</span>
-        <span>Dile el tema y cliente: <em>"Crea un diagnóstico de seguridad para Lima Norte"</em></span>
-      </li>
-      <li>
-        <span class="step-num">03</span>
-        <span>Si tienes archivos fuente, cópialos a <code>/research/</code> antes de empezar</span>
-      </li>
-      <li>
-        <span class="step-num">04</span>
-        <span>Claude creará la carpeta en <code>/projects/</code> y esta pantalla se actualizará</span>
-      </li>
-      <li>
-        <span class="step-num">05</span>
-        <span>Al terminar la sesión dile: <em>"Guarda el contexto"</em> para que recuerde para la próxima vez</span>
-      </li>
-    </ol>
-  </div>
-</SelectorLayout>
+</AppShell>

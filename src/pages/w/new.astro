@@ -1,0 +1,75 @@
+---
+import AppShell from '../../layouts/AppShell.astro';
+import { WORKSPACE_TYPES } from '../../lib/workspaces.mjs';
+export const prerender = false;
+---
+<AppShell title="Nuevo workspace" narrow={true}>
+  <section style="max-width: 560px; margin: 3rem auto 0;">
+    <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem;">
+      Nuevo workspace
+    </p>
+    <h1 style="font-family:'Inter Tight',sans-serif; font-weight:900; font-size:2rem; letter-spacing:-0.025em; margin-bottom:0.5rem;">
+      ¿Sobre qué vamos a trabajar?
+    </h1>
+    <p style="color:var(--text-dim); margin-bottom:2.5rem;">
+      Solo necesito un título. Después subes archivos y conversamos con Claude.
+    </p>
+
+    <form id="newForm" autocomplete="off">
+      <label for="title" style="display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem;">
+        Título
+      </label>
+      <input id="title" name="title" type="text" required placeholder="ej: Carlos Mendoza · Lima Norte 2026"
+        style="width:100%; padding:0.85rem 1rem; background:rgba(5,10,30,0.7); border:1px solid var(--border-strong); border-radius:8px; color:var(--text); font-family:inherit; font-size:1rem; outline:none; transition:border-color 0.15s; margin-bottom:1.5rem;"
+        onfocus="this.style.borderColor='rgba(251,192,45,0.5)'" onblur="this.style.borderColor='var(--border-strong)'" />
+
+      <label style="display:block; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem;">
+        Tipo (opcional)
+      </label>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:0.5rem; margin-bottom:2rem;">
+        {Object.entries(WORKSPACE_TYPES).map(([key, label], i) => (
+          <label style="display:flex; align-items:center; gap:0.5rem; padding:0.6rem 0.85rem; background:rgba(5,10,30,0.4); border:1px solid var(--border); border-radius:7px; cursor:pointer; font-size:0.85rem; transition:border-color 0.15s;">
+            <input type="radio" name="type" value={key} checked={key === 'general'}
+              style="accent-color:var(--gold);" />
+            <span>{label}</span>
+          </label>
+        ))}
+      </div>
+
+      <button type="submit"
+        style="width:100%; padding:0.85rem; background:linear-gradient(90deg,#fbc02d,#ff9500); color:#050a1e; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:700; border:none; border-radius:8px; cursor:pointer;">
+        Crear workspace →
+      </button>
+
+      <p id="error" style="display:none; margin-top:1rem; padding:0.6rem 0.85rem; background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); border-radius:6px; color:#fca5a5; font-size:0.82rem;"></p>
+    </form>
+  </section>
+
+  <script>
+    const form = document.getElementById('newForm') as HTMLFormElement;
+    const errEl = document.getElementById('error') as HTMLElement;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEl.style.display = 'none';
+      const title = (form.elements.namedItem('title') as HTMLInputElement).value.trim();
+      const type  = (form.querySelector('input[name="type"]:checked') as HTMLInputElement)?.value ?? 'general';
+      if (!title) return;
+      try {
+        const res = await fetch('/api/workspaces', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, type }),
+        });
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || 'error');
+        window.location.href = `/w/${data.workspace.id}`;
+      } catch (err: any) {
+        errEl.textContent = '⚠ ' + (err?.message ?? 'Error creando workspace');
+        errEl.style.display = 'block';
+      }
+    });
+
+    (form.elements.namedItem('title') as HTMLInputElement).focus();
+  </script>
+</AppShell>
