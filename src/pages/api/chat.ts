@@ -3,11 +3,20 @@
 // Response: text/event-stream con eventos JSON.
 
 import type { APIRoute } from 'astro';
-import { runChat } from '../../lib/claude/agent.mjs';
 
 export const prerender = false;
 
+const CHAT_DISABLED = process.env.DISABLE_CHAT === '1';
+
 export const POST: APIRoute = async ({ request }) => {
+  if (CHAT_DISABLED) {
+    return new Response(JSON.stringify({ error: 'chat_disabled', message: 'Chat con Claude no disponible en este servidor. Usa el formulario.' }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  // Lazy import — solo si chat está activo (evita crash en CPUs sin AVX al boot)
+  const { runChat } = await import('../../lib/claude/agent.mjs');
   let body: { prompt?: string; candidateSlug?: string };
   try {
     body = await request.json();

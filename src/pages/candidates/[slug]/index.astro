@@ -581,21 +581,25 @@ function esc(str) {
 }
 </script>
 
-<!-- ── Chat lateral flotante con Claude ── -->
-<button type="button" class="chat-fab" id="chatFab" title="Conversar con Claude" aria-label="Abrir chat">💬</button>
-<div class="chat-dock" id="chatDock">
-  <Chat candidateSlug={slug} title={`Claude · ${c.candidato?.nombre_completo ?? slug}`} storageKey={`candidate-${slug}`} />
-</div>
-<script>
-  const fab = document.getElementById('chatFab');
-  const dock = document.getElementById('chatDock');
-  fab?.addEventListener('click', () => {
-    const open = dock?.classList.toggle('open');
-    fab.classList.toggle('open', !!open);
-    fab.textContent = open ? '×' : '💬';
-    if (open) dock?.querySelector('textarea')?.focus();
-  });
-</script>
+{import.meta.env.DISABLE_CHAT !== '1' && (
+  <>
+    <!-- ── Chat lateral flotante con Claude ── -->
+    <button type="button" class="chat-fab" id="chatFab" title="Conversar con Claude" aria-label="Abrir chat">💬</button>
+    <div class="chat-dock" id="chatDock">
+      <Chat candidateSlug={slug} title={`Claude · ${c.candidato?.nombre_completo ?? slug}`} storageKey={`candidate-${slug}`} />
+    </div>
+    <script>
+      const fab = document.getElementById('chatFab');
+      const dock = document.getElementById('chatDock');
+      fab?.addEventListener('click', () => {
+        const open = dock?.classList.toggle('open');
+        fab.classList.toggle('open', !!open);
+        fab.textContent = open ? '×' : '💬';
+        if (open) dock?.querySelector('textarea')?.focus();
+      });
+    </script>
+  </>
+)}
 
 </body>
 </html>
