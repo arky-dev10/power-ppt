@@ -826,3 +826,130 @@ Cada slide debe tener `modal` con detalle del análisis fuente (para profundizar
 5. **Coherencia C2 ↔ D5**: los nombres de segmentos en `d5.matriz[].segmento` deben coincidir EXACTAMENTE con `c2.segmentos[].nombre`. Validar siempre.
 
 6. **Snapshots antes de regenerar**: antes de regenerar un análisis ya existente, copiar el anterior a `history/[fecha-hora]/analysis/`.
+
+---
+
+## FASE 1 RÁPIDA — Onboarding mínimo viable
+
+Path de bajo esfuerzo: el consultor llena UN form con datos mínimos y obtiene presentación funcional sin necesidad de sesión profunda de 5N + ECD.
+
+### Schema que llena el form (vive en `candidate.json`)
+
+Las 8 secciones del schema rápido viven completas dentro de `candidate.json`. No se crean archivos adicionales.
+
+```
+candidate.json
+├── meta                  ← consultor + sesión + presentación_id (UUID)
+├── candidato             ← identidad básica + contacto + redes
+├── postulacion           ← cargo + organización + fecha + territorio (IDs)
+├── estrategia            ← tipo campaña + eje emocional + frentes
+├── diagnostico_inicial   ← FODA + competidores principales
+├── propuestas            ← 4–6 propuestas con título + descripción + ícono
+├── branding              ← slogan + colores + logo + foto
+└── contexto_territorio   ← población + problemas + zonas fuertes/débiles
+```
+
+### Activación
+
+- "Onboarding rápido para [nombre del candidato]"
+- "Crear candidato — modo rápido"
+- "Form básico de [nombre]"
+
+Claude crea `candidates/[slug]/candidate.json` con el schema rápido vacío y guía la recolección sección por sección.
+
+### Enums permitidos
+
+```
+documento_tipo:
+  DNI | CE | PASAPORTE
+
+sexo:
+  M | F
+
+cargo_codigo:
+  alcalde_distrital | alcalde_provincial | regidor |
+  consejero_regional | gobernador_regional | congresista | presidente
+
+tipo_eleccion:
+  GOBIERNO_LOCAL | PARLAMENTARIA | PRESIDENCIAL
+
+tipo_campana:
+  RACIONAL    (data + plan de gobierno)
+  EMOTIVA     (emoción + conexión humana)
+  INSTINTIVA  (imagen + carisma + presencia)
+  MIXTA       (combinación — requiere combinacion_mixta[])
+
+eje_emocional:
+  PLAN_DE_GOBIERNO | EQUIPO_DE_CAMPAÑA | SIMPATIA | ESPERANZA | ODIO | MIEDO
+
+frente_principal / frentes_secundarios:
+  TIERRA  (campaña territorial: puerta a puerta, mercados, mítines)
+  MAR     (medios masivos: TV, radio, prensa escrita)
+  AIRE    (digital: redes sociales, ads digitales)
+
+nivel_amenaza (competidores):
+  bajo | medio | alto
+```
+
+### Mapeo con la fase completa (5N + ECD)
+
+Cuando el consultor sube de modo rápido a completo, estos campos sirven como **seed**:
+
+| Campo en `candidate.json` (rápido) | Se copia/expande a |
+|------------------------------------|--------------------|
+| `candidato.nombre_completo`        | `profile.json.meta.nombre` + `n1.nombres/apellidos` |
+| `candidato.documento_numero`       | `profile.json.n1.dni` |
+| `candidato.fecha_nacimiento`       | `profile.json.n1.fecha_nacimiento` |
+| `candidato.ocupacion_actual`       | `profile.json.n1.profesion_declarada` |
+| `candidato.redes_sociales`         | `profile.json.n3.huella_digital` (punto de partida para auditoría) |
+| `postulacion.nombre_territorio`    | `territorial.json.meta.nombre_territorio` |
+| `postulacion.nivel_territorio`     | `territorial.json.meta.nivel` |
+| `postulacion.fecha_eleccion`       | `territorial.json.meta.eleccion_año` |
+| `postulacion.cargo_codigo`         | `territorial.json.meta.eleccion_cargo` |
+| `contexto_territorio.poblacion_aproximada` | `territorial.json.e.e1.poblacion_total` |
+| `contexto_territorio.principales_problemas` | `territorial.json.c.c5.issues` (seed urgencia 4-5) |
+| `contexto_territorio.zonas_fuertes/debiles` | `territorial.json.d.d2.bastiones` |
+| `diagnostico_inicial.principales_competidores` | `territorial.json.d.d3.competidores` |
+| `diagnostico_inicial.fortalezas/debilidades` | Se vuelven insumo para `analysis/fit-candidate-territory.json` |
+| `diagnostico_inicial.oportunidades/amenazas` | Se vuelven insumo para `analysis/territorial-analysis.json` |
+
+`estrategia`, `propuestas`, `branding` NO tienen equivalente en 5N/ECD — son inputs estratégicos del consultor que permanecen autoritativos en `candidate.json` y se consumen directamente en Fase 2.
+
+### Fase 2 desde fase rápida vs. completa
+
+**Modo rápido** (`fase_1.modo_actual: "rapida"`):
+Claude puede generar `presentation.json` consumiendo solo `candidate.json`. Sin segmentación psicográfica ni cruces ECD ni Núcleo Goberna.
+
+Slides sugeridos (modo rápido, ~8 slides):
+1. hero — `meta` + `postulacion` + `branding.slogan`
+2. stats — KPIs básicos de `contexto_territorio` + `postulacion`
+3. text bullets — `diagnostico_inicial.fortalezas` y `debilidades`
+4. text bullets — `diagnostico_inicial.oportunidades` y `amenazas`
+5. text — competidores (`diagnostico_inicial.principales_competidores`)
+6. text — `propuestas` (una por slide o agrupadas)
+7. stats — `estrategia` (tipo campaña + frentes + eje emocional)
+8. quote — slogan + cierre
+
+**Modo completo** (`fase_1.modo_actual: "completa"`):
+Claude usa los 8 análisis y genera la presentación estratégica de 14 slides definida en `analysis/strategic-output.json → fase_2_inputs`.
+
+### Reglas de la fase rápida
+
+1. **Validación de enums**: cualquier valor fuera del enum permitido se rechaza. Claude pregunta hasta obtener uno válido.
+2. **Combinación mixta**: si `tipo_campana = "MIXTA"`, `combinacion_mixta[]` debe tener exactamente 2 valores de {RACIONAL, EMOTIVA, INSTINTIVA}.
+3. **Frentes coherentes**: `frente_principal` no puede aparecer en `frentes_secundarios[]`.
+4. **Propuestas: 3 mínimo, 6 máximo**. Orden numérico continuo. Cada una con `descripcion_corta` ≤ 140 caracteres.
+5. **SWOT mínimo**: 3 items por cuadrante (fortalezas, debilidades, oportunidades, amenazas).
+6. **Competidores mínimo**: 1, máximo 5.
+7. **Branding obligatorio**: slogan + color_primario. El resto opcional.
+8. **presentacion_id**: UUID v4 generado al crear. Inmutable. El `slug` es derivado (legible) pero único para la carpeta.
+
+### Comandos naturales reconocidos
+
+| El consultor dice | Claude hace |
+|-------------------|-------------|
+| "Onboarding rápido [nombre]" | Crea candidates/[slug]/candidate.json con schema vacío |
+| "Completa la sección candidato/postulación/estrategia/..." | Rellena la sección preguntando campo por campo |
+| "Genera presentación rápida" | `presentation.json` modo rápido (~8 slides desde candidate.json) |
+| "Subir a modo completo" | Crea `profile.json` y `territorial.json` con seeds desde candidate.json |
+| "¿Qué falta del onboarding?" | Lista campos vacíos por sección + valida enums |

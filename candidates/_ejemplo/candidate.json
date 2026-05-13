@@ -1,54 +1,183 @@
 {
   "slug": "_ejemplo",
-  "created": "2026-05-13",
-  "updated": "2026-05-13",
+  "presentacion_id": "550e8400-e29b-41d4-a716-446655440000",
+  "created": "2026-05-13T15:00:00Z",
+  "updated": "2026-05-13T16:30:00Z",
 
-  "candidate": {
-    "nombre": "Carlos Mendoza Ríos",
+  "_": "============= FASE 1 RÁPIDA — schema mínimo viable =============",
+
+  "meta": {
+    "consultor_nombre": "Goberna Equipo",
+    "consultor_email": "consultor@grupogoberna.com",
+    "fecha_sesion": "2026-05-13"
+  },
+
+  "candidato": {
     "tipo": "candidato-propio",
-    "cargo": "Alcalde Provincial",
-    "partido": "por definir"
+    "nombre_completo": "Carlos Alberto Mendoza Ríos",
+    "foto_url": null,
+    "documento_tipo": "DNI",
+    "documento_numero": "07812345",
+    "fecha_nacimiento": "1971-08-22",
+    "sexo": "M",
+    "telefono_e164": "+51987654321",
+    "email": "carlos.mendoza@ejemplo.pe",
+    "ocupacion_actual": "Empresario — Constructora Mendoza SAC",
+    "redes_sociales": {
+      "facebook": "facebook.com/carlosmendoza.limanorte",
+      "instagram": "@carlosmendoza_limanorte",
+      "tiktok": null,
+      "youtube": null
+    }
   },
 
-  "territorio": {
-    "nombre": "Lima Norte",
-    "nivel": "provincial"
+  "postulacion": {
+    "cargo_codigo": "alcalde_provincial",
+    "organizacion_politica": "Por definir",
+    "numero_lista": null,
+    "fecha_eleccion": "2026-10-04",
+    "id_departamento": 15,
+    "id_provincia": 1501,
+    "id_distrito": null,
+    "nombre_territorio": "Lima Norte",
+    "nivel_territorio": "provincial"
   },
 
-  "eleccion": {
-    "tipo": "Municipal",
-    "año": 2026,
-    "fecha_estimada": "2026-10-04"
+  "estrategia": {
+    "tipo_eleccion": "GOBIERNO_LOCAL",
+    "tipo_campana": "MIXTA",
+    "combinacion_mixta": ["RACIONAL", "EMOTIVA"],
+    "eje_emocional": "ESPERANZA",
+    "frente_principal": "TIERRA",
+    "frentes_secundarios": ["AIRE"]
   },
+
+  "diagnostico_inicial": {
+    "fortalezas": [
+      "Background empresarial real con experiencia en construcción y formalización",
+      "Conocimiento directo del problema de mercados mayoristas",
+      "Recursos económicos propios para arranque de campaña",
+      "Edad y experiencia generan credibilidad de gestor"
+    ],
+    "debilidades": [
+      "Origen Miraflores genera desconexión con identidad Lima Norte",
+      "Historial de contratos con MML 2020–2022 genera vulnerabilidad anticorrupción",
+      "Sin marca digital ni presencia previa en el territorio",
+      "Edad limita conexión natural con segmento joven (18%)"
+    ],
+    "oportunidades": [
+      "Campo político vaciado: Ramírez y Benavides quemados",
+      "Volatilidad media + fragmentación = ventana real para outsider",
+      "Demanda de formalización (62% informalidad) coincide con perfil del candidato",
+      "Issue decisivo (seguridad) sin liderazgo claro entre competidores"
+    ],
+    "amenazas": [
+      "Trauma reciente corrupción 2021 amplifica cualquier vulnerabilidad",
+      "Competidor Condori captura identidad andina-migrante de manera directa",
+      "Competidor Torres tiene techo más alto (30%) con capital clientelar",
+      "Posible viralización de tuits eliminados (2020) vía Wayback Machine"
+    ],
+    "principales_competidores": [
+      { "nombre": "Juan Torres",   "partido": "Alianza para el Progreso",       "nivel_amenaza": "alto" },
+      { "nombre": "María Condori", "partido": "Movimiento Regional Lima Norte", "nivel_amenaza": "alto" }
+    ]
+  },
+
+  "propuestas": [
+    {
+      "orden": 1,
+      "titulo": "Formalización de mercados",
+      "descripcion_corta": "Sistema de simplificación administrativa con dirigentes. Modelo piloto en 3 mercados el primer año.",
+      "icono": "🏪"
+    },
+    {
+      "orden": 2,
+      "titulo": "Seguridad ciudadana integrada",
+      "descripcion_corta": "Cámaras interconectadas + serenazgo unificado en 8 distritos + convenio con PNP para patrullaje conjunto.",
+      "icono": "🚨"
+    },
+    {
+      "orden": 3,
+      "titulo": "Bypass Tomás Valle culminado",
+      "descripcion_corta": "Obra heredada con ejecución incompleta. Compromiso público de culminación en año 1.",
+      "icono": "🛣️"
+    },
+    {
+      "orden": 4,
+      "titulo": "Portal de transparencia en tiempo real",
+      "descripcion_corta": "Contratos públicos auditables. Convenio con Contraloría para auditoría continua de la gestión.",
+      "icono": "🔍"
+    },
+    {
+      "orden": 5,
+      "titulo": "Educación técnica para jóvenes",
+      "descripcion_corta": "Convenios con CETPROs locales y empresas del territorio para empleabilidad directa.",
+      "icono": "🎓"
+    }
+  ],
+
+  "branding": {
+    "slogan": "Lima Norte que cumple",
+    "color_primario": "#fbc02d",
+    "color_secundario": "#0a1538",
+    "logo_url": null,
+    "foto_perfil_url": null
+  },
+
+  "contexto_territorio": {
+    "poblacion_aproximada": 1200000,
+    "principales_problemas": [
+      "Inseguridad ciudadana",
+      "Informalidad económica",
+      "Transporte público colapsado",
+      "Corrupción municipal heredada"
+    ],
+    "zonas_fuertes": ["Comas", "Carabayllo norte", "Los Olivos centro"],
+    "zonas_debiles": ["Ancón", "Santa Rosa", "Puente Piedra periferia"]
+  },
+
+  "_2": "============= TRACKING DE FASES =============",
 
   "fase_1": {
-    "parte_a_identidad": {
+    "modo_actual": "completa",
+    "rapida": {
       "estado": "completa",
-      "pct_completo": 95,
-      "secciones_pendientes": ["N5 — autodeclaración salud"]
+      "fecha": "2026-05-13",
+      "completitud_pct": 100
     },
-    "parte_b_terreno": {
-      "estado": "completa",
-      "pct_completo": 92,
-      "secciones_pendientes": ["C6 — segunda encuesta pendiente"]
+    "completa": {
+      "parte_a_identidad": {
+        "estado": "completa",
+        "archivo": "profile.json",
+        "pct_completo": 95,
+        "secciones_pendientes": ["N5 — autodeclaración salud"]
+      },
+      "parte_b_terreno": {
+        "estado": "completa",
+        "archivo": "territorial.json",
+        "pct_completo": 92,
+        "secciones_pendientes": ["C6 — segunda encuesta pendiente"]
+      }
     }
   },
 
   "fase_2": {
     "estado": "generada",
     "fecha": "2026-05-13",
+    "modo": "completa",
+    "archivo": "presentation.json",
     "slides_count": 14
   },
 
   "analisis": {
-    "vetting_report":          { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
-    "territorial_analysis":    { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
-    "crosses_ec":              { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
-    "crosses_cd":              { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
-    "crosses_ed":              { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
-    "nucleo_goberna":          { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
-    "fit_candidate_territory": { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
-    "strategic_output":        { "estado": "generado", "fecha": "2026-05-13", "version": 1 }
+    "vetting_report":          { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/vetting-report.json" },
+    "territorial_analysis":    { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/territorial-analysis.json" },
+    "crosses_ec":              { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/crosses-ec.json" },
+    "crosses_cd":              { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/crosses-cd.json" },
+    "crosses_ed":              { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/crosses-ed.json" },
+    "nucleo_goberna":          { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/nucleo-goberna.json" },
+    "fit_candidate_territory": { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/fit-candidate-territory.json" },
+    "strategic_output":        { "estado": "generado", "fecha": "2026-05-13", "version": 1, "archivo": "analysis/strategic-output.json" }
   },
 
   "research_files": [
