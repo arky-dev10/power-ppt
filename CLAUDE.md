@@ -1,274 +1,279 @@
 # Power PPT — Claude Workspace
 
-AI-first presentation workspace. Claude edits `presentation.json`; the Astro dev server renders changes in real time.
+AI-first presentation workspace. Claude edits `projects/[nombre]/presentation.json`;
+el Astro dev server recarga el browser en tiempo real.
 
-## Start
+## Inicio rápido
 
 ```bash
 npm install
-npm run dev     # → http://localhost:4321
+npm run dev   # → http://localhost:4321
 ```
 
-Keyboard: `→` / `↓` / `Space` next slide · `←` / `↑` previous · `Home` / `End` first/last · `Esc` close modal.
+---
+
+## PROTOCOLO DE SESIÓN (leer siempre al iniciar)
+
+### Al abrir este proyecto Claude debe:
+
+**1. Preguntar por el proyecto activo** si el consultor no lo indicó:
+> "¿Con qué proyecto trabajamos hoy? Puedo ver los proyectos existentes en /projects/ o crear uno nuevo."
+
+**2. Leer el context.md del proyecto** antes de hacer cualquier cosa:
+```
+/projects/[nombre-proyecto]/context.md
+```
+Resumir al consultor en 2-3 líneas: qué existe, qué estaba pendiente.
+
+**3. Si es proyecto nuevo**, hacer estas preguntas antes de crear nada:
+- ¿Cuál es el tema y el cliente?
+- ¿Qué tipo de presentación? (diagnóstico / campaña / propuesta / otro)
+- ¿Tienes archivos en /research/? ¿Quieres que los analice?
+- ¿Cuántos slides aproximadamente?
+- ¿Hay alguna fecha límite o urgencia?
+
+**4. Proponer la estructura** de slides y pedir aprobación antes de generar el JSON.
+
+**5. Al terminar la sesión** (cuando el consultor diga "listo", "por hoy es todo", "guarda el contexto"):
+- Actualizar `context.md` con el estado actual, decisiones tomadas y pendientes
+- Avisar qué se actualizó
 
 ---
 
-## Cómo actuar cuando el consultor abre este proyecto
+## Cómo crear un proyecto nuevo
 
-Al iniciar una conversación en este proyecto, Claude debe:
+```
+1. Crear carpeta: /projects/nombre-cliente-año/
+2. Copiar template base desde /templates/ (diagnostico.json, campana.json o propuesta.json)
+3. Renombrar a presentation.json y adaptarlo con los datos reales
+4. Crear context.md con la información inicial del proyecto
+5. Crear subcarpetas: /research/ y /history/
+```
 
-1. **Saludar brevemente** e identificar el contexto: "Estás en el workspace de presentaciones de Goberna. Puedo crear o editar slides directamente desde aquí."
+Comandos bash equivalentes:
+```bash
+mkdir -p projects/nombre-proyecto/research projects/nombre-proyecto/history
+cp templates/diagnostico.json projects/nombre-proyecto/presentation.json
+```
 
-2. **Hacer estas preguntas** si el consultor no ha dado instrucciones claras:
-   - ¿Cuál es el tema o cliente de la presentación?
-   - ¿Tienes archivos de investigación en `/research/`? (PDFs, CSVs, DOCX, datos)
-   - ¿Cuántos slides aproximadamente necesitas?
-   - ¿Para qué audiencia es? (cliente político, equipo interno, presentación pública)
-
-3. **Si hay archivos en `/research/`**, leerlos antes de proponer la estructura de slides.
-
-4. **Proponer una estructura** con los tipos de slide más apropiados y pedir aprobación antes de generar el JSON completo.
-
-5. **Editar `presentation.json`** directamente — nunca pedirle al consultor que lo haga manualmente.
-
-6. **Avisar cuando termina** cada cambio para que el consultor refresque el browser y dé feedback.
-
-### Comandos de voz útiles que el consultor puede usar
-
-- "Crea una presentación sobre [tema] con los archivos en /research/"
-- "Agrega un slide de KPIs con [datos]"
-- "Cambia el título del tercer slide a [texto]"
-- "El gráfico debería mostrar [datos] en vez de esos"
-- "Mueve el slide de mapa al inicio"
-- "Genera una versión en inglés"
-- "Guarda una copia en /history/ antes de cambiar todo"
+El proyecto aparecerá automáticamente en el selector de http://localhost:4321
 
 ---
 
-## How to edit a presentation
+## Formato de context.md
 
-Edit `presentation.json`. The browser reloads automatically on save.
+Cada proyecto debe tener un `context.md` con esta estructura:
 
-To add a slide: append an object to the `slides` array with a unique `id` and a `type`.
+```markdown
+# [Título del Proyecto]
 
-To reorder slides: change the order in the `slides` array.
+## Cliente
+[Nombre del cliente o uso interno]
 
-To delete a slide: remove it from the array.
+## Última sesión
+[Fecha — resumen de qué se hizo]
+
+## Estado actual
+[Qué slides existen, qué datos tienen, estado del diseño]
+
+## Pendientes
+[Lista de tareas para la próxima sesión]
+
+## Archivos en /research/
+[Lista de archivos disponibles y para qué sirven]
+
+## Decisiones tomadas
+[Decisiones de diseño, datos, enfoque que no deben revertirse]
+
+## Notas
+[Cualquier contexto adicional útil]
+```
 
 ---
 
-## Slide schemas
+## Cómo editar una presentación
 
-### hero — full-screen title
+Editar `projects/[proyecto]/presentation.json`. El browser recarga automáticamente.
+
+Para agregar un slide: añadir objeto al array `slides` con `id` único y `type`.
+Para reordenar: cambiar el orden en el array.
+Para eliminar: quitar el objeto del array.
+
+---
+
+## Tipos de slide
+
+### hero — portada a pantalla completa
 
 ```json
 {
   "id": "slide-hero",
   "type": "hero",
-  "kicker": "Optional tag above the title",
-  "title": "Main Title\nSecond line in accent color",
-  "subtitle": "Optional subtitle paragraph",
-  "modal": {
-    "title": "Optional detail overlay",
-    "body": "Paragraph text",
-    "bullets": ["Point 1", "Point 2"]
-  }
+  "kicker": "Tag opcional sobre el título",
+  "title": "Título Principal\nSegunda línea en dorado",
+  "subtitle": "Párrafo opcional debajo del título",
+  "modal": { "title": "Título modal", "body": "...", "bullets": [] }
 }
 ```
 
-### stats — KPI grid (2, 3 or 4 items)
+### stats — grid de KPIs (2, 3 o 4 items)
 
 ```json
 {
   "id": "slide-stats",
   "type": "stats",
-  "kicker": "Optional",
-  "title": "Section Title",
+  "kicker": "Opcional",
+  "title": "Título de la sección",
   "items": [
     {
-      "label": "Metric name",
+      "label": "Nombre del indicador",
       "value": "42%",
       "trend": "up",
-      "delta": "optional context",
-      "modal": {
-        "title": "Detail title",
-        "body": "Explanation",
-        "bullets": ["Detail 1", "Detail 2"]
-      }
-    },
-    { "label": "Another", "value": "1.2M", "trend": "down", "delta": "vs last year" }
+      "delta": "contexto opcional",
+      "modal": { "title": "Detalle", "bullets": ["Punto 1", "Punto 2"] }
+    }
   ]
 }
 ```
 
-`trend` values: `"up"` (green), `"down"` (red), `"neutral"` (gray).
+`trend`: `"up"` (verde) · `"down"` (rojo) · `"neutral"` (gris)
 
-Each item can optionally have a `"modal"` field to show a detail popup.
+Los valores numéricos como `"92 min"`, `"8.4M"`, `"34%"` se animan desde cero.
 
-Numeric values like `"92 min"`, `"8.4M"`, `"34%"` animate from zero on slide entry.
-
-### chart — data visualization
+### chart — visualización de datos
 
 ```json
 {
   "id": "slide-chart",
   "type": "chart",
-  "kicker": "Optional",
-  "title": "Chart Title",
+  "kicker": "Opcional",
+  "title": "Título del Gráfico",
   "chartType": "bar",
-  "description": "Optional source / footnote",
-  "modal": {
-    "title": "Fuente de datos",
-    "body": "Descripción metodológica",
-    "bullets": ["Detalle 1", "Detalle 2"]
-  },
+  "description": "Fuente: [FUENTE] [AÑO]",
+  "modal": { "title": "Metodología", "body": "...", "bullets": [] },
   "data": {
-    "categories": ["Jan", "Feb", "Mar"],
-    "series": [
-      { "name": "Revenue", "data": [120, 200, 150] }
-    ]
+    "categories": ["Ene", "Feb", "Mar"],
+    "series": [{ "name": "Serie", "data": [120, 200, 150] }]
   }
 }
 ```
 
-`chartType` values: `"bar"`, `"line"`, `"pie"`.
+`chartType`: `"bar"` · `"line"` · `"pie"`
 
-For pie charts, `categories` becomes the slice labels and `series[0].data` the values.
-
-### map — geographic view (MapLibre)
+### map — mapa interactivo (MapLibre)
 
 ```json
 {
   "id": "slide-map",
   "type": "map",
-  "kicker": "Optional",
-  "title": "Map Title",
+  "kicker": "Opcional",
+  "title": "Título del Mapa",
   "center": [-77.042, -12.046],
   "zoom": 11,
   "markers": [
-    { "lat": -12.046, "lng": -77.042, "label": "Location name", "color": "#00b4d8" }
+    { "lat": -12.046, "lng": -77.042, "label": "Nombre", "color": "#00b4d8" }
   ],
-  "modal": {
-    "title": "Leyenda",
-    "bullets": ["Punto A — descripción", "Punto B — descripción"]
-  }
+  "modal": { "title": "Leyenda", "bullets": ["Punto A", "Punto B"] }
 }
 ```
 
-`center` is `[longitude, latitude]`. Map tiles are dark (CartoCDN Dark Matter, free, no API key needed).
+`center` es `[longitud, latitud]`.
 
-### text — narrative / bullet points
+### text — texto narrativo o bullets
 
 ```json
 {
   "id": "slide-text",
   "type": "text",
-  "kicker": "Optional",
-  "title": "Slide Title",
+  "kicker": "Opcional",
+  "title": "Título del Slide",
   "layout": "bullets",
-  "bullets": [
-    "First key point",
-    "Second key point"
-  ]
+  "bullets": ["Punto 1", "Punto 2"],
+  "modal": { "title": "Más info", "body": "..." }
 }
 ```
 
-`layout` values: `"bullets"` (list), `"full"` (single paragraph — use `"content"` field instead of `"bullets"`), `"split"` (paragraph + image — add `"image"` and `"imageAlt"` fields).
+`layout`: `"bullets"` · `"full"` (usar campo `"content"`) · `"split"` (añadir `"image"` e `"imageAlt"`)
 
 ---
 
-## Presentation metadata
+## Modal (overlay de detalle)
+
+Cualquier slide o item de stats puede tener un campo `"modal"`:
+
+```json
+"modal": {
+  "label": "Texto del botón (default: 'Ver más')",
+  "kicker": "Tag pequeño opcional",
+  "title": "Título del modal",
+  "body": "Párrafo opcional",
+  "bullets": ["Detalle 1", "Detalle 2"]
+}
+```
+
+---
+
+## Metadatos de la presentación
 
 ```json
 {
   "meta": {
-    "title": "Presentation title (browser tab)",
-    "subtitle": "Optional",
-    "author": "Optional",
-    "accent": "#00b4d8"
+    "title": "Título (pestaña del browser)",
+    "subtitle": "Opcional",
+    "author": "Opcional",
+    "accent": "#fbc02d"
   }
 }
 ```
 
-`accent` controls the progress bar, dot indicators, and decorative elements.
+---
+
+## Templates disponibles
+
+| Archivo | Uso |
+|---------|-----|
+| `templates/diagnostico.json` | Diagnóstico de situación (5 slides base) |
+| `templates/campana.json` | Campaña electoral (5 slides base) |
+| `templates/propuesta.json` | Propuesta de servicios (5 slides base) |
+
+Copiar el template al proyecto y completar los campos marcados con `[MAYÚSCULAS]`.
 
 ---
 
-## Modal (info overlay)
+## Flujo de investigación
 
-Any slide or stats item can include a `"modal"` field. When clicked, it opens a dark overlay with detailed info.
-
-```json
-"modal": {
-  "label": "Button label (optional, default: 'Ver más')",
-  "kicker": "Optional small tag",
-  "title": "Modal heading",
-  "body": "Optional paragraph",
-  "bullets": [
-    "First detail point",
-    "Second detail point"
-  ]
-}
-```
-
-Add `"modal"` at the top level of any slide to show a button in the header. Add it inside a stats `item` to show a link under the value.
-
----
-
-## Entrance animations
-
-Elements with `data-anim` attribute animate in when a slide becomes active. Handled automatically — no config needed. Stagger delay increases per element.
-
----
-
-## Research workflow
-
-1. Drop files (PDF, CSV, DOCX, images, JSON) into `/research/`
-2. Ask Claude to analyze them:
+1. Copiar archivos (PDF, CSV, DOCX, imágenes) a `/projects/[proyecto]/research/`
+2. Pedirle a Claude que los analice:
    - "Resume este PDF y crea 3 slides con los puntos clave"
-   - "Extrae los datos de este CSV y crea un bar chart"
-   - "Encuentra los insights más relevantes y genera una narrativa"
-3. Claude updates `presentation.json` accordingly
+   - "Extrae los datos de este CSV y genera un bar chart"
+   - "Analiza los archivos en /research/ y propón la estructura de slides"
+3. Claude actualiza `presentation.json` y el browser recarga
 
 ---
 
-## Versioning
+## Versionado
 
-Before major changes, save a snapshot:
-
+Guardar snapshot antes de cambios grandes:
 ```bash
-cp presentation.json history/presentation-$(date +%Y%m%d-%H%M).json
+cp projects/[proyecto]/presentation.json projects/[proyecto]/history/presentation-$(date +%Y%m%d-%H%M).json
 ```
 
 ---
 
-## Export
+## Exportar
 
 ```bash
-npm run build   # outputs static site to /dist
-cp -r dist exports/$(date +%Y%m%d)
+npm run build
+# Resultado en /dist — HTML autocontenido, sin servidor
 ```
 
-The export is a fully self-contained HTML folder — shareable without any server.
-
 ---
 
-## Workspace folders
+## Navegación en el browser
 
-| Folder | Purpose |
-|--------|---------|
-| `/research` | Source documents for Claude to analyze |
-| `/assets` | Images, logos, data files |
-| `/exports` | Built static presentations |
-| `/sessions` | Session notes and context |
-| `/history` | Versioned JSON snapshots |
-
----
-
-## Slide types to add later
-
-- `timeline` — horizontal or vertical timeline
-- `quote` — large pull quote with attribution
-- `image` — full-bleed image with caption
-- `table` — formatted data table
-- `comparison` — side-by-side columns
+| Tecla | Acción |
+|-------|--------|
+| `→` `↓` `Space` | Siguiente slide |
+| `←` `↑` | Slide anterior |
+| `Home` / `End` | Primer / último slide |
+| `Esc` | Cerrar modal |

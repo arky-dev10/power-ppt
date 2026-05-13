@@ -1,0 +1,65 @@
+{
+  "_template": "propuesta",
+  "_description": "Propuesta de servicios o proyecto para cliente: problema, solución, equipo, inversión",
+  "meta": {
+    "title": "Propuesta [CLIENTE] [AÑO]",
+    "subtitle": "Propuesta de servicios",
+    "author": "Grupo Goberna",
+    "accent": "#fbc02d"
+  },
+  "slides": [
+    {
+      "id": "slide-hero",
+      "type": "hero",
+      "kicker": "Propuesta de Servicios",
+      "title": "[NOMBRE DEL PROYECTO]\n[CLIENTE O TERRITORIO]",
+      "subtitle": "Goberna Consultoría Política — [AÑO]"
+    },
+    {
+      "id": "slide-text",
+      "type": "text",
+      "kicker": "El contexto",
+      "title": "El Problema a Resolver",
+      "layout": "full",
+      "content": "Descripción del problema o necesidad del cliente que da origen a esta propuesta."
+    },
+    {
+      "id": "slide-text-2",
+      "type": "text",
+      "kicker": "Nuestra propuesta",
+      "title": "Solución y Alcance",
+      "layout": "bullets",
+      "bullets": [
+        "Componente 1 del servicio",
+        "Componente 2 del servicio",
+        "Componente 3 del servicio",
+        "Entregables y plazos"
+      ]
+    },
+    {
+      "id": "slide-stats",
+      "type": "stats",
+      "kicker": "Nuestra experiencia",
+      "title": "Por Qué Goberna",
+      "items": [
+        { "label": "Años de experiencia", "value": "10+", "trend": "neutral", "delta": "en consultoría política" },
+        { "label": "Proyectos completados", "value": "80+", "trend": "up", "delta": "en la región" },
+        { "label": "Países de presencia", "value": "12", "trend": "neutral", "delta": "América Latina" },
+        { "label": "Tasa de éxito electoral", "value": "74%", "trend": "up", "delta": "últimas 5 elecciones" }
+      ]
+    },
+    {
+      "id": "slide-text-3",
+      "type": "text",
+      "kicker": "Siguiente paso",
+      "title": "Cronograma e Inversión",
+      "layout": "bullets",
+      "bullets": [
+        "Fase 1 — [actividad]: [fecha]",
+        "Fase 2 — [actividad]: [fecha]",
+        "Fase 3 — [actividad]: [fecha]",
+        "Inversión total: [monto]"
+      ]
+    }
+  ]
+}

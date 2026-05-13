@@ -1,0 +1,68 @@
+{
+  "_template": "campana",
+  "_description": "Presentación de campaña política: propuesta, territorio, datos de opinión y propuestas",
+  "meta": {
+    "title": "Campaña [CANDIDATO] [AÑO]",
+    "subtitle": "Estrategia electoral",
+    "author": "Grupo Goberna",
+    "accent": "#fbc02d"
+  },
+  "slides": [
+    {
+      "id": "slide-hero",
+      "type": "hero",
+      "kicker": "Estrategia Electoral [AÑO]",
+      "title": "[NOMBRE CANDIDATO]\n[CARGO QUE BUSCA]",
+      "subtitle": "Propuesta de gobierno y estrategia de comunicación"
+    },
+    {
+      "id": "slide-stats",
+      "type": "stats",
+      "kicker": "Escenario electoral",
+      "title": "Datos del Territorio",
+      "items": [
+        { "label": "Padrón electoral", "value": "0.0M", "trend": "neutral", "delta": "votantes" },
+        { "label": "Intención de voto", "value": "00%", "trend": "up", "delta": "última encuesta" },
+        { "label": "Aprobación gestión actual", "value": "00%", "trend": "down", "delta": "tendencia" },
+        { "label": "Distritos prioritarios", "value": "00", "trend": "neutral", "delta": "de intervención" }
+      ]
+    },
+    {
+      "id": "slide-chart",
+      "type": "chart",
+      "kicker": "Opinión pública",
+      "title": "Intención de Voto por Distrito",
+      "chartType": "bar",
+      "description": "Fuente: Encuesta interna Goberna [MES AÑO]",
+      "data": {
+        "categories": ["Distrito 1", "Distrito 2", "Distrito 3", "Distrito 4"],
+        "series": [
+          { "name": "[Candidato]", "data": [0, 0, 0, 0] },
+          { "name": "Competidor principal", "data": [0, 0, 0, 0] }
+        ]
+      }
+    },
+    {
+      "id": "slide-map",
+      "type": "map",
+      "kicker": "Territorio",
+      "title": "Mapa Electoral",
+      "center": [-77.042, -12.046],
+      "zoom": 10,
+      "markers": []
+    },
+    {
+      "id": "slide-text",
+      "type": "text",
+      "kicker": "Propuesta de gobierno",
+      "title": "Ejes Programáticos",
+      "layout": "bullets",
+      "bullets": [
+        "Eje 1: [tema]",
+        "Eje 2: [tema]",
+        "Eje 3: [tema]",
+        "Eje 4: [tema]"
+      ]
+    }
+  ]
+}

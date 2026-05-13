@@ -1,0 +1,269 @@
+---
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goberna — Proyectos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: #050a1e;
+        color: #f8fafc;
+        font-family: 'Inter', system-ui, sans-serif;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 60px 40px 80px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 56px;
+      }
+      header img {
+        width: 36px; height: 36px;
+        filter: drop-shadow(0 0 10px rgba(251,192,45,0.5));
+      }
+      header .brand {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 14px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(251,192,45,0.9);
+      }
+      header .divider {
+        width: 1px; height: 24px;
+        background: rgba(248,250,252,0.1);
+        margin: 0 8px;
+      }
+      header .section-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(248,250,252,0.3);
+      }
+
+      h1 {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 800;
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+        color: #f8fafc;
+        margin-bottom: 0.4rem;
+      }
+      .subtitle {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin-bottom: 2.5rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        background: rgba(10,21,56,0.6);
+        border: 1px solid rgba(251,192,45,0.12);
+        border-radius: 14px;
+        padding: 1.5rem;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        transition: border-color 0.2s, background 0.2s, transform 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(251,192,45,0.2), transparent);
+      }
+      .card:hover {
+        border-color: rgba(251,192,45,0.35);
+        background: rgba(10,21,56,0.9);
+        transform: translateY(-2px);
+      }
+      .card-icon {
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+      }
+      .card-title {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #f8fafc;
+        line-height: 1.3;
+      }
+      .card-subtitle {
+        font-size: 0.8rem;
+        color: #64748b;
+      }
+      .card-meta {
+        display: flex;
+        gap: 1rem;
+        margin-top: auto;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(248,250,252,0.05);
+      }
+      .card-tag {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: rgba(251,192,45,0.5);
+        background: rgba(251,192,45,0.06);
+        border-radius: 4px;
+        padding: 2px 7px;
+      }
+      .card-arrow {
+        margin-left: auto;
+        color: rgba(248,250,252,0.2);
+        font-size: 1rem;
+        transition: color 0.2s, transform 0.2s;
+      }
+      .card:hover .card-arrow {
+        color: #fbc02d;
+        transform: translateX(3px);
+      }
+
+      .new-card {
+        border-style: dashed;
+        border-color: rgba(248,250,252,0.08);
+        background: transparent;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 140px;
+        cursor: default;
+      }
+      .new-card:hover {
+        border-color: rgba(248,250,252,0.15);
+        transform: none;
+      }
+      .new-card p {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: rgba(248,250,252,0.2);
+        margin-top: 0.5rem;
+      }
+
+      .templates-section {
+        margin-top: 56px;
+      }
+      .section-title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: rgba(248,250,252,0.3);
+        margin-bottom: 1rem;
+      }
+      .template-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 0.75rem;
+      }
+      .template-card {
+        background: rgba(5,10,30,0.8);
+        border: 1px solid rgba(248,250,252,0.06);
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      .template-card .t-type {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: rgba(251,192,45,0.5);
+      }
+      .template-card .t-name {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: #cfd6ee;
+      }
+      .template-card .t-desc {
+        font-size: 0.78rem;
+        color: #475569;
+        line-height: 1.4;
+      }
+
+      .instructions {
+        margin-top: 56px;
+        background: rgba(10,21,56,0.4);
+        border: 1px solid rgba(251,192,45,0.08);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+      }
+      .instructions h3 {
+        font-family: 'Inter Tight', sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #f8fafc;
+        margin-bottom: 1rem;
+      }
+      .instructions ol {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .instructions li {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: #94a3b8;
+        line-height: 1.5;
+      }
+      .instructions .step-num {
+        flex-shrink: 0;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        color: #fbc02d;
+        opacity: 0.7;
+        margin-top: 0.15rem;
+      }
+      code {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8em;
+        background: rgba(251,192,45,0.08);
+        border-radius: 3px;
+        padding: 1px 5px;
+        color: #fbc02d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <img src="/goberna-logo.png" alt="Goberna" />
+        <span class="brand">Goberna</span>
+        <span class="divider"></span>
+        <span class="section-label">Workspace de Presentaciones</span>
+      </header>
+      <slot />
+    </div>
+  </body>
+</html>

@@ -6,11 +6,19 @@ export default defineConfig({
   vite: {
     plugins: [
       {
-        name: 'watch-presentation-json',
+        name: 'watch-projects',
         configureServer(server) {
-          server.watcher.add('./presentation.json');
-          server.watcher.on('change', (path) => {
-            if (path.endsWith('presentation.json')) {
+          // Watch all presentation.json files and context.md across projects
+          server.watcher.add('./projects/**/presentation.json');
+          server.watcher.add('./projects');
+          server.watcher.on('change', (filePath) => {
+            if (filePath.endsWith('presentation.json') || filePath.endsWith('context.md')) {
+              server.ws.send({ type: 'full-reload' });
+            }
+          });
+          // Also reload when a new project folder is added
+          server.watcher.on('addDir', (filePath) => {
+            if (filePath.includes('/projects/')) {
               server.ws.send({ type: 'full-reload' });
             }
           });

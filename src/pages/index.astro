@@ -1,11 +1,124 @@
 ---
-import presentation from '../../presentation.json';
-import PresentationLayout from '../layouts/PresentationLayout.astro';
-import SlideRenderer from '../components/SlideRenderer.astro';
+import SelectorLayout from '../layouts/SelectorLayout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const projectsDir = path.join(process.cwd(), 'projects');
+
+type Project = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  slideCount: number;
+  modified: Date;
+  hasContext: boolean;
+};
+
+const projects: Project[] = fs.existsSync(projectsDir)
+  ? fs.readdirSync(projectsDir, { withFileTypes: true })
+      .filter(d => d.isDirectory())
+      .map(d => {
+        const pFile = path.join(projectsDir, d.name, 'presentation.json');
+        const contextFile = path.join(projectsDir, d.name, 'context.md');
+        let meta = { title: d.name, subtitle: '' };
+        let slideCount = 0;
+        if (fs.existsSync(pFile)) {
+          try {
+            const data = JSON.parse(fs.readFileSync(pFile, 'utf-8'));
+            meta = data.meta ?? meta;
+            slideCount = (data.slides ?? []).length;
+          } catch {}
+        }
+        const stat = fs.statSync(path.join(projectsDir, d.name));
+        return {
+          slug: d.name,
+          title: meta.title,
+          subtitle: meta.subtitle ?? '',
+          slideCount,
+          modified: stat.mtime,
+          hasContext: fs.existsSync(contextFile),
+        };
+      })
+      .sort((a, b) => b.modified.getTime() - a.modified.getTime())
+  : [];
+
+const templates = [
+  { type: 'diagnóstico', name: 'Diagnóstico de situación', desc: 'Hero + KPIs + gráfico + mapa + propuestas' },
+  { type: 'campaña', name: 'Campaña política', desc: 'Candidato + territorio + encuestas + ejes programáticos' },
+  { type: 'propuesta', name: 'Propuesta de servicios', desc: 'Problema + solución + equipo + inversión' },
+];
+
+function timeAgo(date: Date): string {
+  const diff = Date.now() - date.getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 60) return `hace ${mins}m`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `hace ${hrs}h`;
+  const days = Math.floor(hrs / 24);
+  return `hace ${days}d`;
+}
 ---
 
-<PresentationLayout meta={presentation.meta} slideCount={presentation.slides.length}>
-  {presentation.slides.map((slide, index) => (
-    <SlideRenderer slide={slide} index={index} />
-  ))}
-</PresentationLayout>
+<SelectorLayout>
+  <h1>Proyectos</h1>
+  <p class="subtitle">Selecciona un proyecto o crea uno nuevo con Claude.</p>
+
+  <div class="grid">
+    {projects.map(p => (
+      <a href={`/${p.slug}/`} class="card">
+        <div class="card-icon">📁</div>
+        <div class="card-title">{p.title}</div>
+        {p.subtitle && <div class="card-subtitle">{p.subtitle}</div>}
+        <div class="card-meta">
+          <span class="card-tag">{p.slideCount} slides</span>
+          {p.hasContext && <span class="card-tag">contexto</span>}
+          <span class="card-tag">{timeAgo(p.modified)}</span>
+          <span class="card-arrow">→</span>
+        </div>
+      </a>
+    ))}
+    <div class="card new-card">
+      <span style="font-size:1.5rem; color:rgba(248,250,252,0.15);">+</span>
+      <p>Nuevo proyecto<br/>vía Claude</p>
+    </div>
+  </div>
+
+  <div class="templates-section">
+    <div class="section-title">Templates disponibles</div>
+    <div class="template-grid">
+      {templates.map(t => (
+        <div class="template-card">
+          <span class="t-type">{t.type}</span>
+          <span class="t-name">{t.name}</span>
+          <span class="t-desc">{t.desc}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="instructions">
+    <h3>Cómo crear un nuevo proyecto con Claude</h3>
+    <ol>
+      <li>
+        <span class="step-num">01</span>
+        <span>Abre Claude Code en esta carpeta: ejecuta <code>claude</code> en la terminal</span>
+      </li>
+      <li>
+        <span class="step-num">02</span>
+        <span>Dile el tema y cliente: <em>"Crea un diagnóstico de seguridad para Lima Norte"</em></span>
+      </li>
+      <li>
+        <span class="step-num">03</span>
+        <span>Si tienes archivos fuente, cópialos a <code>/research/</code> antes de empezar</span>
+      </li>
+      <li>
+        <span class="step-num">04</span>
+        <span>Claude creará la carpeta en <code>/projects/</code> y esta pantalla se actualizará</span>
+      </li>
+      <li>
+        <span class="step-num">05</span>
+        <span>Al terminar la sesión dile: <em>"Guarda el contexto"</em> para que recuerde para la próxima vez</span>
+      </li>
+    </ol>
+  </div>
+</SelectorLayout>

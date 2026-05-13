@@ -1,0 +1,66 @@
+{
+  "_template": "diagnostico",
+  "_description": "Diagnóstico de situación: contexto, datos clave, geografía, análisis y propuestas",
+  "meta": {
+    "title": "Diagnóstico [TEMA] [AÑO]",
+    "subtitle": "Diagnóstico y propuestas estratégicas",
+    "author": "Grupo Goberna",
+    "accent": "#fbc02d"
+  },
+  "slides": [
+    {
+      "id": "slide-hero",
+      "type": "hero",
+      "kicker": "Diagnóstico [AÑO]",
+      "title": "[TEMA PRINCIPAL]\n[SUBTÍTULO EN DORADO]",
+      "subtitle": "Análisis de situación y propuestas de intervención estratégica"
+    },
+    {
+      "id": "slide-stats",
+      "type": "stats",
+      "kicker": "Contexto actual",
+      "title": "Indicadores Clave",
+      "items": [
+        { "label": "Indicador 1", "value": "00%", "trend": "up", "delta": "contexto" },
+        { "label": "Indicador 2", "value": "0.0M", "trend": "neutral", "delta": "contexto" },
+        { "label": "Indicador 3", "value": "00%", "trend": "down", "delta": "contexto" },
+        { "label": "Indicador 4", "value": "#0", "trend": "up", "delta": "contexto" }
+      ]
+    },
+    {
+      "id": "slide-chart",
+      "type": "chart",
+      "kicker": "Análisis cuantitativo",
+      "title": "Título del Gráfico",
+      "chartType": "bar",
+      "description": "Fuente: [FUENTE] [AÑO]",
+      "data": {
+        "categories": ["Cat 1", "Cat 2", "Cat 3", "Cat 4"],
+        "series": [
+          { "name": "Serie principal", "data": [0, 0, 0, 0] }
+        ]
+      }
+    },
+    {
+      "id": "slide-map",
+      "type": "map",
+      "kicker": "Distribución territorial",
+      "title": "Mapa de [TEMA]",
+      "center": [-77.042, -12.046],
+      "zoom": 11,
+      "markers": []
+    },
+    {
+      "id": "slide-text",
+      "type": "text",
+      "kicker": "Hoja de ruta",
+      "title": "Propuestas Estratégicas",
+      "layout": "bullets",
+      "bullets": [
+        "Propuesta 1",
+        "Propuesta 2",
+        "Propuesta 3"
+      ]
+    }
+  ]
+}

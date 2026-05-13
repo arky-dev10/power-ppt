@@ -6,3 +6,5 @@ exports/
 review-ppt.mjs
 review-debug.mjs
 *.local
+projects/*/research/*
+!projects/*/research/.gitkeep
