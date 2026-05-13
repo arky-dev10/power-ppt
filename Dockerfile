@@ -47,7 +47,9 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=4321 \
     # Claude Code credentials persisted via volume:
-    CLAUDE_CONFIG_DIR=/root/.claude
+    CLAUDE_CONFIG_DIR=/root/.claude \
+    # SDK uses the globally-installed claude CLI (not native bundled binary)
+    CLAUDE_CODE_BIN=/usr/local/bin/claude
 
 EXPOSE 4321
 

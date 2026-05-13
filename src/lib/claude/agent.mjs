@@ -196,6 +196,9 @@ export function runChat(prompt, opts = {}) {
     prompt: contextPrefix + prompt,
     options: {
       cwd: ROOT,
+      // En el contenedor, claude está instalado globalmente como CLI.
+      // En dev local, el SDK lo encuentra solo.
+      pathToClaudeCodeExecutable: process.env.CLAUDE_CODE_BIN || undefined,
       systemPrompt: SYSTEM_PROMPT,
       mcpServers: { 'power-ppt': powerPptServer },
       allowedTools: [
