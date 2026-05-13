@@ -6,5 +6,14 @@ exports/
 review-ppt.mjs
 review-debug.mjs
 *.local
+.env
+.env.local
+data/
 projects/*/research/*
 !projects/*/research/.gitkeep
+candidates/*/research/*
+!candidates/*/research/.gitkeep
+vetting/*/research/*
+!vetting/*/research/.gitkeep
+diagnostics/*/research/*
+!diagnostics/*/research/.gitkeep

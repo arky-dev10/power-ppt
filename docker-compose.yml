@@ -1,0 +1,29 @@
+# power-ppt — runtime stack
+# Deploy: docker compose up -d --build
+# Login Claude Max (una sola vez): docker compose exec app claude login
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: power-ppt:latest
+    container_name: power-ppt
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:4321:4321"
+    volumes:
+      # Data: estos son los archivos del workspace (candidatos, presentaciones, etc.)
+      - ./data/candidates:/app/candidates
+      - ./data/projects:/app/projects
+      - ./data/vetting:/app/vetting
+      - ./data/diagnostics:/app/diagnostics
+      # Credenciales OAuth de Claude Max — persistir entre rebuilds
+      - ./data/claude-creds:/root/.claude
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:4321/health').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

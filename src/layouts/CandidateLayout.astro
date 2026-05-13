@@ -1,0 +1,38 @@
+---
+const { title = 'Candidatos' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} — Goberna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@700;800;900&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@800&display=swap" rel="stylesheet" />
+  <style is:global>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background:#050a1e; color:#f8fafc; font-family:'Inter',system-ui,sans-serif; min-height:100vh; }
+    a { color:inherit; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header style="position:sticky; top:0; z-index:50; background:rgba(5,10,30,0.95); border-bottom:1px solid rgba(251,192,45,0.12); backdrop-filter:blur(12px); padding:0 2rem; height:52px; display:flex; align-items:center; justify-content:space-between;">
+    <a href="/" style="display:flex; align-items:center; gap:0.75rem;">
+      <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+        <polygon points="16,2 30,26 2,26" fill="none" stroke="#fbc02d" stroke-width="2.5" stroke-linejoin="round"/>
+        <polygon points="16,9 26,26 6,26" fill="rgba(251,192,45,0.08)"/>
+      </svg>
+      <span style="font-family:'Montserrat',sans-serif; font-weight:800; font-size:13px; letter-spacing:0.18em; color:#f8fafc;">GOBERNA</span>
+    </a>
+    <nav style="display:flex; gap:1rem; font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase;">
+      <a href="/" style="color:#64748b;">Inicio</a>
+      <a href="/candidates" style="color:#fbc02d;">Candidatos</a>
+      <a href="/vetting" style="color:#64748b;">Perfiles 5N</a>
+      <a href="/diagnostics" style="color:#64748b;">Diagnósticos</a>
+    </nav>
+  </header>
+
+  <slot />
+</body>
+</html>

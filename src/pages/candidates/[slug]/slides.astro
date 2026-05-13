@@ -1,0 +1,23 @@
+---
+import PresentationLayout from '../../../layouts/PresentationLayout.astro';
+import SlideRenderer from '../../../components/SlideRenderer.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const presPath = path.join(process.cwd(), 'candidates', slug, 'presentation.json');
+
+if (!fs.existsSync(presPath)) {
+  return Astro.redirect(`/candidates/${slug}`);
+}
+
+const presentation = JSON.parse(fs.readFileSync(presPath, 'utf-8'));
+---
+
+<PresentationLayout meta={presentation.meta} slideCount={presentation.slides.length}>
+  {presentation.slides.map((slide: any, index: number) => (
+    <SlideRenderer slide={slide} index={index} />
+  ))}
+</PresentationLayout>

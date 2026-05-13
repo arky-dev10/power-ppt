@@ -1,0 +1,601 @@
+---
+import Chat from '../../../components/Chat.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const base = path.join(process.cwd(), 'candidates', slug);
+const candPath = path.join(base, 'candidate.json');
+
+if (!fs.existsSync(candPath)) {
+  return Astro.redirect('/candidates');
+}
+
+const c = JSON.parse(fs.readFileSync(candPath, 'utf-8'));
+
+const presPath = path.join(base, 'presentation.json');
+const pres = fs.existsSync(presPath)
+  ? JSON.parse(fs.readFileSync(presPath, 'utf-8'))
+  : null;
+
+const CARGO_LABEL: Record<string, string> = {
+  alcalde_distrital: 'Alcalde Distrital', alcalde_provincial: 'Alcalde Provincial',
+  regidor: 'Regidor', consejero_regional: 'Consejero Regional',
+  gobernador_regional: 'Gobernador Regional', congresista: 'Congresista', presidente: 'Presidente',
+};
+const TIPO_COLOR: Record<string, string> = { 'candidato-propio': '#4ade80', rival: '#f87171', aliado: '#60a5fa' };
+const TIPO_LABEL: Record<string, string> = { 'candidato-propio': 'Propio', rival: 'Rival', aliado: 'Aliado' };
+
+const cargo = CARGO_LABEL[c.postulacion?.cargo_codigo] ?? c.postulacion?.cargo_codigo ?? '—';
+const año = c.postulacion?.fecha_eleccion ? new Date(c.postulacion.fecha_eleccion).getFullYear() : '';
+const color = c.branding?.color_primario ?? '#fbc02d';
+const slides = pres?.slides ?? [];
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{c.candidato?.nombre_completo ?? slug} — Goberna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #fbc02d;
+      --accent: {color};
+      --bg: #050a1e;
+      --surface: rgba(10,21,56,0.6);
+      --text: #f8fafc;
+      --muted: #64748b;
+      --border: rgba(248,250,252,0.08);
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* ── Header ── */
+    .candidate-header {
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      background: rgba(5,10,30,0.95); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 20;
+    }
+    .header-accent { height: 3px; }
+    .header-inner { max-width: 1100px; margin: 0 auto; padding: 1rem 2rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+    .back-link { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #334155; text-decoration: none; transition: color 0.15s; flex-shrink: 0; }
+    .back-link:hover { color: var(--gold); }
+    .candidate-name { font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 1.15rem; color: var(--text); }
+    .candidate-sub { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 0.15rem; }
+    .tipo-badge { flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 4px; }
+    .header-actions { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; }
+    .hdr-btn { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.45rem 0.9rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; text-decoration: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 0.35rem; }
+    .hdr-btn:hover { border-color: rgba(251,192,45,0.35); color: var(--gold); }
+    .hdr-btn-primary { background: rgba(251,192,45,0.1); border-color: rgba(251,192,45,0.3); color: var(--gold); }
+    .hdr-btn-primary:hover { background: rgba(251,192,45,0.2); border-color: var(--gold); }
+
+    /* ── Tabs ── */
+    .tabs { max-width: 1100px; margin: 0 auto; padding: 0 2rem; display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+    .tab { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; padding: 1rem 1.25rem; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.15s; }
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab:hover:not(.active) { color: #94a3b8; }
+
+    /* ── Page ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── Datos tab ── */
+    .datos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+    .datos-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; }
+    .datos-card-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; opacity: 0.7; }
+    .datos-row { display: flex; gap: 0.75rem; padding: 0.4rem 0; border-bottom: 1px solid rgba(248,250,252,0.04); align-items: flex-start; }
+    .datos-row:last-child { border-bottom: none; }
+    .datos-key { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); min-width: 110px; flex-shrink: 0; padding-top: 0.1rem; }
+    .datos-val { font-size: 0.82rem; color: #cfd6ee; line-height: 1.4; word-break: break-word; }
+    .datos-val.highlight { color: var(--text); font-weight: 600; }
+    .foda-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .foda-quad { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+    .foda-quad-title { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .foda-item { font-size: 0.8rem; color: #94a3b8; padding: 0.25rem 0; border-bottom: 1px solid rgba(248,250,252,0.04); line-height: 1.4; }
+    .foda-item:last-child { border-bottom: none; }
+    .prop-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .prop-item { display: flex; gap: 0.75rem; padding: 0.6rem 0.75rem; background: rgba(10,21,56,0.5); border: 1px solid var(--border); border-radius: 8px; }
+    .prop-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .prop-title { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .prop-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+    /* ── Slides tab ── */
+    .slides-toolbar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .slides-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .regen-btn { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.4rem 0.85rem; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; margin-left: auto; }
+    .regen-btn:hover { border-color: rgba(251,192,45,0.35); color: var(--gold); }
+    .present-btn { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.4rem 0.85rem; border-radius: 6px; border: 1px solid rgba(251,192,45,0.3); background: rgba(251,192,45,0.08); color: var(--gold); text-decoration: none; cursor: pointer; transition: all 0.15s; }
+    .present-btn:hover { background: rgba(251,192,45,0.18); }
+
+    .slides-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    .slide-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .slide-card:hover { border-color: rgba(251,192,45,0.35); transform: translateY(-2px); }
+    .slide-card.editing { border-color: var(--gold); }
+    .slide-thumb {
+      height: 140px; background: #050a1e;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      padding: 1.25rem; position: relative; overflow: hidden;
+    }
+    .slide-thumb::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(251,192,45,0.04) 0%, transparent 70%);
+    }
+    .slide-thumb-num { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(251,192,45,0.4); margin-bottom: 0.5rem; position: relative; }
+    .slide-thumb-type { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.15em; text-transform: uppercase; color: #334155; position: absolute; top: 0.6rem; right: 0.75rem; }
+    .slide-thumb-title { font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 0.88rem; color: var(--text); text-align: center; line-height: 1.3; position: relative; max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+    .slide-card-footer { padding: 0.6rem 0.85rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .slide-card-kicker { font-size: 0.72rem; color: var(--muted); }
+    .slide-edit-btn { font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: #475569; cursor: pointer; transition: all 0.15s; }
+    .slide-edit-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Edit modal ── */
+    .edit-overlay { position: fixed; inset: 0; background: rgba(5,10,30,0.85); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: center; justify-content: center; }
+    .edit-overlay.open { display: flex; }
+    .edit-modal {
+      background: #0a1232; border: 1px solid rgba(251,192,45,0.2); border-radius: 16px;
+      width: 100%; max-width: 640px; max-height: 85vh; overflow-y: auto;
+      padding: 2rem;
+    }
+    .edit-modal h3 { font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--text); margin-bottom: 0.25rem; }
+    .edit-modal-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+    .edit-field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+    .edit-field label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+    .edit-field input, .edit-field textarea {
+      background: rgba(10,21,56,0.8); border: 1px solid var(--border); border-radius: 7px;
+      padding: 0.6rem 0.9rem; color: var(--text); font-size: 0.85rem; outline: none; width: 100%;
+      transition: border-color 0.15s;
+    }
+    .edit-field input:focus, .edit-field textarea:focus { border-color: rgba(251,192,45,0.5); }
+    .edit-field textarea { resize: vertical; min-height: 100px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+    .edit-json { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; background: rgba(5,10,30,0.9); border: 1px solid var(--border); border-radius: 7px; padding: 0.75rem; color: #94a3b8; resize: vertical; min-height: 180px; width: 100%; outline: none; }
+    .edit-json:focus { border-color: rgba(251,192,45,0.4); }
+    .edit-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+    .edit-save { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.6rem 1.4rem; border-radius: 7px; border: none; background: var(--gold); color: #050a1e; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .edit-save:hover { background: #ffd54f; }
+    .edit-cancel { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.6rem 1.1rem; border-radius: 7px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s; }
+    .edit-cancel:hover { border-color: rgba(248,250,252,0.2); color: #94a3b8; }
+    .edit-status { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; margin-left: auto; display: none; }
+    .edit-status.ok { color: #4ade80; display: inline; }
+    .edit-status.err { color: #f87171; display: inline; }
+
+    /* ── No slides ── */
+    .no-slides { text-align: center; padding: 3rem 2rem; background: var(--surface); border: 1px dashed var(--border); border-radius: 14px; }
+    .no-slides p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1rem; }
+
+    /* ── Fullscreen link ── */
+    .fullscreen-note { font-size: 0.78rem; color: #334155; margin-top: 1rem; }
+    .fullscreen-note a { color: #475569; transition: color 0.15s; }
+    .fullscreen-note a:hover { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      .header-inner { padding: 0.75rem 1rem; }
+      .page { padding: 1rem; }
+      .foda-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── Chat lateral flotante ── */
+    .chat-fab {
+      position: fixed; right: 18px; bottom: 18px; z-index: 100;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, #fbc02d, #ff9500);
+      color: #050a1e; border: none; cursor: pointer;
+      box-shadow: 0 6px 24px rgba(251, 192, 45, 0.35), 0 2px 6px rgba(0,0,0,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700;
+      transition: transform 0.15s;
+    }
+    .chat-fab:hover { transform: scale(1.05); }
+    .chat-fab.open { background: rgba(10,21,56,0.95); color: #fbc02d; border: 1px solid rgba(251,192,45,0.4); }
+
+    .chat-dock {
+      position: fixed; right: 18px; bottom: 88px; z-index: 99;
+      width: 420px; max-width: calc(100vw - 36px);
+      height: 70vh; max-height: 700px;
+      background: rgba(5, 10, 30, 0.96);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(251, 192, 45, 0.2);
+      border-radius: 14px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.55);
+      display: none;
+      overflow: hidden;
+    }
+    .chat-dock.open { display: block; }
+    .chat-dock > section { height: 100%; border: none; border-radius: 0; }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="candidate-header">
+  <div class="header-accent" style={`background: linear-gradient(90deg, ${color}, ${color}88, transparent);`}></div>
+  <div class="header-inner">
+    <a href="/candidates" class="back-link">← Candidatos</a>
+    <div>
+      <div class="candidate-name">{c.candidato?.nombre_completo ?? slug}</div>
+      <div class="candidate-sub">{cargo} · {c.postulacion?.nombre_territorio} {año}</div>
+    </div>
+    <span class="tipo-badge" style={`background:${TIPO_COLOR[c.candidato?.tipo] ?? '#64748b'}22; color:${TIPO_COLOR[c.candidato?.tipo] ?? '#64748b'};`}>
+      {TIPO_LABEL[c.candidato?.tipo] ?? c.candidato?.tipo ?? '—'}
+    </span>
+    <div class="header-actions">
+      <a href="/candidates/new" class="hdr-btn">+ Otro candidato</a>
+      {pres && <a href={`/candidates/${slug}/slides`} class="hdr-btn hdr-btn-primary">▶ Presentar</a>}
+    </div>
+  </div>
+</div>
+
+<!-- ── Tabs ── -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('datos')">Datos</button>
+  <button class="tab" onclick="showTab('slides')">Presentación {slides.length > 0 ? `(${slides.length})` : ''}</button>
+</div>
+
+<!-- ── Content ── -->
+<div class="page">
+
+  <!-- ════ TAB: DATOS ════ -->
+  <div class="tab-panel active" id="tab-datos">
+    <div class="datos-grid" style="margin-bottom:2rem;">
+
+      <!-- Candidato -->
+      <div class="datos-card">
+        <div class="datos-card-title">Candidato</div>
+        {[
+          ['Nombre', c.candidato?.nombre_completo, true],
+          ['Tipo', TIPO_LABEL[c.candidato?.tipo] ?? c.candidato?.tipo],
+          ['Teléfono', c.candidato?.telefono_e164],
+          ['Email', c.candidato?.email],
+          ['Ocupación', c.candidato?.ocupacion_actual],
+          ['Nacimiento', c.candidato?.fecha_nacimiento],
+        ].filter(([, v]) => v).map(([k, v, h]) => (
+          <div class="datos-row">
+            <span class="datos-key">{k}</span>
+            <span class={`datos-val${h ? ' highlight' : ''}`}>{v as string}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Postulación -->
+      <div class="datos-card">
+        <div class="datos-card-title">Postulación</div>
+        {[
+          ['Cargo', cargo, true],
+          ['Partido', c.postulacion?.organizacion_politica],
+          ['Territorio', c.postulacion?.nombre_territorio],
+          ['Nivel', c.postulacion?.nivel_territorio],
+          ['Elección', c.postulacion?.fecha_eleccion],
+          ['Lista #', c.postulacion?.numero_lista],
+        ].filter(([, v]) => v != null).map(([k, v, h]) => (
+          <div class="datos-row">
+            <span class="datos-key">{k}</span>
+            <span class={`datos-val${h ? ' highlight' : ''}`}>{String(v)}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Estrategia -->
+      <div class="datos-card">
+        <div class="datos-card-title">Estrategia</div>
+        {[
+          ['Tipo', c.estrategia?.tipo_campana],
+          ['Eje emocional', c.estrategia?.eje_emocional],
+          ['Frente principal', c.estrategia?.frente_principal],
+          ['Frentes secundarios', (c.estrategia?.frentes_secundarios ?? []).join(', ') || '—'],
+          ['Tipo elección', c.estrategia?.tipo_eleccion],
+        ].filter(([, v]) => v).map(([k, v]) => (
+          <div class="datos-row">
+            <span class="datos-key">{k}</span>
+            <span class="datos-val">{v as string}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Branding -->
+      <div class="datos-card">
+        <div class="datos-card-title">Branding</div>
+        <div class="datos-row">
+          <span class="datos-key">Slogan</span>
+          <span class="datos-val highlight" style={`color:${color};`}>{c.branding?.slogan ?? '—'}</span>
+        </div>
+        <div class="datos-row">
+          <span class="datos-key">Color principal</span>
+          <span class="datos-val" style="display:flex; align-items:center; gap:0.5rem;">
+            <span style={`display:inline-block; width:16px; height:16px; border-radius:4px; background:${color};`}></span>
+            {color}
+          </span>
+        </div>
+        {c.branding?.color_secundario && (
+          <div class="datos-row">
+            <span class="datos-key">Color secundario</span>
+            <span class="datos-val" style="display:flex; align-items:center; gap:0.5rem;">
+              <span style={`display:inline-block; width:16px; height:16px; border-radius:4px; background:${c.branding.color_secundario};`}></span>
+              {c.branding.color_secundario}
+            </span>
+          </div>
+        )}
+        <div class="datos-row">
+          <span class="datos-key">Sesión</span>
+          <span class="datos-val">{c.meta?.fecha_sesion} · {c.meta?.consultor_nombre}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FODA -->
+    <div class="datos-card-title" style="margin-bottom:1rem;">Diagnóstico FODA</div>
+    <div class="foda-grid" style="margin-bottom:2rem;">
+      {[
+        ['Fortalezas', c.diagnostico_inicial?.fortalezas ?? [], '#4ade80'],
+        ['Debilidades', c.diagnostico_inicial?.debilidades ?? [], '#f87171'],
+        ['Oportunidades', c.diagnostico_inicial?.oportunidades ?? [], '#60a5fa'],
+        ['Amenazas', c.diagnostico_inicial?.amenazas ?? [], '#fb923c'],
+      ].map(([label, items, clr]) => (
+        <div class="foda-quad">
+          <div class="foda-quad-title" style={`color:${clr};`}>{label as string}</div>
+          {(items as string[]).map(item => <div class="foda-item">{item}</div>)}
+        </div>
+      ))}
+    </div>
+
+    <!-- Propuestas -->
+    <div class="datos-card-title" style="margin-bottom:1rem;">Propuestas</div>
+    <div class="prop-list" style="margin-bottom:2rem;">
+      {(c.propuestas ?? []).map((p: any) => (
+        <div class="prop-item">
+          <span class="prop-icon">{p.icono ?? '→'}</span>
+          <div>
+            <div class="prop-title">{p.titulo}</div>
+            <div class="prop-desc">{p.descripcion_corta}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Contexto -->
+    {c.contexto_territorio && (
+      <>
+        <div class="datos-card-title" style="margin-bottom:1rem;">Contexto territorial</div>
+        <div class="datos-grid">
+          <div class="datos-card">
+            {c.contexto_territorio.poblacion_aproximada && (
+              <div class="datos-row">
+                <span class="datos-key">Población</span>
+                <span class="datos-val highlight">{c.contexto_territorio.poblacion_aproximada.toLocaleString('es-PE')}</span>
+              </div>
+            )}
+            {(c.contexto_territorio.principales_problemas ?? []).length > 0 && (
+              <div class="datos-row" style="align-items:flex-start;">
+                <span class="datos-key">Problemas</span>
+                <span class="datos-val">{(c.contexto_territorio.principales_problemas).join(' · ')}</span>
+              </div>
+            )}
+            {(c.contexto_territorio.zonas_fuertes ?? []).length > 0 && (
+              <div class="datos-row" style="align-items:flex-start;">
+                <span class="datos-key" style="color:#4ade80;">Zonas fuertes</span>
+                <span class="datos-val">{(c.contexto_territorio.zonas_fuertes).join(' · ')}</span>
+              </div>
+            )}
+            {(c.contexto_territorio.zonas_debiles ?? []).length > 0 && (
+              <div class="datos-row" style="align-items:flex-start;">
+                <span class="datos-key" style="color:#f87171;">Zonas débiles</span>
+                <span class="datos-val">{(c.contexto_territorio.zonas_debiles).join(' · ')}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    )}
+  </div>
+
+  <!-- ════ TAB: SLIDES ════ -->
+  <div class="tab-panel" id="tab-slides">
+    <div class="slides-toolbar">
+      <span class="slides-count">{slides.length} slides · modo rápido</span>
+      <button class="regen-btn" onclick="regenerate()">↻ Regenerar desde datos</button>
+      {pres && (
+        <a href={`/candidates/${slug}/slides`} class="present-btn">▶ Pantalla completa</a>
+      )}
+    </div>
+
+    {slides.length > 0 ? (
+      <div class="slides-grid" id="slidesGrid">
+        {slides.map((slide: any, i: number) => (
+          <div class="slide-card" id={`card-${slide.id}`} onclick={`openEdit(${i})`}>
+            <div class="slide-thumb" style={`background: linear-gradient(135deg, #050a1e 60%, ${color}11);`}>
+              <span class="slide-thumb-num">SLIDE {String(i + 1).padStart(2, '0')}</span>
+              <span class="slide-thumb-type">{slide.type}</span>
+              <div class="slide-thumb-title">
+                {slide.title ?? slide.quote ?? slide.kicker ?? slide.type}
+              </div>
+            </div>
+            <div class="slide-card-footer">
+              <span class="slide-card-kicker">{slide.kicker ?? slide.attribution ?? '—'}</span>
+              <button class="slide-edit-btn" onclick={`event.stopPropagation(); openEdit(${i})`}>Editar</button>
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="no-slides">
+        <p>La presentación aún no fue generada.</p>
+        <button class="regen-btn" onclick="regenerate()" style="margin:0 auto;">↻ Generar ahora</button>
+      </div>
+    )}
+
+    {pres && (
+      <p class="fullscreen-note" style="margin-top:1.5rem;">
+        Presentación completa con animaciones: <a href={`/candidates/${slug}/slides`}>abrir en pantalla completa →</a>
+      </p>
+    )}
+  </div>
+
+</div><!-- /page -->
+
+<!-- ── Edit modal ── -->
+<div class="edit-overlay" id="editOverlay" onclick="closeEditOnBg(event)">
+  <div class="edit-modal">
+    <h3 id="editTitle">Editar slide</h3>
+    <div class="edit-modal-sub" id="editSub"></div>
+    <div id="editFields"></div>
+    <div class="edit-actions">
+      <button class="edit-save" onclick="saveSlide()">Guardar cambios</button>
+      <button class="edit-cancel" onclick="closeEdit()">Cancelar</button>
+      <span class="edit-status" id="editStatus"></span>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ slides, slug }}>
+let editingIdx = null;
+let slidesData = slides ? [...slides] : [];
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ─── Edit modal ───────────────────────────────────────────────────────────
+function openEdit(idx) {
+  editingIdx = idx;
+  const slide = slidesData[idx];
+  document.getElementById('editTitle').textContent = `Slide ${idx + 1} — ${slide.type}`;
+  document.getElementById('editSub').textContent = slide.kicker ?? slide.attribution ?? '';
+  document.getElementById('editStatus').className = 'edit-status';
+  document.getElementById('editStatus').textContent = '';
+
+  // Build editable fields based on slide type
+  const fields = [];
+  if (slide.kicker !== undefined) fields.push({ key: 'kicker', label: 'Kicker (texto pequeño arriba)', type: 'text' });
+  if (slide.title !== undefined) fields.push({ key: 'title', label: 'Título', type: 'text' });
+  if (slide.subtitle !== undefined) fields.push({ key: 'subtitle', label: 'Subtítulo', type: 'text' });
+  if (slide.quote !== undefined) fields.push({ key: 'quote', label: 'Cita', type: 'textarea' });
+  if (slide.attribution !== undefined) fields.push({ key: 'attribution', label: 'Atribución', type: 'text' });
+  if (slide.context !== undefined) fields.push({ key: 'context', label: 'Contexto', type: 'text' });
+  if (slide.bullets !== undefined) fields.push({ key: 'bullets', label: 'Bullets (uno por línea)', type: 'textarea', value: slide.bullets.join('\n') });
+
+  const fieldsHtml = fields.map(f => `
+    <div class="edit-field">
+      <label>${f.label}</label>
+      ${f.type === 'textarea'
+        ? `<textarea id="ef_${f.key}" rows="4">${esc(f.value ?? slide[f.key] ?? '')}</textarea>`
+        : `<input type="text" id="ef_${f.key}" value="${esc(f.value ?? slide[f.key] ?? '')}" />`
+      }
+    </div>
+  `).join('');
+
+  // JSON editor for items (stats slide)
+  const jsonPart = slide.items ? `
+    <div class="edit-field" style="margin-top:0.75rem;">
+      <label>Items / KPIs (JSON)</label>
+      <textarea class="edit-json" id="ef_items" rows="6">${esc(JSON.stringify(slide.items, null, 2))}</textarea>
+    </div>
+  ` : '';
+
+  document.getElementById('editFields').innerHTML = fieldsHtml + jsonPart;
+  document.getElementById('editOverlay').classList.add('open');
+}
+
+function closeEdit() {
+  document.getElementById('editOverlay').classList.remove('open');
+  editingIdx = null;
+}
+function closeEditOnBg(e) {
+  if (e.target === document.getElementById('editOverlay')) closeEdit();
+}
+
+async function saveSlide() {
+  if (editingIdx === null) return;
+  const slide = { ...slidesData[editingIdx] };
+  const status = document.getElementById('editStatus');
+
+  // Read simple fields
+  ['kicker','title','subtitle','quote','attribution','context'].forEach(key => {
+    const el = document.getElementById('ef_' + key);
+    if (el) slide[key] = el.value;
+  });
+  // Bullets
+  const bulletsEl = document.getElementById('ef_bullets');
+  if (bulletsEl) slide.bullets = bulletsEl.value.split('\n').filter(l => l.trim());
+  // Items JSON
+  const itemsEl = document.getElementById('ef_items');
+  if (itemsEl) {
+    try { slide.items = JSON.parse(itemsEl.value); } catch { status.textContent = 'JSON inválido'; status.className = 'edit-status err'; return; }
+  }
+
+  try {
+    const res = await fetch(`/api/candidates/${slug}/slides/${slide.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(slide),
+    });
+    const r = await res.json();
+    if (r.ok) {
+      slidesData[editingIdx] = slide;
+      status.textContent = '✓ Guardado';
+      status.className = 'edit-status ok';
+      // Update card preview
+      const card = document.getElementById('card-' + slide.id);
+      if (card) {
+        const titleEl = card.querySelector('.slide-thumb-title');
+        if (titleEl) titleEl.textContent = slide.title ?? slide.quote ?? slide.kicker ?? slide.type;
+        const kickerEl = card.querySelector('.slide-card-kicker');
+        if (kickerEl) kickerEl.textContent = slide.kicker ?? slide.attribution ?? '—';
+      }
+      setTimeout(closeEdit, 900);
+    } else { throw new Error(r.error); }
+  } catch (err) {
+    status.textContent = 'Error: ' + err.message;
+    status.className = 'edit-status err';
+  }
+}
+
+async function regenerate() {
+  if (!confirm('Esto regenera los slides desde los datos del formulario. ¿Continuar?')) return;
+  try {
+    const res = await fetch(`/api/candidates/${slug}/regenerate`, { method: 'POST' });
+    const r = await res.json();
+    if (r.ok) { window.location.reload(); }
+    else { alert('Error: ' + r.error); }
+  } catch (err) { alert('Error: ' + err.message); }
+}
+
+function esc(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+
+<!-- ── Chat lateral flotante con Claude ── -->
+<button type="button" class="chat-fab" id="chatFab" title="Conversar con Claude" aria-label="Abrir chat">💬</button>
+<div class="chat-dock" id="chatDock">
+  <Chat candidateSlug={slug} title={`Claude · ${c.candidato?.nombre_completo ?? slug}`} storageKey={`candidate-${slug}`} />
+</div>
+<script>
+  const fab = document.getElementById('chatFab');
+  const dock = document.getElementById('chatDock');
+  fab?.addEventListener('click', () => {
+    const open = dock?.classList.toggle('open');
+    fab.classList.toggle('open', !!open);
+    fab.textContent = open ? '×' : '💬';
+    if (open) dock?.querySelector('textarea')?.focus();
+  });
+</script>
+
+</body>
+</html>

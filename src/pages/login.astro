@@ -1,0 +1,101 @@
+---
+export const prerender = false;
+const next = new URL(Astro.request.url).searchParams.get('next') || '/';
+const error = new URL(Astro.request.url).searchParams.get('error');
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Goberna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Inter+Tight:wght@700;800;900&family=JetBrains+Mono:wght@400;500&family=Montserrat:wght@800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #050a1e; color: #f8fafc; font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .glow {
+      position: fixed; inset: 0; pointer-events: none; opacity: 0.4;
+      background:
+        radial-gradient(ellipse 50% 40% at 70% 20%, rgba(251,192,45,0.18), transparent 60%),
+        radial-gradient(ellipse 40% 50% at 15% 90%, rgba(20,32,88,0.6), transparent 60%);
+    }
+    .card {
+      position: relative; z-index: 1;
+      background: rgba(10, 21, 56, 0.6); border: 1px solid rgba(251, 192, 45, 0.18);
+      border-radius: 14px; padding: 2.5rem 2rem; width: 360px; max-width: 100%;
+      backdrop-filter: blur(12px);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;
+    }
+    .brand span {
+      font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 14px; letter-spacing: 0.18em; color: #f8fafc;
+    }
+    h1 {
+      font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 1.4rem;
+      color: #f8fafc; margin-bottom: 0.4rem; letter-spacing: -0.01em;
+    }
+    .sub {
+      font-size: 0.82rem; color: #64748b; margin-bottom: 1.75rem; line-height: 1.5;
+    }
+    label {
+      display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #fbc02d; margin-bottom: 0.5rem;
+    }
+    input {
+      width: 100%; padding: 0.7rem 0.85rem;
+      background: rgba(5, 10, 30, 0.6); border: 1px solid rgba(248, 250, 252, 0.1);
+      border-radius: 7px; color: #f8fafc; font-family: inherit; font-size: 0.92rem;
+      outline: none; transition: border-color 0.15s;
+    }
+    input:focus { border-color: rgba(251, 192, 45, 0.5); }
+    button {
+      width: 100%; margin-top: 1.2rem;
+      padding: 0.75rem 1rem; background: linear-gradient(90deg, #fbc02d, #ff9500);
+      color: #050a1e; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700;
+      border: none; border-radius: 7px; cursor: pointer; transition: transform 0.05s, opacity 0.15s;
+    }
+    button:active { transform: translateY(1px); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .err {
+      margin-top: 1rem; padding: 0.55rem 0.75rem;
+      background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.3);
+      border-radius: 6px; color: #fca5a5; font-size: 0.8rem;
+    }
+    .foot {
+      margin-top: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 9px;
+      letter-spacing: 0.15em; text-transform: uppercase; color: #334155; text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="card">
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+        <polygon points="16,2 30,26 2,26" fill="none" stroke="#fbc02d" stroke-width="2.5" stroke-linejoin="round"/>
+        <polygon points="16,9 26,26 6,26" fill="rgba(251,192,45,0.08)"/>
+      </svg>
+      <span>GOBERNA</span>
+    </div>
+    <h1>Acceso al workspace</h1>
+    <p class="sub">Solo equipo Goberna. Password compartido.</p>
+
+    <form method="POST" action="/api/login" autocomplete="off">
+      <input type="hidden" name="next" value={next} />
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required autofocus />
+      <button type="submit">Entrar</button>
+      {error && <div class="err">Password incorrecto</div>}
+    </form>
+
+    <p class="foot">power-ppt · v0.1</p>
+  </div>
+</body>
+</html>
