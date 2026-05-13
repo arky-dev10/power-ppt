@@ -1,0 +1,252 @@
+{
+  "meta": {
+    "nombre_territorio": "Lima Norte",
+    "nivel": "provincial",
+    "fecha": "2026-05-13",
+    "responsable": "Goberna",
+    "eleccion_cargo": "Alcalde Provincial",
+    "eleccion_año": 2026
+  },
+  "e": {
+    "e1": {
+      "poblacion_total": 1200000,
+      "pct_urbana": 92,
+      "pct_rural": 8,
+      "piramide_etaria": { "0-17": 28, "18-29": 22, "30-49": 30, "50-64": 13, "65+": 7 },
+      "tasa_crecimiento": 1.8,
+      "migracion_remesas": "Alta inmigración interna andina. Remesas moderadas hacia sierra.",
+      "extension_km2": 2396,
+      "densidad": 500,
+      "division_politica": "8 distritos",
+      "caracteristicas_fisicas": "Costa árida, conos de deyección en piedemonte.",
+      "infraestructura_vial": "Panamericana Norte como eje. Déficit en conectividad intradistrital."
+    },
+    "e2": {
+      "idh": 0.72,
+      "indice_pobreza": 18,
+      "pea": 580000,
+      "desempleo": 8.2,
+      "pct_informalidad": 62,
+      "actividad_dominante": "Comercio y servicios",
+      "sectores_estructurantes": ["Mercados mayoristas", "Manufactura ligera", "Construcción"],
+      "presupuesto_anual": "S/ 420M",
+      "pct_ejecucion": 58,
+      "rubros_gasto": "Infraestructura 42%, servicios básicos 28%, administración 18%",
+      "obras_pendientes": "Bypass Tomás Valle, ampliación mercado Unicachi"
+    },
+    "e3": {
+      "etnias_lenguas": "Mayoritariamente mestizo-andino. 18% quechuahablante.",
+      "tradiciones": "Fiestas patronales (Santiago, Virgen de las Mercedes). Comunidades de paisanos.",
+      "nivel_educativo": "Secundaria completa 58%, superior 22%",
+      "religion_predominante": "Católica 65%, evangélica 28%",
+      "iglesias_influyentes": ["Comunidades Misioneras", "Asambleas de Dios"],
+      "organizaciones_base": ["Comités de vaso de leche", "Asociaciones de padres", "Juntas vecinales"],
+      "gremios": ["APEMIPE", "Asociación de mercados"],
+      "ongs": ["Lima Cómo Vamos", "Ciudad Nuestra"]
+    },
+    "e4": {
+      "figuras": [
+        { "nombre": "Miguel Soto", "rol": "Exalcalde 2010–2018", "capital_dominante": "político", "influencia": 4 },
+        { "nombre": "Pastor Quispe", "rol": "Líder evangélico — 3,000 feligreses", "capital_dominante": "social", "influencia": 3 },
+        { "nombre": "Don Aurelio Condori", "rol": "Presidente Mercado Unicachi", "capital_dominante": "económico", "influencia": 3 }
+      ],
+      "ex_autoridades": "Soto (2010–2018) y Ramírez (2018–2022) — ambos con gestión cuestionada.",
+      "lideres_informales": "Dirigentes de mercados Unicachi y Caquetá. Pastores evangélicos con capacidad de movilización.",
+      "nombres_quemados": ["Ramírez — procesado por corrupción", "Benavides — ex regidor implicado en caso PJ"],
+      "conflictos_activos": ["Disputa por ampliación Mercado Unicachi", "Conflicto de tierras en Carabayllo norte"]
+    },
+    "e5": {
+      "centro_periferia": true,
+      "urbano_rural": false,
+      "capital_trabajo": true,
+      "tradicional_moderno": true,
+      "etnico_linguistico": false,
+      "religioso": true,
+      "otro": ""
+    }
+  },
+  "c": {
+    "c1": {
+      "pct_id_partidaria": 12,
+      "partidos_base_local": ["Alianza para el Progreso", "Fuerza Popular"],
+      "ideologia_predominante": "Pragmática, centrada en gestión y resultados concretos",
+      "identidad_regional": "Fuerte identidad 'Lima Norte' como territorio diferenciado del centro.",
+      "identidad_etnica": "Identidad andino-migrante con orgullo de progreso propio",
+      "identidad_generacional": "Generación emprendedora (30–49) vs. jóvenes con expectativas digitales"
+    },
+    "c2": {
+      "segmentos": [
+        {
+          "nombre": "Emprendedor Migrante",
+          "pct_aprox": 28,
+          "valores": "Trabajo duro, familia, progreso propio",
+          "aspiraciones": "Formalización del negocio, mejores servicios para sus hijos",
+          "temores": "Inseguridad, informalidad forzada, corrupción que frena su avance"
+        },
+        {
+          "nombre": "Joven Conectado",
+          "pct_aprox": 18,
+          "valores": "Oportunidad, autenticidad, cambio",
+          "aspiraciones": "Empleo formal, educación de calidad, movilidad social",
+          "temores": "Desempleo, falta de oportunidades, sistema corrupto sin salida"
+        },
+        {
+          "nombre": "Ama de Casa Religiosa",
+          "pct_aprox": 24,
+          "valores": "Familia, seguridad, comunidad, fe",
+          "aspiraciones": "Barrio seguro, servicios básicos, hijos con futuro",
+          "temores": "Inseguridad, drogas en el barrio, pérdida de valores"
+        },
+        {
+          "nombre": "Adulto Mayor Establecido",
+          "pct_aprox": 14,
+          "valores": "Estabilidad, respeto, continuidad",
+          "aspiraciones": "Pensión digna, salud accesible, seguridad en la calle",
+          "temores": "Abandono institucional, caos, pérdida del orden"
+        }
+      ]
+    },
+    "c3": {
+      "clima_emocional": {
+        "miedo": true,
+        "esperanza": true,
+        "indignacion": true,
+        "resignacion": false,
+        "orgullo": false,
+        "nostalgia": false,
+        "otro": ""
+      },
+      "confianza_institucional": {
+        "gobierno_nacional": 2,
+        "gobierno_local": 2,
+        "congreso": 1,
+        "poder_judicial": 1,
+        "policia": 2,
+        "iglesia": 4,
+        "medios": 2
+      }
+    },
+    "c4": {
+      "hitos_positivos": ["Extensión Metro Línea 1 a Los Olivos (2016)", "Construcción Vía de Evitamiento (2006)"],
+      "hitos_traumaticos": ["Incendio mercado Las Malvinas 2017", "Caso corrupción municipalidad 2021 — 3 funcionarios presos"],
+      "heroes_locales": ["Fundadores de mercados exitosos (Unicachi)", "Deportistas locales"],
+      "villanos": ["Ex funcionarios procesados", "Mafias de extorsión en mercados"]
+    },
+    "c5": {
+      "issues": [
+        { "tema": "Seguridad ciudadana", "urgencia": 5, "visible_medios": true },
+        { "tema": "Empleo y economía local", "urgencia": 5, "visible_medios": true },
+        { "tema": "Transporte público", "urgencia": 5, "visible_medios": true },
+        { "tema": "Infraestructura vial", "urgencia": 4, "visible_medios": true },
+        { "tema": "Corrupción municipal", "urgencia": 4, "visible_medios": true },
+        { "tema": "Formalización de negocios", "urgencia": 4, "visible_medios": false },
+        { "tema": "Educación", "urgencia": 4, "visible_medios": false },
+        { "tema": "Salud pública", "urgencia": 4, "visible_medios": false },
+        { "tema": "Servicios básicos (agua/luz)", "urgencia": 3, "visible_medios": false },
+        { "tema": "Medio ambiente", "urgencia": 2, "visible_medios": false }
+      ]
+    },
+    "c6": {
+      "medios": [
+        { "nombre": "RPP", "tipo": "radio", "alcance": "alta", "linea_editorial": "neutral-crítica" },
+        { "nombre": "ATV", "tipo": "tv", "alcance": "alta", "linea_editorial": "populista" },
+        { "nombre": "Exitosa", "tipo": "radio", "alcance": "alta", "linea_editorial": "popular-populista" },
+        { "nombre": "La República", "tipo": "digital/impreso", "alcance": "media", "linea_editorial": "centroizquierda" },
+        { "nombre": "Ojo Lima Norte", "tipo": "digital local", "alcance": "media", "linea_editorial": "vecinal" }
+      ],
+      "lideres_opinion": {
+        "pastores": ["Pastor Quispe — Asambleas de Dios (3,000 feligreses directos)"],
+        "dirigentes": ["Aurelio Condori — Mercado Unicachi", "Directiva Juntas Vecinales Comas"],
+        "influencers": ["@limanortetv (52K seguidores)", "@noticias_losolivos (28K)"],
+        "whatsapp": ["Cadenas de juntas vecinales — alcance estimado 80,000 personas"]
+      },
+      "encuestas": [
+        {
+          "encuestadora": "Ipsos",
+          "fecha": "2026-03-01",
+          "muestra": 800,
+          "hallazgos": "Seguridad primera preocupación (68%). Desaprobación gestión local 71%. Intención voto 'alguien nuevo' 58%."
+        }
+      ]
+    }
+  },
+  "d": {
+    "d1": {
+      "total_electores": 890000,
+      "pct_sobre_poblacion": 74,
+      "electores_nuevos": 45000,
+      "participacion_anterior": 82,
+      "voto_blanco_nulo": 8,
+      "ausentismo": 18
+    },
+    "d2": {
+      "elecciones": [
+        { "año": 2022, "ganador": "Ramírez (APP)", "pct": 28, "segundo": "Sánchez (FP)", "pct2": 24, "margen": 4 },
+        { "año": 2018, "ganador": "Ramírez (Ind.)", "pct": 32, "segundo": "Quispe", "pct2": 21, "margen": 11 },
+        { "año": 2014, "ganador": "Soto (PPC)", "pct": 41, "segundo": "Ramírez", "pct2": 18, "margen": 23 }
+      ],
+      "volatilidad": "Media — liderazgos personales sobre partidos, fragmentación creciente",
+      "numero_efectivo_partidos": 4.2,
+      "bastiones": "Comas (centroizquierda histórica). Carabayllo (APP). Los Olivos y SMP (volátiles)."
+    },
+    "d3": {
+      "competidores": [
+        {
+          "candidato": "Juan Torres",
+          "partido": "Alianza para el Progreso",
+          "capital_dominante": "político-clientelar",
+          "issues": ["Infraestructura", "Empleo"],
+          "techo_estimado": 30
+        },
+        {
+          "candidato": "María Condori",
+          "partido": "Movimiento Regional Lima Norte",
+          "capital_dominante": "identitario-andino",
+          "issues": ["Seguridad", "Mercados formales"],
+          "techo_estimado": 22
+        }
+      ]
+    },
+    "d4": {
+      "aprobacion_saliente": 29,
+      "clima_continuidad_castigo": "castigo",
+      "expectativas": "Cambio sin riesgo — se busca gestor efectivo, no ideólogo",
+      "promesa_resonante": "Seguridad + orden en el mercado informal",
+      "issue_decisivo": "Seguridad ciudadana",
+      "distancia_local_votacion": "Baja — mayoría vota en su distrito de residencia",
+      "factores_desincentivo": "Lluvia en campaña de octubre, transporte desde periferias urbanas"
+    },
+    "d5": {
+      "matriz": [
+        {
+          "segmento": "Emprendedor Migrante",
+          "candidato_preferido": "Indeciso / promesa económica",
+          "razon_principal": "Formalización y orden en mercados",
+          "voto_util": true,
+          "prob_cambio": "alta"
+        },
+        {
+          "segmento": "Joven Conectado",
+          "candidato_preferido": "Candidato nuevo sin pasado político",
+          "razon_principal": "Rechazo al sistema — busca autenticidad",
+          "voto_util": false,
+          "prob_cambio": "alta"
+        },
+        {
+          "segmento": "Ama de Casa Religiosa",
+          "candidato_preferido": "Candidato con valores + seguridad",
+          "razon_principal": "Seguridad barrial y valores familiares",
+          "voto_util": false,
+          "prob_cambio": "media"
+        },
+        {
+          "segmento": "Adulto Mayor Establecido",
+          "candidato_preferido": "Candidato conocido / establishment",
+          "razon_principal": "Estabilidad y continuidad de servicios",
+          "voto_util": true,
+          "prob_cambio": "baja"
+        }
+      ]
+    }
+  }
+}

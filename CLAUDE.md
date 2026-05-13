@@ -493,3 +493,129 @@ vetting/
 | "Reanaliza [nombre] con este nuevo dato" | Actualiza report.json |
 | "¿Qué falta verificar de [nombre]?" | Lista fuentes con status "pendiente" |
 | "Snapshot del perfil de [nombre]" | Copia a `history/profile-YYYYMMDD-HHMM.json` |
+
+---
+
+## HERRAMIENTA: DIAGNÓSTICO TERRITORIAL (ECD)
+
+Uso: instrumento de diagnóstico territorial estructurado en tres dimensiones: Estructura (Bourdieu), Conciencia (Michigan School), Decisión (Rational Choice).
+Browser: `http://localhost:4321/diagnostics`
+
+### Activación
+
+Cuando el consultor diga:
+- "Nuevo diagnóstico territorial de [territorio]"
+- "Diagnóstico de [territorio] para [cargo] [año]"
+- "Analiza el territorio de [nombre]"
+
+### PROTOCOLO ECD — guía de recolección
+
+Crear `diagnostics/[slug]/territorial.json` con meta inicial. Luego guiar sección por sección.
+
+**META**
+nombre_territorio, nivel (distrital/provincial/regional/nacional), fecha, eleccion_cargo, eleccion_año
+
+---
+
+**E — ESTRUCTURA**
+
+```
+E1 DEMOGRAFÍA
+población total, % urbana/rural, pirámide etaria {0-17,18-29,30-49,50-64,65+},
+tasa crecimiento, migración/remesas, km², densidad, división política,
+características físicas, infraestructura vial
+
+E2 CAPITAL ECONÓMICO
+IDH, índice pobreza %, PEA, desempleo %, % informalidad,
+actividad dominante, sectores estructurantes [],
+presupuesto anual, % ejecución, rubros de gasto, obras pendientes
+
+E3 CAPITAL CULTURAL Y SOCIAL
+etnias/lenguas, tradiciones, nivel educativo,
+religión predominante, iglesias influyentes [],
+organizaciones de base [], gremios [], ONGs []
+
+E4 CAMPO POLÍTICO — tabla dinámica
+figuras[]: { nombre, rol, capital_dominante, influencia 1-5 }
+ex_autoridades, líderes_informales, nombres_quemados [], conflictos_activos []
+
+E5 CLEAVAGES — checkboxes (true/false)
+centro_periferia, urbano_rural, capital_trabajo,
+tradicional_moderno, etnico_linguistico, religioso, otro
+```
+
+**C — CONCIENCIA**
+
+```
+C1 IDENTIDADES Y PERCEPCIONES
+% id_partidaria, partidos_base_local [], ideología_predominante,
+identidad_regional, identidad_etnica, identidad_generacional
+
+C2 ★ SEGMENTOS PSICOGRÁFICOS (hasta 6) — SE REUTILIZAN EN D5
+segmentos[]: { nombre, pct_aprox, valores, aspiraciones, temores }
+
+C3 CLIMA EMOCIONAL
+checkboxes: miedo, esperanza, indignacion, resignacion, orgullo, nostalgia
+confianza_institucional {1-5}:
+  gobierno_nacional, gobierno_local, congreso, poder_judicial, policia, iglesia, medios
+
+C4 MEMORIA POLÍTICA
+hitos_positivos [], hitos_traumaticos [], heroes_locales [], villanos []
+
+C5 ISSUES PRIORITARIOS — tabla con ranking
+issues[]: { tema, urgencia 1-5, visible_medios bool }
+(8 predefinidos + libres)
+
+C6 ECOSISTEMA DE MEDIOS Y OPINIÓN
+medios[]: { nombre, tipo, alcance, linea_editorial }
+lideres_opinion: { pastores [], dirigentes [], influencers [], whatsapp [] }
+encuestas[]: { encuestadora, fecha, muestra, hallazgos }
+```
+
+**D — DECISIÓN**
+
+```
+D1 UNIVERSO ELECTORAL
+total_electores, pct_sobre_poblacion, electores_nuevos,
+participacion_anterior %, voto_blanco_nulo %, ausentismo %
+
+D2 HISTORIA ELECTORAL — últimas 3 elecciones
+elecciones[]: { año, ganador, pct, segundo, pct2, margen }
+volatilidad, numero_efectivo_partidos, bastiones
+
+D3 COMPETIDORES — tabla dinámica
+competidores[]: { candidato, partido, capital_dominante, issues [], techo_estimado }
+
+D4 LÓGICA DEL CÁLCULO DEL VOTANTE
+aprobacion_saliente %, clima_continuidad_castigo (continuidad/castigo),
+expectativas, promesa_resonante, issue_decisivo,
+distancia_local_votacion, factores_desincentivo
+
+D5 ★ MATRIZ DE DECISIÓN — vinculada a C2
+matriz[]: { segmento (nombre exacto de C2), candidato_preferido,
+            razon_principal, voto_util bool, prob_cambio (alta/media/baja) }
+```
+
+### Archivo
+
+```
+diagnostics/[slug]/
+  territorial.json    ← Claude edita directamente
+  research/           ← documentos fuente
+  history/            ← snapshots opcionales
+```
+
+### Comandos naturales reconocidos
+
+| El consultor dice | Claude hace |
+|-------------------|-------------|
+| "Nuevo diagnóstico de [territorio]" | Crea territorial.json con meta |
+| "Completa E2 con estos datos: ..." | Actualiza la sección E2 |
+| "¿Qué falta completar?" | Lista campos vacíos por sección |
+| "Propón los segmentos C2" | Sugiere 4-5 segmentos basados en E1/E2/E3 |
+| "Genera los cruces ECD" | Analiza E×C, C×D, E×D y síntesis (guarda en analysis.json) |
+| "Snapshot del diagnóstico de [territorio]" | Copia a history/ |
+
+### Nota crítica: C2 → D5
+Los nombres de segmentos en D5.matriz deben coincidir exactamente con los nombres en C2.segmentos.
+Cuando el consultor complete D5, preguntar: "¿Usamos los segmentos de C2 que definimos, o quieres otros?"

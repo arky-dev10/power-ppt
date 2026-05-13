@@ -5,6 +5,7 @@ import path from 'node:path';
 
 const projectsDir = path.join(process.cwd(), 'projects');
 const vettingDir  = path.join(process.cwd(), 'vetting');
+const diagnosticsDir = path.join(process.cwd(), 'diagnostics');
 
 type Project = {
   slug: string;
@@ -65,6 +66,22 @@ const TIPO_COLOR: Record<string, string> = {
   'candidato-propio': '#4ade80', rival: '#f87171', aliado: '#60a5fa',
 };
 
+type DiagCard = { slug: string; nombre: string; nivel: string; cargo: string; año: number };
+const diagnosticsItems: DiagCard[] = fs.existsSync(diagnosticsDir)
+  ? fs.readdirSync(diagnosticsDir, { withFileTypes: true })
+      .filter(d => d.isDirectory() && !d.name.startsWith('_') && !d.name.startsWith('.'))
+      .map(d => {
+        const tPath = path.join(diagnosticsDir, d.name, 'territorial.json');
+        if (!fs.existsSync(tPath)) return null;
+        const t = JSON.parse(fs.readFileSync(tPath, 'utf-8'));
+        return { slug: d.name, nombre: t.meta.nombre_territorio, nivel: t.meta.nivel, cargo: t.meta.eleccion_cargo, año: t.meta.eleccion_año };
+      }).filter(Boolean) as DiagCard[]
+  : [];
+
+const NIVEL_COLOR: Record<string,string> = {
+  distrital: '#60a5fa', provincial: '#fbc02d', regional: '#4ade80', nacional: '#c084fc',
+};
+
 const templates = [
   { type: 'diagnóstico', name: 'Diagnóstico de situación', desc: 'Hero + KPIs + gráfico + mapa + propuestas' },
   { type: 'campaña', name: 'Campaña política', desc: 'Candidato + territorio + encuestas + ejes programáticos' },
@@ -91,6 +108,11 @@ function timeAgo(date: Date): string {
       onmouseleave="this.style.borderColor='rgba(248,250,252,0.08)'; this.style.color='#64748b'">
       Perfiles 5N
     </a>
+    <a href="/diagnostics" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; padding:0.4rem 0.9rem; border-radius:5px; border:1px solid rgba(248,250,252,0.08); color:#64748b; text-decoration:none;"
+      onmouseenter="this.style.borderColor='rgba(251,192,45,0.2)'; this.style.color='#94a3b8'"
+      onmouseleave="this.style.borderColor='rgba(248,250,252,0.08)'; this.style.color='#64748b'">
+      Diagnóstico Territorial
+    </a>
   </div>
 
   <h1>Presentaciones</h1>
@@ -115,6 +137,26 @@ function timeAgo(date: Date): string {
       <p>Nuevo proyecto<br/>vía Claude</p>
     </div>
   </div>
+
+  <!-- Diagnostics section preview -->
+  {diagnosticsItems.length > 0 && (
+    <div style="margin-bottom:2rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+        <div class="section-title" style="margin-bottom:0;">Diagnósticos territoriales</div>
+        <a href="/diagnostics" style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:#475569; text-decoration:none;"
+          onmouseenter="this.style.color='#fbc02d'" onmouseleave="this.style.color='#475569'">Ver todos →</a>
+      </div>
+      <div class="template-grid">
+        {diagnosticsItems.slice(0,3).map(d => (
+          <a href={`/diagnostics/${d.slug}`} class="template-card" style="text-decoration:none; display:flex; flex-direction:column; gap:0.3rem;">
+            <span class="t-type" style={`color:${NIVEL_COLOR[d.nivel] ?? '#64748b'};`}>{d.nivel}</span>
+            <span class="t-name">{d.nombre}</span>
+            <span class="t-desc">{d.cargo} · {d.año}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
 
   <!-- Vetting section preview -->
   {vettingProfiles.length > 0 && (
