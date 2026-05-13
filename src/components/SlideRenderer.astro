@@ -1,0 +1,15 @@
+---
+import HeroSlide  from './slides/HeroSlide.astro';
+import StatsSlide from './slides/StatsSlide.astro';
+import ChartSlide from './slides/ChartSlide.astro';
+import MapSlide   from './slides/MapSlide.astro';
+import TextSlide  from './slides/TextSlide.astro';
+
+const { slide, index } = Astro.props;
+---
+
+{slide.type === 'hero'  && <HeroSlide  slide={slide} index={index} />}
+{slide.type === 'stats' && <StatsSlide slide={slide} index={index} />}
+{slide.type === 'chart' && <ChartSlide slide={slide} index={index} />}
+{slide.type === 'map'   && <MapSlide   slide={slide} index={index} />}
+{slide.type === 'text'  && <TextSlide  slide={slide} index={index} />}

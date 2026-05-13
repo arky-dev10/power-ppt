@@ -1,0 +1,166 @@
+---
+const { slide } = Astro.props;
+
+const categories = slide.data?.categories ?? [];
+const series     = slide.data?.series     ?? [];
+const chartType  = slide.chartType ?? 'bar';
+
+const COLORS = ['#fbc02d', '#ff9500', '#4ade80', '#60a5fa', '#c084fc', '#f87171'];
+
+function buildOption() {
+  const base = {
+    backgroundColor: 'transparent',
+    animation: true,
+    animationDuration: 900,
+    animationEasing: 'cubicOut' as const,
+    textStyle: { color: '#94a3b8', fontFamily: "'Inter', system-ui, sans-serif" },
+    tooltip: {
+      trigger: 'axis' as const,
+      backgroundColor: '#0a1538',
+      borderColor: 'rgba(251,192,45,0.3)',
+      borderWidth: 1,
+      textStyle: { color: '#f8fafc', fontSize: 13 },
+    },
+    grid: { top: 16, right: 16, bottom: 48, left: 60, containLabel: false },
+  };
+
+  if (chartType === 'pie') {
+    return {
+      ...base,
+      tooltip: { trigger: 'item' as const, ...base.tooltip },
+      color: COLORS,
+      series: [{
+        type: 'pie' as const,
+        radius: ['35%', '65%'],
+        center: ['50%', '52%'],
+        data: categories.map((cat: string, i: number) => ({
+          name: cat, value: series[0]?.data?.[i] ?? 0,
+        })),
+        label: { color: '#94a3b8', fontSize: 12, formatter: '{b}: {d}%' },
+        itemStyle: { borderColor: '#050a1e', borderWidth: 3 },
+        emphasis: { itemStyle: { shadowBlur: 20, shadowColor: 'rgba(251,192,45,0.4)' } },
+      }],
+    };
+  }
+
+  return {
+    ...base,
+    color: COLORS,
+    xAxis: {
+      type: 'category' as const,
+      data: categories,
+      axisLine:  { lineStyle: { color: 'rgba(248,250,252,0.08)' } },
+      axisLabel: { color: '#64748b', fontSize: 12, interval: 0 },
+      splitLine: { show: false },
+    },
+    yAxis: {
+      type: 'value' as const,
+      axisLine:  { show: false },
+      axisTick:  { show: false },
+      axisLabel: { color: '#64748b', fontSize: 12 },
+      splitLine: { lineStyle: { color: 'rgba(248,250,252,0.05)', type: 'dashed' as const } },
+    },
+    series: series.map((s: any, si: number) => ({
+      name: s.name,
+      type: chartType === 'line' ? 'line' : 'bar',
+      data: s.data,
+      smooth: true,
+      barMaxWidth: 56,
+      itemStyle: {
+        color: COLORS[si % COLORS.length],
+        borderRadius: chartType === 'bar' ? [4, 4, 0, 0] : 0,
+      },
+      lineStyle: { width: 2.5 },
+      areaStyle: chartType === 'line' ? {
+        color: { type: 'linear', x:0, y:0, x2:0, y2:1,
+          colorStops: [
+            { offset: 0, color: `${COLORS[si % COLORS.length]}40` },
+            { offset: 1, color: `${COLORS[si % COLORS.length]}00` },
+          ]
+        }
+      } : undefined,
+    })),
+  };
+}
+
+const chartOption = buildOption();
+const chartId = `chart-${slide.id}`;
+const hasModal = !!slide.modal;
+---
+
+<section class="slide" style="background:#050a1e;">
+  <!-- Ambient -->
+  <div class="absolute inset-0 pointer-events-none" style="
+    background: radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,149,0,0.05) 0%, transparent 60%);
+  "></div>
+
+  <div class="absolute flex flex-col" style="top:70px; bottom:24px; left:60px; right:60px;">
+
+    <!-- Header -->
+    <div data-anim="left" data-delay="0" style="margin-bottom:2rem; flex-shrink:0;">
+      {slide.kicker && (
+        <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#fbc02d; margin-bottom:0.75rem;">
+          {slide.kicker}
+        </p>
+      )}
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;">
+        <h2 style="font-family:'Inter Tight','Inter',sans-serif; font-weight:800; font-size:clamp(1.8rem,3vw,2.4rem); letter-spacing:-0.02em; color:#f8fafc; line-height:1.1;">
+          {slide.title}
+        </h2>
+        {hasModal && (
+          <button
+            data-modal={JSON.stringify(slide.modal)}
+            style="flex-shrink:0; margin-top:0.25rem; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(251,192,45,0.5); background:none; border:1px solid rgba(251,192,45,0.2); border-radius:5px; padding:0.4rem 0.8rem; cursor:pointer; transition:all 0.2s;"
+            onmouseenter="this.style.color='#fbc02d'; this.style.borderColor='rgba(251,192,45,0.5)';"
+            onmouseleave="this.style.color='rgba(251,192,45,0.5)'; this.style.borderColor='rgba(251,192,45,0.2)';"
+          >
+            {slide.modal.label ?? '↗ fuente'}
+          </button>
+        )}
+      </div>
+      <div style="width:48px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin-top:1rem;"></div>
+    </div>
+
+    <!-- Chart -->
+    <div
+      id={chartId}
+      class="chart-target"
+      style="flex:1; min-height:0;"
+      data-option={JSON.stringify(chartOption)}
+    ></div>
+
+    {slide.description && (
+      <p data-anim="fade" data-delay="500"
+        style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#475569; margin-top:0.75rem; flex-shrink:0; letter-spacing:0.05em;">
+        {slide.description}
+      </p>
+    )}
+  </div>
+</section>
+
+<script>
+  import * as echarts from 'echarts';
+
+  // Global registry so layout JS can replay animations
+  if (!window.__echartsInstances) {
+    window.__echartsInstances = new Map();
+  }
+
+  function initCharts() {
+    document.querySelectorAll<HTMLElement>('.chart-target').forEach(el => {
+      if (el.dataset.initialized) return;
+      el.dataset.initialized = 'true';
+      const option = JSON.parse(el.dataset.option ?? '{}');
+      const chart  = echarts.init(el, null, { renderer: 'canvas' });
+      chart.setOption(option);
+      window.__echartsInstances.set(el, chart);
+      new ResizeObserver(() => chart.resize()).observe(el);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCharts);
+  } else {
+    initCharts();
+  }
+</script>

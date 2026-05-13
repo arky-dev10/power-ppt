@@ -1,0 +1,112 @@
+---
+const { slide } = Astro.props;
+const items = slide.items ?? [];
+
+function trendIcon(trend: string) {
+  if (trend === 'up')   return '↑';
+  if (trend === 'down') return '↓';
+  return '—';
+}
+function trendColor(trend: string) {
+  if (trend === 'up')   return '#4ade80';
+  if (trend === 'down') return '#f87171';
+  return '#94a3b8';
+}
+
+// Parse a value string into numeric + prefix/suffix for animation
+function parseValue(val: string) {
+  const m = String(val).match(/^([^0-9\-]*)([0-9]+\.?[0-9]*)([^0-9]*)$/);
+  if (!m) return null;
+  return { prefix: m[1], num: m[2], suffix: m[3], decimals: m[2].includes('.') ? m[2].split('.')[1].length : 0 };
+}
+
+const cols = items.length <= 2 ? 'repeat(2, 1fr)' : items.length === 3 ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)';
+---
+
+<section class="slide" style="background:#050a1e;">
+  <!-- Subtle grid lines -->
+  <div class="absolute inset-0 pointer-events-none opacity-[0.04]" style="
+    background-image:
+      linear-gradient(rgba(251,192,45,1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251,192,45,1) 1px, transparent 1px);
+    background-size: 80px 80px;
+  "></div>
+
+  <!-- Ambient glow -->
+  <div class="absolute inset-0 pointer-events-none" style="
+    background: radial-gradient(ellipse 70% 60% at 85% 85%, rgba(255,149,0,0.06) 0%, transparent 60%);
+  "></div>
+
+  <!-- Content -->
+  <div class="absolute flex flex-col justify-center"
+    style="top:70px; bottom:24px; left:60px; right:60px;">
+
+    <!-- Section header -->
+    <div data-anim="left" data-delay="0" style="margin-bottom:3rem;">
+      {slide.kicker && (
+        <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#fbc02d; margin-bottom:0.75rem;">
+          {slide.kicker}
+        </p>
+      )}
+      <h2 style="font-family:'Inter Tight','Inter',sans-serif; font-weight:800; font-size:clamp(1.8rem,3vw,2.4rem); letter-spacing:-0.02em; color:#f8fafc; line-height:1.1;">
+        {slide.title}
+      </h2>
+      <div style="width:48px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin-top:1rem;"></div>
+    </div>
+
+    <!-- KPI Grid -->
+    <div style={`display:grid; gap:1rem; grid-template-columns:${cols};`}>
+      {items.map((item: any, i: number) => {
+        const parsed = parseValue(String(item.value));
+        return (
+          <div
+            data-anim
+            data-delay={String(i * 100 + 80)}
+            style="background:rgba(10,21,56,0.6); border:1px solid rgba(251,192,45,0.15); border-radius:12px; padding:1.75rem; display:flex; flex-direction:column; gap:0.6rem; backdrop-filter:blur(8px); position:relative; overflow:hidden;"
+          >
+            <!-- Subtle inner glow top -->
+            <div style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(251,192,45,0.2), transparent);"></div>
+
+            <p style="font-family:'Inter',sans-serif; font-size:0.7rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#64748b;">
+              {item.label}
+            </p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:2.8rem; font-weight:400; line-height:1; letter-spacing:-0.02em; color:#f8fafc;">
+              {parsed
+                ? <span
+                    data-counter={parsed.num}
+                    data-prefix={parsed.prefix}
+                    data-suffix={parsed.suffix}
+                    data-decimals={String(parsed.decimals)}
+                  >{item.value}</span>
+                : item.value
+              }
+            </p>
+            {(item.trend || item.delta) && (
+              <div style="display:flex; align-items:center; gap:0.4rem; margin-top:0.25rem;">
+                {item.trend && (
+                  <span style={`font-family:'JetBrains Mono',monospace; font-size:0.85rem; font-weight:600; color:${trendColor(item.trend)};`}>
+                    {trendIcon(item.trend)}
+                  </span>
+                )}
+                {item.delta && (
+                  <span style="font-size:0.75rem; color:#64748b;">{item.delta}</span>
+                )}
+              </div>
+            )}
+            {item.modal && (
+              <button
+                data-modal={JSON.stringify(item.modal)}
+                style="margin-top:0.5rem; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(251,192,45,0.5); background:none; border:none; padding:0; cursor:pointer; text-align:left; transition:color 0.2s;"
+                onmouseenter="this.style.color='#fbc02d';"
+                onmouseleave="this.style.color='rgba(251,192,45,0.5)';"
+              >
+                {item.modal.label ?? '↗ detalle'}
+              </button>
+            )}
+            <div style="height:2px; width:28px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:1px; margin-top:auto;"></div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

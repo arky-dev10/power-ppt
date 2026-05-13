@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+exports/
+.claude/
+review-ppt.mjs
+review-debug.mjs
+*.local

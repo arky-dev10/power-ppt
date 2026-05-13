@@ -1,0 +1,495 @@
+---
+import 'maplibre-gl/dist/maplibre-gl.css';
+
+interface Props {
+  meta: {
+    title: string;
+    subtitle?: string;
+    author?: string;
+    accent?: string;
+  };
+  slideCount: number;
+}
+
+const { meta, slideCount } = Astro.props;
+const total = slideCount;
+const padded = String(total).padStart(2, '0');
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#050a1e" />
+    <title>{meta.title}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet" />
+
+    <style is:global>
+      :root {
+        --navy-deep:  #050a1e;
+        --navy:       #0a1538;
+        --navy-soft:  #142058;
+        --yellow:     #fbc02d;
+        --amber:      #ff9500;
+        --snow:       #f8fafc;
+        --snow-dim:   #cfd6ee;
+        --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
+        --font-body:    'Inter', system-ui, sans-serif;
+        --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+        --font-brand:   'Montserrat', 'Inter Tight', sans-serif;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html, body {
+        width: 100%; height: 100%;
+        overflow: hidden;
+        background: var(--navy-deep);
+        color: var(--snow);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        overscroll-behavior: none;
+      }
+
+      /* ── Stage ── */
+      #stage {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* ── Slides: opacity-based transitions ── */
+      .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+        overflow: hidden;
+        background: var(--navy-deep);
+        transition: opacity 0.45s ease, visibility 0.45s;
+      }
+      .slide.is-active {
+        opacity: 1;
+        pointer-events: auto;
+        visibility: visible;
+        z-index: 2;
+      }
+
+      /* ── Entrance animations ── */
+      [data-anim] {
+        opacity: 0;
+        transform: translateY(22px);
+        transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      [data-anim="fade"] {
+        transform: none;
+      }
+      [data-anim="left"] {
+        transform: translateX(-28px);
+      }
+      [data-anim="right"] {
+        transform: translateX(28px);
+      }
+      [data-anim="scale"] {
+        transform: scale(0.92);
+      }
+      [data-anim].anim-in {
+        opacity: 1;
+        transform: none !important;
+      }
+
+      /* ── Fixed chrome ── */
+      #slide-head {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 48px;
+        z-index: 100;
+        pointer-events: none;
+        background: linear-gradient(to bottom, rgba(5,10,30,0.85) 0%, transparent 100%);
+      }
+
+      #slide-head .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: auto;
+      }
+
+      #slide-head .brand img {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 8px rgba(251,192,45,0.5));
+      }
+
+      #slide-head .brand-name {
+        font-family: var(--font-brand);
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: rgba(251,192,45,0.9);
+        line-height: 1;
+      }
+
+      #slide-head .head-right {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      #slide-head .head-title {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(248,250,252,0.22);
+        max-width: 340px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      #slide-head .head-counter {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        color: rgba(248,250,252,0.3);
+        white-space: nowrap;
+      }
+
+      #slide-head .head-counter strong {
+        color: var(--yellow);
+      }
+
+      #slide-strip {
+        position: fixed;
+        bottom: 0; left: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--yellow) 0%, var(--amber) 100%);
+        z-index: 100;
+        transition: width 0.4s ease;
+        width: 0%;
+        box-shadow: 0 0 12px rgba(251,192,45,0.6);
+      }
+
+      #dots-bar {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 101;
+        display: flex;
+        gap: 7px;
+        align-items: center;
+      }
+
+      /* ── Modal overlay ── */
+      #modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgba(5,10,30,0.85);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      #modal-overlay.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #modal-box {
+        background: #0a1538;
+        border: 1px solid rgba(251,192,45,0.25);
+        border-radius: 16px;
+        padding: 2.5rem 3rem;
+        max-width: 680px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        position: relative;
+        box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(251,192,45,0.1);
+        transform: scale(0.96) translateY(8px);
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      #modal-overlay.is-open #modal-box {
+        transform: none;
+      }
+      #modal-close {
+        position: absolute;
+        top: 1rem; right: 1rem;
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        border: 1px solid rgba(248,250,252,0.15);
+        background: transparent;
+        color: rgba(248,250,252,0.5);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s;
+      }
+      #modal-close:hover {
+        background: rgba(251,192,45,0.1);
+        color: var(--yellow);
+        border-color: rgba(251,192,45,0.4);
+      }
+      #modal-title {
+        font-family: var(--font-brand);
+        font-weight: 800;
+        font-size: 1.4rem;
+        letter-spacing: -0.01em;
+        color: var(--snow);
+        margin-bottom: 0.5rem;
+      }
+      #modal-kicker {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--yellow);
+        margin-bottom: 0.75rem;
+      }
+      #modal-body {
+        font-family: var(--font-body);
+        font-size: 0.975rem;
+        line-height: 1.7;
+        color: var(--snow-dim);
+      }
+      #modal-body ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        margin-top: 1rem;
+      }
+      #modal-body ul li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      #modal-body ul li::before {
+        content: '';
+        flex-shrink: 0;
+        margin-top: 0.6em;
+        width: 5px; height: 5px;
+        background: var(--yellow);
+        border-radius: 1px;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage">
+      <slot />
+    </div>
+
+    <!-- Fixed chrome: header -->
+    <header id="slide-head">
+      <div class="brand">
+        <img src="/goberna-logo.png" alt="Goberna" />
+        <span class="brand-name">Goberna</span>
+      </div>
+      <div class="head-right">
+        <span class="head-title">{meta.title}</span>
+        <span class="head-counter">
+          <strong id="cur">01</strong>&ensp;/&ensp;{padded}
+        </span>
+      </div>
+    </header>
+
+    <!-- Fixed chrome: progress strip -->
+    <div id="slide-strip"></div>
+
+    <!-- Dots -->
+    <nav id="dots-bar"></nav>
+
+    <!-- Modal overlay -->
+    <div id="modal-overlay">
+      <div id="modal-box">
+        <button id="modal-close" aria-label="Cerrar">✕</button>
+        <div id="modal-kicker"></div>
+        <div id="modal-title"></div>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+    <script define:vars={{ totalSlides: total }}>
+      const slides    = Array.from(document.querySelectorAll('.slide'));
+      const curEl     = document.getElementById('cur');
+      const strip     = document.getElementById('slide-strip');
+      const dotsEl    = document.getElementById('dots-bar');
+      const modalOv   = document.getElementById('modal-overlay');
+      const modalBox  = document.getElementById('modal-box');
+      const modalClose = document.getElementById('modal-close');
+      const modalTitle  = document.getElementById('modal-title');
+      const modalKicker = document.getElementById('modal-kicker');
+      const modalBody   = document.getElementById('modal-body');
+
+      let current = 0;
+
+      // ── Dots ──
+      slides.forEach((_, i) => {
+        const btn = document.createElement('button');
+        Object.assign(btn.style, {
+          width: '5px', height: '5px', borderRadius: '50%',
+          border: 'none', padding: '0', cursor: 'pointer',
+          background: i === 0 ? '#fbc02d' : 'rgba(248,250,252,0.2)',
+          transform: i === 0 ? 'scale(1.6)' : 'scale(1)',
+          transition: 'all 0.2s ease',
+        });
+        btn.setAttribute('aria-label', `Slide ${i + 1}`);
+        btn.addEventListener('click', () => goTo(i));
+        dotsEl.appendChild(btn);
+      });
+
+      // ── Entrance animations ──
+      function triggerAnims(slide) {
+        const els = slide.querySelectorAll('[data-anim]');
+        els.forEach(el => el.classList.remove('anim-in'));
+        // Stagger each element by its index * delay
+        els.forEach((el, i) => {
+          const delay = parseFloat(el.dataset.delay ?? (i * 90).toString());
+          setTimeout(() => el.classList.add('anim-in'), delay);
+        });
+      }
+
+      // ── Animated counters ──
+      function animateCounters(slide) {
+        slide.querySelectorAll('[data-counter]').forEach(el => {
+          const target = parseFloat(el.dataset.counter);
+          const prefix = el.dataset.prefix ?? '';
+          const suffix = el.dataset.suffix ?? '';
+          const decimals = el.dataset.decimals ? parseInt(el.dataset.decimals) : 0;
+          const duration = 1200;
+          const start = performance.now();
+          function tick(now) {
+            const t = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - t, 3);
+            const val = (target * ease).toFixed(decimals);
+            el.textContent = prefix + val + suffix;
+            if (t < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+
+      // ── Chart re-animate ──
+      function replayCharts(slide) {
+        if (typeof window.__echartsInstances === 'undefined') return;
+        slide.querySelectorAll('.chart-target').forEach(el => {
+          const inst = window.__echartsInstances?.get(el);
+          if (inst) inst.dispatchAction({ type: 'restore' });
+        });
+      }
+
+      function updateUI(index) {
+        current = index;
+        const pct = ((index + 1) / totalSlides) * 100;
+        strip.style.width = `${pct}%`;
+        curEl.textContent = String(index + 1).padStart(2, '0');
+        dotsEl.querySelectorAll('button').forEach((btn, i) => {
+          btn.style.background = i === index ? '#fbc02d' : 'rgba(248,250,252,0.2)';
+          btn.style.transform  = i === index ? 'scale(1.6)' : 'scale(1)';
+        });
+      }
+
+      function goTo(index) {
+        if (index < 0 || index >= totalSlides) return;
+        slides[current]?.classList.remove('is-active');
+        const next = slides[index];
+        next.classList.add('is-active');
+        updateUI(index);
+        // Slight delay so slide is visible before anims start
+        setTimeout(() => {
+          triggerAnims(next);
+          animateCounters(next);
+          replayCharts(next);
+        }, 50);
+      }
+
+      // ── Modal ──
+      function openModal(data) {
+        modalKicker.textContent = data.kicker ?? '';
+        modalKicker.style.display = data.kicker ? '' : 'none';
+        modalTitle.textContent = data.title ?? '';
+        if (Array.isArray(data.bullets) && data.bullets.length) {
+          const ul = document.createElement('ul');
+          data.bullets.forEach(b => {
+            const li = document.createElement('li');
+            li.textContent = b;
+            ul.appendChild(li);
+          });
+          modalBody.innerHTML = '';
+          if (data.body) {
+            const p = document.createElement('p');
+            p.textContent = data.body;
+            modalBody.appendChild(p);
+          }
+          modalBody.appendChild(ul);
+        } else {
+          modalBody.innerHTML = data.body ? `<p>${data.body}</p>` : '';
+        }
+        modalOv.classList.add('is-open');
+      }
+
+      function closeModal() {
+        modalOv.classList.remove('is-open');
+      }
+
+      modalClose.addEventListener('click', closeModal);
+      modalOv.addEventListener('click', e => { if (e.target === modalOv) closeModal(); });
+
+      // Expose for modal triggers and automation
+      window.__openModal = openModal;
+      window.goTo = goTo;
+
+      // Delegate modal triggers
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('[data-modal]');
+        if (!btn) return;
+        try {
+          const data = JSON.parse(btn.dataset.modal);
+          openModal(data);
+        } catch {}
+      });
+
+      // ── Init ──
+      slides[0]?.classList.add('is-active');
+      updateUI(0);
+      setTimeout(() => {
+        triggerAnims(slides[0]);
+        animateCounters(slides[0]);
+      }, 100);
+
+      // ── Keyboard ──
+      document.addEventListener('keydown', e => {
+        if (modalOv.classList.contains('is-open')) {
+          if (e.key === 'Escape') { closeModal(); e.preventDefault(); }
+          return;
+        }
+        const next = ['ArrowRight', 'ArrowDown', 'PageDown', ' '];
+        const prev = ['ArrowLeft', 'ArrowUp', 'PageUp'];
+        if (next.includes(e.key)) { e.preventDefault(); goTo(current + 1); }
+        else if (prev.includes(e.key)) { e.preventDefault(); goTo(current - 1); }
+        else if (e.key === 'Home') goTo(0);
+        else if (e.key === 'End')  goTo(totalSlides - 1);
+        else if (e.key === 'Escape') closeModal();
+      });
+    </script>
+  </body>
+</html>

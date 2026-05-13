@@ -1,0 +1,124 @@
+---
+const { slide } = Astro.props;
+const mapConfig = {
+  center:  slide.center  ?? [-77.042, -12.046],
+  zoom:    slide.zoom    ?? 11,
+  markers: slide.markers ?? [],
+};
+const mapId = `map-${slide.id}`;
+const hasModal = !!slide.modal;
+---
+
+<section class="slide" style="background:#050a1e;">
+  <!-- Map fills the slide -->
+  <div
+    id={mapId}
+    class="map-target absolute inset-0"
+    data-config={JSON.stringify(mapConfig)}
+  ></div>
+
+  <!-- Top gradient overlay with title -->
+  <div class="absolute top-0 left-0 right-0 pointer-events-none z-10"
+    style="background:linear-gradient(to bottom, rgba(5,10,30,0.95) 0%, rgba(5,10,30,0.6) 45%, transparent 100%); padding: 90px 60px 80px;">
+    <div>
+      {slide.kicker && (
+        <p data-anim="fade" data-delay="0"
+          style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#fbc02d; margin-bottom:0.75rem;">
+          {slide.kicker}
+        </p>
+      )}
+      <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+        <div>
+          <h2 data-anim data-delay="60"
+            style="font-family:'Inter Tight','Inter',sans-serif; font-weight:800; font-size:clamp(1.8rem,3vw,2.4rem); letter-spacing:-0.02em; color:#f8fafc; line-height:1.1;">
+            {slide.title}
+          </h2>
+          <div data-anim="scale" data-delay="180"
+            style="width:48px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin-top:1rem;">
+          </div>
+        </div>
+        {hasModal && (
+          <button
+            data-modal={JSON.stringify(slide.modal)}
+            style="pointer-events:auto; margin-top:0.25rem; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(251,192,45,0.5); background:rgba(5,10,30,0.7); border:1px solid rgba(251,192,45,0.2); border-radius:5px; padding:0.4rem 0.8rem; cursor:pointer; transition:all 0.2s;"
+            onmouseenter="this.style.color='#fbc02d'; this.style.borderColor='rgba(251,192,45,0.5)';"
+            onmouseleave="this.style.color='rgba(251,192,45,0.5)'; this.style.borderColor='rgba(251,192,45,0.2)';"
+          >
+            {slide.modal.label ?? '↗ leyenda'}
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  :global(.maplibregl-popup-content) {
+    background: #0a1538 !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(251,192,45,0.4) !important;
+    border-radius: 8px !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 8px 14px !important;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.6) !important;
+  }
+  :global(.maplibregl-popup-tip) { border-top-color: #0a1538 !important; }
+  :global(.maplibregl-ctrl-attrib) {
+    background: rgba(5,10,30,0.7) !important;
+    color: rgba(248,250,252,0.3) !important;
+    font-size: 10px !important;
+  }
+</style>
+
+<script>
+  import maplibregl from 'maplibre-gl';
+
+  function initMaps() {
+    document.querySelectorAll<HTMLElement>('.map-target').forEach(el => {
+      if (el.dataset.initialized) return;
+      el.dataset.initialized = 'true';
+
+      const config = JSON.parse(el.dataset.config ?? '{}');
+
+      const map = new maplibregl.Map({
+        container: el,
+        style: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+        center: config.center,
+        zoom:   config.zoom,
+        attributionControl: false,
+      });
+
+      map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+
+      map.on('load', () => {
+        (config.markers ?? []).forEach((marker: any) => {
+          const dot = document.createElement('div');
+          const color = marker.color ?? '#fbc02d';
+          Object.assign(dot.style, {
+            width: '13px', height: '13px', borderRadius: '50%',
+            background: color,
+            border: '2.5px solid rgba(248,250,252,0.85)',
+            boxShadow: `0 0 16px ${color}90`,
+            cursor: 'pointer',
+          });
+
+          new maplibregl.Marker({ element: dot })
+            .setLngLat([marker.lng, marker.lat])
+            .setPopup(
+              new maplibregl.Popup({ offset: 18, closeButton: false })
+                .setHTML(`<span style="color:${color}">${marker.label ?? ''}</span>`)
+            )
+            .addTo(map);
+        });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMaps);
+  } else {
+    initMaps();
+  }
+</script>

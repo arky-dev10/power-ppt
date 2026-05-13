@@ -1,0 +1,11 @@
+---
+import presentation from '../../presentation.json';
+import PresentationLayout from '../layouts/PresentationLayout.astro';
+import SlideRenderer from '../components/SlideRenderer.astro';
+---
+
+<PresentationLayout meta={presentation.meta} slideCount={presentation.slides.length}>
+  {presentation.slides.map((slide, index) => (
+    <SlideRenderer slide={slide} index={index} />
+  ))}
+</PresentationLayout>

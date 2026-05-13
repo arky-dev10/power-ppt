@@ -1,0 +1,77 @@
+---
+const { slide } = Astro.props;
+const bullets = slide.bullets ?? [];
+const hasModal = !!slide.modal;
+---
+
+<section class="slide" style="background:#050a1e;">
+  <!-- Ambient -->
+  <div class="absolute inset-0 pointer-events-none" style="
+    background: radial-gradient(ellipse 70% 60% at 10% 50%, rgba(20,32,88,0.6) 0%, transparent 60%);
+  "></div>
+
+  <div class="absolute flex flex-col justify-center"
+    style="top:70px; bottom:24px; left:60px; right:60px; max-width:56rem;">
+
+    <!-- Header -->
+    <div data-anim="left" data-delay="0" style="margin-bottom:2.5rem;">
+      {slide.kicker && (
+        <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#fbc02d; margin-bottom:0.75rem;">
+          {slide.kicker}
+        </p>
+      )}
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;">
+        <h2 style="font-family:'Inter Tight','Inter',sans-serif; font-weight:800; font-size:clamp(1.8rem,3vw,2.4rem); letter-spacing:-0.02em; color:#f8fafc; line-height:1.1;">
+          {slide.title}
+        </h2>
+        {hasModal && (
+          <button
+            data-modal={JSON.stringify(slide.modal)}
+            style="flex-shrink:0; margin-top:0.3rem; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(251,192,45,0.5); background:none; border:1px solid rgba(251,192,45,0.2); border-radius:5px; padding:0.4rem 0.8rem; cursor:pointer; transition:all 0.2s;"
+            onmouseenter="this.style.color='#fbc02d'; this.style.borderColor='rgba(251,192,45,0.5)';"
+            onmouseleave="this.style.color='rgba(251,192,45,0.5)'; this.style.borderColor='rgba(251,192,45,0.2)';"
+          >
+            {slide.modal.label ?? '↗ más info'}
+          </button>
+        )}
+      </div>
+      <div style="width:48px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin-top:1rem;"></div>
+    </div>
+
+    <!-- Bullets: each staggered -->
+    {slide.layout === 'bullets' && bullets.length > 0 && (
+      <ul style="display:flex; flex-direction:column; gap:1rem;">
+        {bullets.map((bullet: string, i: number) => (
+          <li data-anim data-delay={String(i * 90 + 80)} style="display:flex; align-items:flex-start; gap:1rem;">
+            <span style="flex-shrink:0; margin-top:0.55rem; width:6px; height:6px; background:#fbc02d; border-radius:1px; display:inline-block; box-shadow:0 0 6px rgba(251,192,45,0.5);"></span>
+            <p style="font-family:'Inter',sans-serif; font-size:1.1rem; font-weight:400; line-height:1.65; color:#cfd6ee;">
+              {bullet}
+            </p>
+          </li>
+        ))}
+      </ul>
+    )}
+
+    <!-- Paragraph -->
+    {slide.content && slide.layout !== 'split' && (
+      <p data-anim data-delay="80"
+        style="font-family:'Inter',sans-serif; font-size:1.1rem; line-height:1.7; color:#cfd6ee;">
+        {slide.content}
+      </p>
+    )}
+
+    <!-- Split: text + image -->
+    {slide.layout === 'split' && (
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;">
+        <p data-anim="left" data-delay="80"
+          style="font-family:'Inter',sans-serif; font-size:1.05rem; line-height:1.65; color:#cfd6ee;">{slide.content}</p>
+        {slide.image && (
+          <div data-anim="right" data-delay="160"
+            style="border-radius:12px; overflow:hidden; border:1px solid rgba(251,192,45,0.2); box-shadow:0 8px 40px rgba(0,0,0,0.5);">
+            <img src={slide.image} alt={slide.imageAlt ?? ''} style="width:100%; height:100%; object-fit:cover;" />
+          </div>
+        )}
+      </div>
+    )}
+  </div>
+</section>

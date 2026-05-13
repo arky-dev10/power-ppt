@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "title": "Movilidad Urbana Lima 2026",
+    "subtitle": "Diagnóstico y propuestas estratégicas",
+    "author": "Grupo Goberna",
+    "accent": "#fbc02d"
+  },
+  "slides": [
+    {
+      "id": "slide-hero",
+      "type": "hero",
+      "kicker": "Diagnóstico 2026",
+      "title": "Movilidad Urbana\nLima Metropolitana",
+      "subtitle": "Análisis de movilidad, conectividad y propuestas de intervención estratégica para la metrópoli",
+      "modal": {
+        "label": "Sobre este informe",
+        "kicker": "Metodología",
+        "title": "Fuentes y alcance del diagnóstico",
+        "body": "Este diagnóstico integra datos de la Encuesta Lima Cómo Vamos 2025, información del MTC, INEI y trabajo de campo propio de Goberna.",
+        "bullets": [
+          "Encuestas de origen-destino a 4,200 hogares en 43 distritos",
+          "Análisis de datos GPS de flota de transporte público 2024–2025",
+          "Modelación de escenarios con herramientas de planificación urbana",
+          "Revisión de experiencias comparadas en Bogotá, Santiago y Ciudad de México"
+        ]
+      }
+    },
+    {
+      "id": "slide-stats",
+      "type": "stats",
+      "kicker": "Contexto actual",
+      "title": "Indicadores Clave",
+      "items": [
+        {
+          "label": "Tiempo promedio de viaje",
+          "value": "92 min",
+          "trend": "up",
+          "delta": "+12% vs 2023",
+          "modal": {
+            "label": "↗ detalle",
+            "title": "Tiempo de viaje promedio",
+            "body": "92 minutos por viaje es el promedio metropolitano. En zonas periféricas como VES o Los Olivos los tiempos superan los 110 minutos.",
+            "bullets": [
+              "Zona norte (Comas, Los Olivos): 108 min promedio",
+              "Zona sur (VES, Chorrillos): 115 min promedio",
+              "Zona este (SJL, Ate): 112 min promedio",
+              "Lima Centro: 65 min promedio"
+            ]
+          }
+        },
+        { "label": "Usuarios transporte público", "value": "8.4M", "trend": "neutral", "delta": "diarios" },
+        { "label": "Cobertura Metro / BRT", "value": "34%", "trend": "down", "delta": "de la ciudad" },
+        { "label": "Índice de congestión LATAM", "value": "#4", "trend": "up", "delta": "ranking regional" }
+      ]
+    },
+    {
+      "id": "slide-chart",
+      "type": "chart",
+      "kicker": "Distribución modal",
+      "title": "Cómo se Mueve Lima",
+      "chartType": "bar",
+      "description": "Fuente: Encuesta Lima Cómo Vamos 2025",
+      "modal": {
+        "label": "↗ fuente",
+        "title": "Sobre los datos",
+        "body": "Encuesta Lima Cómo Vamos 2025, muestra representativa de 4,200 hogares. Período de recolección: enero–marzo 2025.",
+        "bullets": [
+          "Margen de error: ±2.1% con 95% de confianza",
+          "Universo: población mayor de 14 años de Lima Metropolitana",
+          "Metodología: entrevistas cara a cara y registro de viajes en diario de 7 días"
+        ]
+      },
+      "data": {
+        "categories": ["Combi / bus", "Auto privado", "Metro / BRT", "Mototaxi", "A pie", "Otros"],
+        "series": [
+          { "name": "% de viajes diarios", "data": [42, 22, 18, 8, 7, 3] }
+        ]
+      }
+    },
+    {
+      "id": "slide-map",
+      "type": "map",
+      "kicker": "Cobertura geográfica",
+      "title": "Red de Transporte Público",
+      "center": [-77.042, -12.046],
+      "zoom": 11,
+      "markers": [
+        { "lat": -12.046, "lng": -77.042, "label": "Centro Histórico", "color": "#00b4d8" },
+        { "lat": -12.121, "lng": -77.011, "label": "Villa El Salvador", "color": "#f59e0b" },
+        { "lat": -11.993, "lng": -77.049, "label": "Los Olivos", "color": "#7c3aed" },
+        { "lat": -12.073, "lng": -77.083, "label": "San Juan de Miraflores", "color": "#10b981" }
+      ],
+      "modal": {
+        "label": "↗ leyenda",
+        "title": "Puntos de intervención prioritaria",
+        "bullets": [
+          "Centro Histórico — Nodo multimodal, conexión Metro L1 y L2",
+          "Villa El Salvador — Terminal sur del corredor BRT proyectado",
+          "Los Olivos — Zona de alta densidad sin cobertura Metro actual",
+          "San Juan de Miraflores — Área de intervención de nueva ciclovía"
+        ]
+      }
+    },
+    {
+      "id": "slide-text",
+      "type": "text",
+      "kicker": "Hoja de ruta",
+      "title": "Propuestas Estratégicas",
+      "layout": "bullets",
+      "bullets": [
+        "Expansión de la red Metro: 3 nuevas líneas al 2030 conectando los conos norte, sur y este",
+        "Integración tarifaria única para todo el sistema de transporte metropolitano",
+        "Corredores BRT en avenidas principales del cono norte y Panamericana Sur",
+        "Infraestructura ciclista en 15 distritos prioritarios con 120 km de ciclovías",
+        "Digitalización del sistema de gestión de tráfico con IA para optimización en tiempo real"
+      ]
+    }
+  ]
+}

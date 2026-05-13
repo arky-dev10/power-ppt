@@ -1,0 +1,153 @@
+---
+const { slide } = Astro.props;
+const lines = (slide.title ?? '').split('\n');
+const hasModal = !!slide.modal;
+---
+
+<section class="slide hero-slide" style="background: #050a1e;">
+  <!-- Particle canvas -->
+  <canvas class="hero-particles absolute inset-0" style="pointer-events:none; opacity:0.45;"></canvas>
+
+  <!-- Ambient glow -->
+  <div class="absolute inset-0 pointer-events-none" style="
+    background:
+      radial-gradient(ellipse 55% 45% at 72% 12%, rgba(251,192,45,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 50% at 15% 85%, rgba(20,32,88,0.8) 0%, transparent 55%),
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(10,21,56,0.3) 0%, transparent 70%);
+  "></div>
+
+  <!-- Scan lines -->
+  <div class="absolute inset-0 pointer-events-none opacity-[0.018]" style="
+    background-image: repeating-linear-gradient(0deg, rgba(248,250,252,1) 0px, rgba(248,250,252,1) 1px, transparent 1px, transparent 4px);
+  "></div>
+
+  <!-- Diagonal accent line -->
+  <div class="absolute pointer-events-none" style="
+    top:0; right:0; width:1px; height:100%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(251,192,45,0.18) 40%, rgba(251,192,45,0.08) 70%, transparent 100%);
+    right: 15vw;
+  "></div>
+
+  <!-- Content -->
+  <div class="absolute flex flex-col items-center justify-center text-center"
+    style="top:70px; bottom:24px; left:60px; right:60px;">
+
+    {slide.kicker && (
+      <p data-anim="fade" data-delay="0"
+        style="font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:#fbc02d; margin-bottom:2rem;">
+        {slide.kicker}
+      </p>
+    )}
+
+    <h1 data-anim data-delay="80"
+      style="font-family:'Inter Tight','Inter',sans-serif; font-weight:900; line-height:1.0; letter-spacing:-0.025em; color:#f8fafc; font-size:clamp(3.2rem,7.5vw,6.2rem);">
+      {lines.map((line, i) => (
+        <span class="block" style={i > 0 ? 'color:#fbc02d; display:block;' : 'display:block;'}>{line}</span>
+      ))}
+    </h1>
+
+    <!-- Separator -->
+    <div data-anim="scale" data-delay="200"
+      style="width:56px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin:2rem auto; box-shadow:0 0 16px rgba(251,192,45,0.4);">
+    </div>
+
+    {slide.subtitle && (
+      <p data-anim data-delay="280"
+        style="font-family:'Inter',sans-serif; font-size:1.05rem; font-weight:400; line-height:1.7; color:#cfd6ee; max-width:44rem; margin:0 auto;">
+        {slide.subtitle}
+      </p>
+    )}
+
+    {hasModal && (
+      <button
+        data-anim data-delay="380"
+        data-modal={JSON.stringify(slide.modal)}
+        style="
+          margin-top:2.5rem;
+          font-family:'JetBrains Mono',monospace;
+          font-size:10px;
+          letter-spacing:0.2em;
+          text-transform:uppercase;
+          color:#fbc02d;
+          background:transparent;
+          border:1px solid rgba(251,192,45,0.35);
+          border-radius:6px;
+          padding:0.6rem 1.4rem;
+          cursor:pointer;
+          transition:all 0.2s;
+        "
+        onmouseenter="this.style.background='rgba(251,192,45,0.08)'; this.style.borderColor='rgba(251,192,45,0.7)';"
+        onmouseleave="this.style.background='transparent'; this.style.borderColor='rgba(251,192,45,0.35)';"
+      >
+        {slide.modal.label ?? 'Ver más'}
+      </button>
+    )}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.hero-slide').forEach(slide => {
+    const canvas = slide.querySelector<HTMLCanvasElement>('.hero-particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let W = 0, H = 0;
+    const PARTICLE_COUNT = 55;
+    type Particle = { x: number; y: number; vx: number; vy: number; r: number; a: number; va: number };
+    let particles: Particle[] = [];
+
+    function resize() {
+      W = canvas.width  = slide.offsetWidth;
+      H = canvas.height = slide.offsetHeight;
+    }
+
+    function init() {
+      resize();
+      particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+        x:  Math.random() * W,
+        y:  Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.18,
+        vy: (Math.random() - 0.5) * 0.18,
+        r:  Math.random() * 1.4 + 0.3,
+        a:  Math.random(),
+        va: (Math.random() - 0.5) * 0.003,
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of particles) {
+        p.x += p.vx; p.y += p.vy; p.a += p.va;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        p.a = Math.max(0.05, Math.min(0.8, p.a));
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(251,192,45,${p.a * 0.6})`;
+        ctx.fill();
+      }
+      // Faint connection lines
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const d  = Math.sqrt(dx * dx + dy * dy);
+          if (d < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(251,192,45,${(1 - d / 120) * 0.06})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+
+    init();
+    new ResizeObserver(resize).observe(slide);
+    draw();
+  });
+</script>
