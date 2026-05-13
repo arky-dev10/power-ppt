@@ -1,0 +1,309 @@
+{
+  "generado": "2026-05-13",
+  "version": 1,
+  "tipo": "output-estrategico",
+  "pregunta": "¿Qué hacer concretamente? Despliegue, alianzas, riesgos, indicadores, gestión post-elección.",
+  "inputs": [
+    "analysis/nucleo-goberna.json",
+    "analysis/fit-candidate-territory.json",
+    "analysis/crosses-ec.json",
+    "analysis/crosses-cd.json",
+    "analysis/crosses-ed.json"
+  ],
+
+  "despliegue_territorial": [
+    {
+      "zona": "Comas + Carabayllo norte",
+      "rationale": "Alta concentración Emprendedor Migrante + bastión APP debilitado",
+      "prioridad": "alta",
+      "acciones": [
+        "Apertura de local de campaña con líderes de mercado",
+        "Caravana semanal por avenida Túpac Amaru",
+        "Activación en mercados Caquetá y Tahuantinsuyo"
+      ],
+      "presupuesto_relativo": "30%",
+      "responsable": "Coordinador territorial Norte"
+    },
+    {
+      "zona": "Los Olivos centro + San Martín de Porres",
+      "rationale": "Joven Conectado concentrado + distritos volátiles sin bastión claro",
+      "prioridad": "alta",
+      "acciones": [
+        "Eventos en universidades (UCV, UNAC)",
+        "Activaciones en cafés y espacios de coworking",
+        "Campaña digital intensiva con influencer @limanortetv",
+        "Podcast/livestream desde Lima Norte"
+      ],
+      "presupuesto_relativo": "25%",
+      "responsable": "Coordinador digital + territorial Centro"
+    },
+    {
+      "zona": "Independencia + Puente Piedra",
+      "rationale": "Ama de Casa Religiosa + redes evangélicas activas",
+      "prioridad": "media",
+      "acciones": [
+        "Encuentros con líderes en iglesias (vía Pastor Quispe)",
+        "Volanteo en mercados con horario madrugada/mediodía",
+        "Reuniones de comités de vaso de leche"
+      ],
+      "presupuesto_relativo": "20%",
+      "responsable": "Vocera comunitaria + coordinador territorial Este"
+    },
+    {
+      "zona": "Ancón + Santa Rosa",
+      "rationale": "Distritos periféricos con baja densidad — costo/voto alto pero presencia simbólica importante",
+      "prioridad": "baja",
+      "acciones": [
+        "Visitas periódicas (1x por mes)",
+        "Alianza con dirigentes locales sin inversión mayor"
+      ],
+      "presupuesto_relativo": "5%",
+      "responsable": "Equipo central"
+    },
+    {
+      "zona": "Comunicación masiva pan-territorial",
+      "rationale": "Cobertura general + posicionamiento de marca",
+      "prioridad": "media",
+      "acciones": [
+        "Radio Exitosa (cuñas matutinas)",
+        "Spots TV en horario noticias",
+        "Vallas estratégicas en Panamericana"
+      ],
+      "presupuesto_relativo": "20%",
+      "responsable": "Equipo de comunicación"
+    }
+  ],
+
+  "alianzas_construir": [
+    {
+      "id": "AL-01",
+      "actor": "Don Aurelio Condori — Presidente Mercado Unicachi",
+      "tipo": "movilización estructurada",
+      "prioridad": "crítica",
+      "razon": "Llave del segmento Emprendedor Migrante (28%) + nodo del conflicto bisagra Unicachi + ED-02 lo identificó como decisión que define viabilidad",
+      "que_ofrecemos": "Posicionamiento explícito a favor de formalización con apoyo del mercado existente (no expropiación). Mesa permanente desde el primer mes.",
+      "que_pedimos": "Aval público + apertura de redes de dirigentes de otros mercados",
+      "deadline_contacto": "Semana 1 post-decisión de campaña",
+      "responsable": "Candidato directamente"
+    },
+    {
+      "id": "AL-02",
+      "actor": "Pastor Quispe — Asambleas de Dios",
+      "tipo": "validación moral",
+      "prioridad": "alta",
+      "razon": "Único nodo confiable (4/5) en territorio + 3K feligreses con efecto multiplicador + EC-03 lo identificó como crítico",
+      "que_ofrecemos": "Compromiso explícito con agenda valórica (familia, anti-violencia, educación moral) sin sectarismo",
+      "que_pedimos": "Aval o al mínimo neutralidad pública. Apertura de templos para encuentros con feligreses",
+      "deadline_contacto": "Mes 1",
+      "responsable": "Vocera comunitaria como intermediaria"
+    },
+    {
+      "id": "AL-03",
+      "actor": "Influencer @limanortetv (52K seguidores)",
+      "tipo": "amplificación digital",
+      "prioridad": "media",
+      "razon": "Audiencia exacta de Joven Conectado (18%) + canal local con credibilidad",
+      "que_ofrecemos": "Contenido auténtico (no spot), entrevista en su formato, transparencia editorial",
+      "que_pedimos": "Cobertura editorial neutral o favorable durante campaña",
+      "deadline_contacto": "Mes 2",
+      "responsable": "Vocero digital"
+    },
+    {
+      "id": "AL-04",
+      "actor": "Asociación APEMIPE — gremio MYPE",
+      "tipo": "credibilidad sectorial",
+      "prioridad": "media",
+      "razon": "Background empresarial del candidato facilita acceso + segmento Emprendedor Migrante observa",
+      "que_ofrecemos": "Mesa de simplificación administrativa + propuestas concretas de acceso a crédito",
+      "que_pedimos": "Aval gremial público o entrevistas en sus canales",
+      "deadline_contacto": "Mes 2",
+      "responsable": "Candidato"
+    }
+  ],
+
+  "riesgos_identificados": [
+    {
+      "id": "R-01",
+      "riesgo": "Contradicción anticorrupción vs. contratos MML pasados",
+      "fuente": "analysis/fit-candidate-territory.json → FIT-V01 + FIT-V02",
+      "probabilidad": "alta",
+      "impacto": "alto",
+      "mitigacion": "Auditoría proactiva + transparencia preventiva ANTES de que oposición lo use. Reformular mensaje sin 'lucha anticorrupción' como bandera.",
+      "responsable": "Jefe de campaña + asesor legal",
+      "deadline": "Pre-lanzamiento de campaña",
+      "estado": "abierto"
+    },
+    {
+      "id": "R-02",
+      "riesgo": "Hermano Jorge Mendoza — ex funcionario MTPE como vector de ataque",
+      "fuente": "analysis/vetting-report.json → entorno + FIT-V04",
+      "probabilidad": "media",
+      "impacto": "medio",
+      "mitigacion": "Mini-perfil 5N del hermano. No presentarlo en campaña. Plan de respuesta listo.",
+      "responsable": "Equipo de vetting",
+      "deadline": "Mes 1",
+      "estado": "abierto"
+    },
+    {
+      "id": "R-03",
+      "riesgo": "Tuits eliminados (2020) podrían resurgir vía Wayback Machine",
+      "fuente": "analysis/vetting-report.json → N3 hallazgo 2",
+      "probabilidad": "media",
+      "impacto": "alto",
+      "mitigacion": "Capturas internas + mensaje preparado + vocero asignado.",
+      "responsable": "Comunicador de campaña",
+      "deadline": "Pre-lanzamiento",
+      "estado": "preparado"
+    },
+    {
+      "id": "R-04",
+      "riesgo": "MBA en ESAN sin verificación SUNEDU explota como 'título falso'",
+      "fuente": "analysis/vetting-report.json → N2 hallazgo 1",
+      "probabilidad": "media",
+      "impacto": "medio",
+      "mitigacion": "Iniciar verificación SUNEDU proactiva + tener diploma original + certificado ESAN listos.",
+      "responsable": "Jefe de campaña",
+      "deadline": "Mes 1",
+      "estado": "abierto"
+    },
+    {
+      "id": "R-05",
+      "riesgo": "Conflicto Unicachi mal manejado convierte Don Aurelio Condori en adversario",
+      "fuente": "analysis/crosses-ed.json → ED-02",
+      "probabilidad": "media",
+      "impacto": "alto",
+      "mitigacion": "Decisión bisagra: posicionarse explícitamente. Reunión privada con Don Aurelio antes de cualquier declaración pública.",
+      "responsable": "Candidato directamente",
+      "deadline": "Semana 1-2 de campaña",
+      "estado": "crítico — decisión pendiente"
+    },
+    {
+      "id": "R-06",
+      "riesgo": "Origen Miraflores se usa para activar cleavage centro/periferia",
+      "fuente": "analysis/fit-candidate-territory.json → FIT-V03",
+      "probabilidad": "alta",
+      "impacto": "medio",
+      "mitigacion": "Reubicar oficina de campaña a Lima Norte. NO mencionar Miraflores en CV público. Apariciones tempranas en mercados.",
+      "responsable": "Jefe de campaña",
+      "deadline": "Mes 1",
+      "estado": "abierto"
+    }
+  ],
+
+  "indicadores_seguimiento": [
+    {
+      "id": "IND-01",
+      "indicador": "Aprobación del candidato (encuesta mensual)",
+      "metrica": "Intención de voto + favorabilidad",
+      "encuestadora": "Ipsos o CPI (mismo proveedor consistente)",
+      "frecuencia": "mensual",
+      "meta_mes_1": "12%",
+      "meta_mes_3": "22%",
+      "meta_mes_5": "28%",
+      "meta_final": ">30%"
+    },
+    {
+      "id": "IND-02",
+      "indicador": "Penetración en segmento Emprendedor Migrante",
+      "metrica": "Encuesta cualitativa en 4 mercados (n=100 c/u)",
+      "frecuencia": "trimestral",
+      "meta": "35% intención voto en segmento al cierre"
+    },
+    {
+      "id": "IND-03",
+      "indicador": "Asistencia a eventos del candidato",
+      "metrica": "Personas registradas y verificadas",
+      "frecuencia": "por evento",
+      "meta_evento_grande": "1,500+",
+      "meta_evento_local": "200+"
+    },
+    {
+      "id": "IND-04",
+      "indicador": "Sentimiento en menciones digitales",
+      "metrica": "Análisis de menciones en X, FB, TikTok + cadenas WhatsApp identificadas",
+      "frecuencia": "semanal",
+      "meta": "Ratio positivo/negativo >2:1"
+    },
+    {
+      "id": "IND-05",
+      "indicador": "Cobertura mediática",
+      "metrica": "Apariciones en medios listados en C6 + tono (positivo/neutral/negativo)",
+      "frecuencia": "semanal",
+      "meta": "≥3 apariciones/semana en medios alto alcance con tono neutral o positivo"
+    },
+    {
+      "id": "IND-06",
+      "indicador": "Riesgos resueltos vs. abiertos",
+      "metrica": "Conteo desde strategic-output.json → riesgos_identificados",
+      "frecuencia": "quincenal",
+      "meta": "Todos los riesgos críticos en 'preparado' o 'resuelto' antes del mes 3"
+    }
+  ],
+
+  "gestion_post_eleccion": [
+    {
+      "compromiso": "Formalización de mercados mayoristas",
+      "rationale": "Promesa central al segmento Emprendedor Migrante (28%) + cumple alianza con Don Aurelio Condori",
+      "primer_100_dias": [
+        "Mesa permanente de formalización con dirigentes",
+        "Decreto de simplificación administrativa",
+        "Identificación de 3 mercados piloto"
+      ],
+      "ano_1": "Sistema formal funcionando en 3 mercados piloto con métricas públicas",
+      "ano_completo": "Modelo escalable a otros mercados del territorio"
+    },
+    {
+      "compromiso": "Seguridad ciudadana — issue decisivo",
+      "rationale": "Issue decisivo (C5 urgencia 5) + sin propuesta seria techo cae",
+      "primer_100_dias": [
+        "Plan distrital con cámaras de videovigilancia interconectadas",
+        "Serenazgo unificado con 8 distritos",
+        "Convenio con PNP para patrullaje conjunto"
+      ],
+      "ano_1": "Reducción medible del índice de criminalidad (meta: -15%)",
+      "ano_completo": "Sistema integrado de seguridad ciudadana referente nacional"
+    },
+    {
+      "compromiso": "Ejecución de obras heredadas",
+      "rationale": "Posicionamiento de 'gestión que ejecuta' vs. APP/Ramírez con baja ejecución (58%)",
+      "primer_100_dias": [
+        "Auditoría técnica de Bypass Tomás Valle",
+        "Resolución de ampliación Mercado Unicachi (en acuerdo con Don Aurelio)"
+      ],
+      "ano_1": "Bypass Tomás Valle culminado",
+      "ano_completo": "Ejecución presupuestaria >75% (vs 58% actual)"
+    },
+    {
+      "compromiso": "Transparencia y anticorrupción REAL",
+      "rationale": "Diferenciación de gestión Ramírez + responde al trauma 2021. Critical given FIT-V01 — debe demostrar con hechos.",
+      "primer_100_dias": [
+        "Portal de transparencia con todos los contratos públicos en tiempo real",
+        "Declaración jurada pública del candidato y altos funcionarios",
+        "Convenio con Contraloría para auditoría continua"
+      ],
+      "ano_1": "Sistema de contrataciones 100% público y auditable",
+      "ano_completo": "Cero procesos por corrupción en la gestión"
+    }
+  ],
+
+  "fase_2_inputs": {
+    "presentacion_recomendada": [
+      "Hero — 'Lima Norte 2026: una ventana abierta'",
+      "Quote — hallazgo central (volatilidad + fragmentación + outsider viable)",
+      "Stats — universo electoral (4 KPIs)",
+      "Chart — historia electoral 3 elecciones (margen decreciente)",
+      "Stats spotlight — 4 segmentos psicográficos",
+      "Chart — matriz D5 (preferencias por segmento)",
+      "Text bullets — Núcleo Goberna: 3 segmentos prioritarios + cobertura 70%",
+      "Text bullets — mensaje por segmento (mensaje núcleo + canal + vocero)",
+      "Map — despliegue territorial (zonas y prioridades)",
+      "Text bullets — alianzas críticas (Don Aurelio, Pastor Quispe)",
+      "Stats — perfil 5N (scorecard semáforo)",
+      "Chart — fit candidato × territorio (fortalezas vs. vulnerabilidades)",
+      "Text bullets — top 6 riesgos identificados",
+      "Stats — indicadores de seguimiento",
+      "Text full — líneas de gestión post-elección"
+    ],
+    "total_slides_sugerido": 14
+  }
+}

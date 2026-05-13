@@ -1,0 +1,209 @@
+{
+  "generado": "2026-05-13",
+  "version": 1,
+  "tipo": "fit-5N-x-ECD",
+  "pregunta": "¿Cómo calza el candidato con el terreno? Fortalezas, vulnerabilidades, resonancia por segmento.",
+  "inputs": [
+    "profile.json",
+    "territorial.json",
+    "analysis/vetting-report.json",
+    "analysis/territorial-analysis.json",
+    "analysis/nucleo-goberna.json"
+  ],
+
+  "fit_global": "medio-bajo",
+  "fit_score": 4.2,
+  "fit_max": 10,
+  "fit_summary": "Carlos Mendoza tiene convergencias económicas reales con el segmento dominante (Emprendedor Migrante) pero arrastra una vulnerabilidad crítica: su historial de contratos con MML choca frontalmente con el trauma de corrupción 2021 y la indignación activa del electorado. Sin reformular su mensaje y limpiar proactivamente el flanco anticorrupción, el techo se reduce de 30% a 18-22%.",
+
+  "fortalezas": [
+    {
+      "id": "FIT-F01",
+      "candidate_aspect": "N2 — Empresario constructor (Constructora Mendoza SAC)",
+      "territory_aspect": "E2 — Comercio + construcción como sectores estructurantes",
+      "type": "convergencia",
+      "insight": "Background empresarial conecta directo con Emprendedor Migrante (28%) — comparte código de progreso material y vocabulario de formalización.",
+      "valor_estrategico": "alto",
+      "como_usar": "Tema central de campaña: experiencia empresarial real como credencial para entender el problema de formalización."
+    },
+    {
+      "id": "FIT-F02",
+      "candidate_aspect": "N2 — MBA en ESAN (aunque pendiente verificar)",
+      "territory_aspect": "D4 — Expectativa de 'gestor efectivo, no ideólogo'",
+      "type": "convergencia parcial",
+      "insight": "Credencial técnica responde a expectativa del electorado de competencia gerencial.",
+      "valor_estrategico": "medio",
+      "como_usar": "Mencionar pero verificar SUNEDU antes — el riesgo de la mención no verificada es mayor que el beneficio."
+    },
+    {
+      "id": "FIT-F03",
+      "candidate_aspect": "N5 — Edad 54 + sin antecedentes médicos de riesgo",
+      "territory_aspect": "E1 — Extensión 2,396 km² + despliegue territorial intenso requerido",
+      "type": "compatibilidad funcional",
+      "insight": "Capacidad física para campaña intensiva confirmada.",
+      "valor_estrategico": "medio",
+      "como_usar": "Cobertura distrito-por-distrito factible (8 distritos)."
+    }
+  ],
+
+  "vulnerabilidades": [
+    {
+      "id": "FIT-V01",
+      "candidate_aspect": "N3 + Coherencia — Contratos Constructora Mendoza con MML 2020-2022",
+      "territory_aspect": "C4 — Trauma corrupción municipal 2021 (3 funcionarios presos)",
+      "type": "fricción crítica",
+      "insight": "Cualquier conexión con corrupción municipal se amplifica geométricamente. El escándalo reciente creó hipersensibilidad — el electorado no distingue 'contrato legal por concurso' de 'corrupción', solo ve la asociación.",
+      "valor_estrategico": "crítico",
+      "accion_requerida": "Auditoría proactiva ANTES del lanzamiento. Pre-publicar expedientes de adjudicación pública. Vocero técnico (no candidato) maneja el tema.",
+      "deadline": "Pre-lanzamiento de campaña — sin excepciones"
+    },
+    {
+      "id": "FIT-V02",
+      "candidate_aspect": "Coherencia — Promete transparencia con historial de contratos públicos",
+      "territory_aspect": "C3 — Indignación activa como emoción dominante",
+      "type": "fricción alta",
+      "insight": "Mensaje anticorrupción con historial cuestionable activa el reflejo de indignación. Es exactamente el tipo de incoherencia que los electores buscan castigar.",
+      "valor_estrategico": "crítico",
+      "accion_requerida": "Reformular pilares de mensaje — NO usar 'lucha anticorrupción' como bandera. Reemplazar por 'gestión que cumple' o 'orden que funciona'.",
+      "deadline": "Antes de fijar lema de campaña"
+    },
+    {
+      "id": "FIT-V03",
+      "candidate_aspect": "N2 — Distrito residencia Miraflores",
+      "territory_aspect": "E5 — Cleavage centro/periferia activo + identidad Lima Norte diferenciada",
+      "type": "fricción media",
+      "insight": "Origen socioeconómico de Miraflores puede leerse como 'el que viene del otro lado' — activa el cleavage centro/periferia que está activo.",
+      "valor_estrategico": "alto",
+      "accion_requerida": "Reubicar oficina de campaña en Lima Norte (no Miraflores). Apariciones tempranas en mercados con líderes locales. NO mencionar Miraflores en CV público.",
+      "deadline": "Mes 1"
+    },
+    {
+      "id": "FIT-V04",
+      "candidate_aspect": "Entorno — Hermano Jorge Mendoza, ex funcionario MTPE",
+      "territory_aspect": "C4 — Sensibilidad institucional + búsqueda de 'gente nueva'",
+      "type": "fricción media",
+      "insight": "Familiar con paso por MTPE puede usarse para construir narrativa de 'rosca burocrática' aunque el cargo no haya sido cuestionado.",
+      "valor_estrategico": "medio",
+      "accion_requerida": "Mini-perfil 5N del hermano + plan de respuesta + no presentarlo en campaña.",
+      "deadline": "Mes 1"
+    }
+  ],
+
+  "segmentos_resonancia": [
+    {
+      "segmento": "Emprendedor Migrante",
+      "pct": 28,
+      "compatibilidad": "alta",
+      "fit_score": 7,
+      "razon_positiva": "Background empresarial + comprensión real de formalización + valores trabajo duro coinciden",
+      "razon_negativa": "Origen Miraflores + sin historia de migración propia limitan identificación profunda",
+      "mensaje_natural": "El que construye conoce lo que cuesta construir",
+      "como_potenciar": "Acompañado de avales que sí tengan historia migrante (Don Aurelio Condori, dirigentes de mercado)"
+    },
+    {
+      "segmento": "Joven Conectado",
+      "pct": 18,
+      "compatibilidad": "baja",
+      "fit_score": 2,
+      "razon_positiva": "Discurso de 'cambio' técnicamente alineado con búsqueda de nuevo",
+      "razon_negativa": "Edad 54 + origen socioeconómico + sin marca digital + perfil empresarial tradicional",
+      "mensaje_natural": "Difícil — no resuena directamente",
+      "como_potenciar": "INDISPENSABLE vocero generacional propio. Candidato NO aparece como protagonista en este canal."
+    },
+    {
+      "segmento": "Ama de Casa Religiosa",
+      "pct": 24,
+      "compatibilidad": "media",
+      "fit_score": 5,
+      "razon_positiva": "Padre de familia (3 hijos) + edad apropiada + propuesta de seguridad creíble si se separa del historial empresarial",
+      "razon_negativa": "Religión no declarada o débil + sin historia evangélica propia",
+      "mensaje_natural": "Padre de familia que conoce el dolor de la inseguridad",
+      "como_potenciar": "Alianza moral con Pastor Quispe + vocera mujer/madre como segunda voz del binomio"
+    },
+    {
+      "segmento": "Adulto Mayor Establecido",
+      "pct": 14,
+      "compatibilidad": "media-alta",
+      "fit_score": 6,
+      "razon_positiva": "Edad + posición + perfil tradicional de gestor encaja con expectativas",
+      "razon_negativa": "Prob. cambio baja — no es segmento prioritario por costo/retorno",
+      "mensaje_natural": "Continuidad con orden",
+      "como_potenciar": "No prioritario. Mantener neutralidad — asistir a eventos relevantes sin invertir recursos."
+    }
+  ],
+
+  "issues_resonancia": [
+    {
+      "issue": "Seguridad ciudadana (urgencia 5, decisivo)",
+      "posicion_candidato": "neutral — sin historial relevante",
+      "fit": "medio",
+      "recomendacion": "Construir propuesta técnica robusta con asesor experto (ex-PNP o experto en seguridad). Competencia técnica es ventaja diferencial sobre Torres y Condori."
+    },
+    {
+      "issue": "Empleo y economía local (urgencia 5)",
+      "posicion_candidato": "fuerte — background empresarial",
+      "fit": "alto",
+      "recomendacion": "Tema central junto con formalización. Hablar con autoridad y datos concretos."
+    },
+    {
+      "issue": "Corrupción municipal (urgencia 4, visible)",
+      "posicion_candidato": "vulnerable — historial cuestionable",
+      "fit": "muy bajo",
+      "recomendacion": "Evitar como tema central. Defenderse con datos cuando ataquen pero NO atacar desde aquí."
+    },
+    {
+      "issue": "Formalización de negocios (urgencia 4)",
+      "posicion_candidato": "fuerte — credenciales reales",
+      "fit": "muy alto",
+      "recomendacion": "Pieza central del mensaje al segmento Emprendedor Migrante."
+    },
+    {
+      "issue": "Transporte público (urgencia 5)",
+      "posicion_candidato": "neutral",
+      "fit": "medio",
+      "recomendacion": "Propuesta de ejecución (terminar Bypass Tomás Valle) — sin sobrecomprometerse en nueva infraestructura."
+    }
+  ],
+
+  "competidor_threat": [
+    {
+      "competidor": "María Condori (Movimiento Regional)",
+      "ventaja_relativa_competidor": "Capital identitario-andino conecta directo con Emprendedor Migrante — segmento más grande",
+      "amenaza_nivel": "alta",
+      "como_neutralizar": "Aliarse con Don Aurelio Condori (Mercado Unicachi) y otros líderes andinos legítimos del territorio. Construir validación migrante por proxy."
+    },
+    {
+      "competidor": "Juan Torres (APP)",
+      "ventaja_relativa_competidor": "Capital político-clientelar y techo más alto (30%)",
+      "amenaza_nivel": "alta",
+      "como_neutralizar": "Atacar capital clientelar como 'política vieja del partido del Ramírez'. Posicionarse como 'gestión nueva, no política nueva'."
+    }
+  ],
+
+  "vocero_strategy": [
+    {
+      "rol": "Vocero técnico de seguridad",
+      "perfil": "Ex-PNP o experto en seguridad ciudadana con credibilidad pública",
+      "rationale": "Cubre déficit de credenciales en issue decisivo (FIT-V05 implícito). Habla por el candidato cuando hay dudas técnicas.",
+      "prioridad": "crítica"
+    },
+    {
+      "rol": "Vocera comunitaria — segunda voz del binomio",
+      "perfil": "Mujer/madre de Lima Norte con liderazgo barrial reconocido",
+      "rationale": "Acerca al segmento Ama de Casa Religiosa donde candidato no llega directo. Da identidad de género balanceada al binomio.",
+      "prioridad": "alta"
+    },
+    {
+      "rol": "Vocero juvenil/digital",
+      "perfil": "Joven líder local con presencia digital establecida + historia auténtica",
+      "rationale": "Indispensable para Joven Conectado (18%) — candidato no puede performar autenticidad digital a los 54.",
+      "prioridad": "alta"
+    },
+    {
+      "rol": "Validador moral",
+      "perfil": "Líder evangélico con confianza local (idealmente Pastor Quispe neutral, mejor: aliado)",
+      "rationale": "Iglesia es única institución con confianza alta (4/5). Validación moral por proxy crucial.",
+      "prioridad": "media-alta"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "generado": "2026-05-13",
+  "version": 1,
+  "tipo": "conciencia-decision",
+  "pregunta": "¿Cómo las actitudes filtran el cálculo de voto?",
+  "inputs": ["territorial.json", "analysis/crosses-ec.json"],
+
+  "hallazgos": [
+    {
+      "id": "CD-01",
+      "conciencia_ref": "c3.clima_emocional",
+      "conciencia": "Miedo + indignación + esperanza coexistiendo",
+      "decision_ref": "d4.clima_continuidad_castigo + d4.aprobacion_saliente",
+      "decision": "Clima de castigo (29% aprobación saliente)",
+      "explicacion": "El miedo (inseguridad) y la indignación (corrupción) consolidan rechazo al continuismo. La esperanza es la palanca para conversión, no la base.",
+      "implicancia_estrategica": "Cualquier candidato asociado al status quo enfrenta techo bajo (<20%). Mensajes de continuidad son contraproducentes."
+    },
+    {
+      "id": "CD-02",
+      "conciencia_ref": "c5.issues[seguridad].urgencia",
+      "conciencia": "Issue decisivo: Seguridad (urgencia 5)",
+      "decision_ref": "d4.issue_decisivo",
+      "decision": "Seguridad como issue decisivo en cálculo del voto",
+      "explicacion": "Convergencia perfecta entre prioridad declarada y peso en decisión final. Sin propuesta sólida en seguridad, el techo del candidato se reduce drásticamente.",
+      "implicancia_estrategica": "Propuesta seria en seguridad es prerequisito de viabilidad — no es un plus, es el ticket de entrada."
+    },
+    {
+      "id": "CD-03",
+      "conciencia_ref": "c2.segmentos[Joven Conectado].valores",
+      "conciencia": "Joven Conectado busca autenticidad",
+      "decision_ref": "d5.matriz[Joven Conectado].prob_cambio",
+      "decision": "Alta prob. cambio en este segmento",
+      "explicacion": "Rechazo al sistema + búsqueda de nuevo = electorado flotante decisivo. Volátil pero adquirible con el código correcto.",
+      "implicancia_estrategica": "Candidato puede capturar 18% si proyecta autenticidad — clave en redes, formato y voceros de relevo generacional."
+    },
+    {
+      "id": "CD-04",
+      "conciencia_ref": "c2.segmentos[Ama de Casa Religiosa].valores",
+      "conciencia": "Ama de Casa Religiosa: seguridad + valores familiares",
+      "decision_ref": "d5.matriz[Ama de Casa Religiosa].voto_util + prob_cambio",
+      "decision": "Prob. cambio media + voto útil = false",
+      "explicacion": "Segmento moralista vota por convicción no por estrategia táctica — no se mueve por argumentos de voto útil.",
+      "implicancia_estrategica": "Captura requiere mensaje valórico + canal evangélico (Pastor Quispe), no argumentación táctica o anti-rival."
+    },
+    {
+      "id": "CD-05",
+      "conciencia_ref": "c3.confianza_institucional",
+      "conciencia": "Confianza institucional colapsada (Congreso 1, PJ 1, Gobierno local 2)",
+      "decision_ref": "d1.voto_blanco_nulo + d1.ausentismo",
+      "decision": "Voto blanco/nulo 8% + ausentismo 18%",
+      "explicacion": "Colapso de confianza no genera abstención mayoritaria — el electorado quiere castigar pero igual quiere elegir. Ventana real para outsider con credenciales.",
+      "implicancia_estrategica": "Margen de movilización adicional limitado (<5%) — la batalla es por captura, no por nuevos votantes."
+    }
+  ]
+}

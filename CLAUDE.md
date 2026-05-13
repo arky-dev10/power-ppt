@@ -619,3 +619,210 @@ diagnostics/[slug]/
 ### Nota crítica: C2 → D5
 Los nombres de segmentos en D5.matriz deben coincidir exactamente con los nombres en C2.segmentos.
 Cuando el consultor complete D5, preguntar: "¿Usamos los segmentos de C2 que definimos, o quieres otros?"
+
+---
+
+## HERRAMIENTA: MODO CANDIDATO — Onboarding Fase 1 + Fase 2
+
+Uso: caso completo donde se diagnostica candidato (5N) + terreno (ECD) y se genera presentación estratégica auto-derivada de todos los cruces.
+Browser: `http://localhost:4321/candidates/[slug]/` (cuando se construya el frontend)
+
+### Activación
+
+Cuando el consultor diga:
+- "Nuevo candidato [nombre] para [territorio] [año]"
+- "Modo candidato — [nombre]"
+- "Onboarding fase 1 para [nombre]"
+
+### ESTRUCTURA DE ARCHIVOS
+
+```
+candidates/[slug]/
+  candidate.json                ← master + status
+  profile.json                  ← Fase-1 Parte A: 5N identidad
+  territorial.json              ← Fase-1 Parte B: ECD terreno
+  research/                     ← documentos fuente
+  analysis/
+    vetting-report.json         ← scorecard 5N + top riesgos
+    territorial-analysis.json   ← lectura por sección + insights clave
+    crosses-ec.json             ← E × C
+    crosses-cd.json             ← C × D
+    crosses-ed.json             ← E × D
+    nucleo-goberna.json         ← E × C × D → segmentos prioritarios + mensaje + canal + vocero
+    fit-candidate-territory.json← 5N × ECD → fortalezas, vulnerabilidades, resonancia
+    strategic-output.json       ← despliegue, alianzas, riesgos, indicadores, post-elección
+  presentation.json             ← Fase-2 generada
+  history/
+```
+
+### FASE 1 — PROTOCOLO DE RECOLECCIÓN
+
+**Parte A — Identidad del candidato**
+Esquema y protocolo idénticos a la herramienta Perfil 5N (`vetting/`). Ver sección "HERRAMIENTA: PERFIL 5N" arriba.
+La diferencia: el archivo vive en `candidates/[slug]/profile.json` (no en `vetting/`).
+
+**Parte B — Terreno de postulación**
+Esquema y protocolo idénticos al Diagnóstico Territorial (`diagnostics/`). Ver sección "HERRAMIENTA: DIAGNÓSTICO TERRITORIAL" arriba.
+El archivo vive en `candidates/[slug]/territorial.json`.
+
+**Estado de completitud (en `candidate.json`)**
+Después de cada actualización, recalcular pct_completo de cada parte. No bloquear si está incompleto — Claude puede generar análisis con data parcial, marcando "data insuficiente" en secciones afectadas.
+
+### GENERACIÓN DE ANÁLISIS — 8 PASOS EN SERIE
+
+Cuando el consultor dice "genera el análisis completo" o "corre los cruces":
+
+Claude ejecuta los 8 análisis en orden estricto. Cada uno consume los anteriores.
+
+```
+PASO 1 — vetting-report.json
+  inputs: profile.json
+  output: scorecard semáforo por nivel + top 3 riesgos + plan de mitigación
+  (idéntico al protocolo del Perfil 5N standalone)
+
+PASO 2 — territorial-analysis.json
+  inputs: territorial.json
+  output: lectura interpretativa por sección (E1-E5, C1-C6, D1-D5) + 4-6 insights clave
+  Reglas:
+    - Una oración por sección capturando lo estructural, no lo descriptivo
+    - Insights priorizados (crítica / alta / media)
+    - Sin recomendaciones aún — solo lectura
+
+PASO 3 — crosses-ec.json (E × C)
+  inputs: territorial.json, analysis/crosses no existen aún
+  pregunta: ¿Cómo la posición estructural explica las actitudes detectadas?
+  output: 4-6 hallazgos, cada uno con:
+    - estructura_ref (path en territorial.json)
+    - estructura (texto)
+    - conciencia_ref + conciencia
+    - explicacion (causal — POR QUÉ X produce Y)
+    - implicancia_estrategica
+
+PASO 4 — crosses-cd.json (C × D)
+  inputs: territorial.json + analysis/crosses-ec.json
+  pregunta: ¿Cómo las actitudes filtran el cálculo de voto?
+  output: 4-6 hallazgos (mismo formato que EC)
+
+PASO 5 — crosses-ed.json (E × D)
+  inputs: territorial.json + analysis/crosses-ec.json
+  pregunta: ¿Cómo el campo de poder limita las opciones viables?
+  output: 4-6 hallazgos (mismo formato)
+
+PASO 6 — nucleo-goberna.json (E × C × D)
+  inputs: territorial.json + crosses-ec + crosses-cd + crosses-ed
+  output:
+    - segmentos_prioritarios (top 3 de C2)
+        cada uno con: ranking, rationale, mensaje_nucleo, mensaje_secundario,
+        canal_recomendado [], vocero_ideal, riesgos_segmento, indicador_seguimiento
+    - segmentos_no_prioritarios (con razón y estrategia mínima)
+    - cobertura_total_priorizada (pct + comentario)
+  Reglas:
+    - Priorizar por: tamaño × prob_cambio × factibilidad de captura
+    - Mensaje núcleo debe ser una afirmación, no descriptiva
+    - Canal recomendado debe usar nombres específicos del C6 del territorio
+
+PASO 7 — fit-candidate-territory.json (5N × ECD)
+  inputs: profile.json + territorial.json + vetting-report + territorial-analysis + nucleo-goberna
+  output:
+    - fit_global (alto / medio-alto / medio / medio-bajo / bajo)
+    - fit_score (1-10)
+    - fortalezas [] (convergencias entre 5N y ECD)
+    - vulnerabilidades [] (fricciones — crítica / alta / media)
+    - segmentos_resonancia [] (por cada segmento de C2: compatibilidad + razón + cómo potenciar)
+    - issues_resonancia []
+    - competidor_threat [] (cómo neutralizar a cada competidor de D3)
+    - vocero_strategy [] (qué voceros cubren los vacíos del candidato)
+
+PASO 8 — strategic-output.json
+  inputs: TODOS los anteriores
+  output:
+    - despliegue_territorial [] (por zona: rationale, acciones, presupuesto, responsable)
+    - alianzas_construir [] (por actor: tipo, qué ofrecemos, qué pedimos, deadline, responsable)
+    - riesgos_identificados [] (consolidados de vetting + fit, con probabilidad × impacto)
+    - indicadores_seguimiento [] (meta por mes/trimestre)
+    - gestion_post_eleccion [] (compromisos con primer_100_dias / año_1 / año_completo)
+    - fase_2_inputs (slides sugeridos para presentación)
+```
+
+### CROSS-REFERENCE LOGIC
+
+Mapas de cruce entre archivos. Claude debe explicitar referencias usando paths (ej. `e2.pct_informalidad`, `c2.segmentos[Emprendedor Migrante]`).
+
+**E × C — productivo cuando hay:**
+- E1/E2/E3 explican C1/C2/C3 → estructura material genera actitudes
+- E4 explica C4 → campo político genera memoria
+- E3 (religión, ONGs) explica C3 (confianza institucional)
+
+**C × D — productivo cuando hay:**
+- C2 (segmentos) explica D5 (matriz por segmento) ← **LINK DIRECTO**
+- C3 (clima emocional) explica D4 (clima continuidad/castigo)
+- C5 (issues) explica D4 (issue decisivo)
+
+**E × D — productivo cuando hay:**
+- E4 (nombres quemados, conflictos) limita D3 (competidores)
+- E1 (extensión, conectividad) condiciona D4 (distancia votación)
+- E2 (presupuesto, ejecución) condiciona D2 (historia electoral)
+
+**5N × ECD (fit) — buscar:**
+- N2 trayectoria × C2 segmentos → compatibilidad de origen/clase
+- N3 riesgo × C4 memoria → choque entre vulnerabilidades del candidato y traumas del territorio
+- N3 riesgo × C6 medios → cuáles riesgos se amplificarían en el ecosistema local
+- N4 solvencia × C5 issues → coherencia entre patrimonio y demandas
+- Coherencia × C3 indignación → si el candidato es incoherente, el clima emocional lo castigará
+- Entorno × E4 campo político → conflictos con actores locales por vínculos del candidato
+
+### FASE 2 — GENERACIÓN DE PRESENTACIÓN
+
+Cuando el consultor dice "genera la presentación" o "fase 2":
+
+Claude lee `analysis/strategic-output.json → fase_2_inputs.presentacion_recomendada` y construye `presentation.json` slide por slide.
+
+**Mapping de análisis → slides:**
+
+| Slide | Tipo | Fuente |
+|-------|------|--------|
+| 1 | hero | candidate.json + territorial.json (territorio + año) |
+| 2 | quote | territorial-analysis → insights_clave[0] (más crítico) |
+| 3 | stats | territorial.json → d1 (universo electoral) |
+| 4 | chart bar | territorial.json → d2.elecciones (historia electoral) |
+| 5 | stats spotlight | territorial.json → c2.segmentos (top 4) |
+| 6 | chart radar | territorial.json → d5.matriz (preferencias por segmento) |
+| 7 | text bullets | nucleo-goberna → segmentos_prioritarios |
+| 8 | text bullets | nucleo-goberna → mensaje + canal + vocero por segmento |
+| 9 | map | strategic-output → despliegue_territorial |
+| 10 | text bullets | strategic-output → alianzas_construir |
+| 11 | stats | vetting-report → scorecard (5N) |
+| 12 | chart | fit-candidate-territory → fortalezas vs. vulnerabilidades |
+| 13 | text bullets | strategic-output → riesgos_identificados |
+| 14 | stats | strategic-output → indicadores_seguimiento |
+
+Cada slide debe tener `modal` con detalle del análisis fuente (para profundizar en presentación).
+
+### COMANDOS NATURALES RECONOCIDOS
+
+| El consultor dice | Claude hace |
+|-------------------|-------------|
+| "Nuevo candidato [N] para [T] [año]" | Crea candidates/[slug]/ + candidate.json |
+| "Empieza onboarding fase 1" | Inicia Parte A (identidad) |
+| "Pasa a la parte B" | Inicia Parte B (terreno) |
+| "Genera el análisis completo" | Corre los 8 pasos en serie |
+| "Genera solo [análisis específico]" | Corre uno con sus dependencias |
+| "Reanaliza con esta nueva info: ..." | Actualiza el archivo fuente + regenera análisis afectados |
+| "Genera la presentación" | Construye presentation.json (Fase 2) |
+| "Snapshot del estado" | Copia todo a history/[fecha]/ |
+| "¿Qué falta?" | Lista campos vacíos + análisis no generados |
+| "Muéstrame el fit" | Resume fit-candidate-territory.json en lenguaje natural |
+
+### REGLAS CRÍTICAS
+
+1. **Idempotencia**: regenerar un análisis no debe romper los downstream. Si cambia `profile.json`, regenerar `vetting-report` + `fit` + `strategic-output`. Si cambia `territorial.json`, regenerar TODO.
+
+2. **Versionado**: cada análisis incrementa `version` cuando se regenera. En `candidate.json → analisis.[name].version` queda registro.
+
+3. **Trazabilidad**: cada hallazgo en cualquier análisis debe tener `*_ref` apuntando al path exacto en el archivo fuente. Esto permite auditoría: "¿de dónde saliste, hallazgo X?"
+
+4. **No inventar datos**: si el campo está vacío en el archivo fuente, marcar "data insuficiente" en el análisis. No fabricar.
+
+5. **Coherencia C2 ↔ D5**: los nombres de segmentos en `d5.matriz[].segmento` deben coincidir EXACTAMENTE con `c2.segmentos[].nombre`. Validar siempre.
+
+6. **Snapshots antes de regenerar**: antes de regenerar un análisis ya existente, copiar el anterior a `history/[fecha-hora]/analysis/`.

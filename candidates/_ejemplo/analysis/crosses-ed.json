@@ -1,0 +1,55 @@
+{
+  "generado": "2026-05-13",
+  "version": 1,
+  "tipo": "estructura-decision",
+  "pregunta": "¿Cómo el campo de poder limita las opciones viables?",
+  "inputs": ["territorial.json", "analysis/crosses-ec.json"],
+
+  "hallazgos": [
+    {
+      "id": "ED-01",
+      "estructura_ref": "e4.nombres_quemados",
+      "estructura": "Nombres quemados: Ramírez, Benavides",
+      "decision_ref": "d2.volatilidad + d2.numero_efectivo_partidos",
+      "decision": "Volatilidad media + 4.2 partidos efectivos",
+      "explicacion": "El campo se vació de figuras viables del establishment. Fragmentación creciente confirma la ausencia de hegemonía.",
+      "implicancia_estrategica": "Ventana abierta para outsider con credenciales legítimas — entrada disponible al campo político principal."
+    },
+    {
+      "id": "ED-02",
+      "estructura_ref": "e4.figuras[Don Aurelio Condori] + e4.conflictos_activos",
+      "estructura": "Don Aurelio Condori (influencia 3) + conflicto Mercado Unicachi",
+      "decision_ref": "d3.competidores",
+      "decision": "Ningún competidor declaró posición sobre Unicachi",
+      "explicacion": "Tener al líder del mercado como aliado o adversario define la viabilidad operativa en la zona económicamente más activa.",
+      "implicancia_estrategica": "Posicionamiento ante el conflicto Unicachi es decisión bisagra — no se puede ser neutral. Hay que elegir lado antes que la oposición lo haga."
+    },
+    {
+      "id": "ED-03",
+      "estructura_ref": "e1.extension_km2 + e1.infraestructura_vial",
+      "estructura": "Extensión 2,396 km² + déficit de conectividad intradistrital",
+      "decision_ref": "d4.distancia_local_votacion",
+      "decision": "Voto local — mayoría vota en su distrito de residencia",
+      "explicacion": "Voto local pero territorio extenso = despliegue distrito-por-distrito obligatorio. Campaña centralizada falla en territorio fragmentado.",
+      "implicancia_estrategica": "Necesita célula territorial en cada uno de los 8 distritos. Campaña 'lo veo solo en TV' es insuficiente."
+    },
+    {
+      "id": "ED-04",
+      "estructura_ref": "e2.presupuesto_anual + e2.obras_pendientes",
+      "estructura": "Presupuesto S/ 420M con 58% ejecución + obras pendientes específicas",
+      "decision_ref": "d3.competidores[Juan Torres].capital_dominante",
+      "decision": "Juan Torres (APP) tiene capital político-clientelar",
+      "explicacion": "Mala ejecución crea espacio para discurso de gestión técnica. Obras pendientes (Bypass Tomás Valle, Mercado Unicachi) son tema heredado, no responsabilidad del candidato outsider.",
+      "implicancia_estrategica": "Posicionarse como 'gestión que sí ejecuta' es viable porque hay evidencia de mala ejecución previa. No prometer obras nuevas, prometer terminar las heredadas."
+    },
+    {
+      "id": "ED-05",
+      "estructura_ref": "e4.ex_autoridades",
+      "estructura": "Soto (2010-2018) y Ramírez (2018-2022) ambos con gestión cuestionada",
+      "decision_ref": "d2.elecciones",
+      "decision": "Ramírez ganó en 2018 y 2022 pero con margen decreciente (11pp → 4pp)",
+      "explicacion": "Patrón: ganador con gestión cuestionada erosiona base hasta el punto de hacer al territorio competitivo. La era Ramírez está agotada.",
+      "implicancia_estrategica": "La marca APP/Ramírez tiene techo cercano al 30% — espacio real para tercer candidato si captura 25%+."
+    }
+  ]
+}

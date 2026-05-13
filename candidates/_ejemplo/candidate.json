@@ -1,0 +1,59 @@
+{
+  "slug": "_ejemplo",
+  "created": "2026-05-13",
+  "updated": "2026-05-13",
+
+  "candidate": {
+    "nombre": "Carlos Mendoza Ríos",
+    "tipo": "candidato-propio",
+    "cargo": "Alcalde Provincial",
+    "partido": "por definir"
+  },
+
+  "territorio": {
+    "nombre": "Lima Norte",
+    "nivel": "provincial"
+  },
+
+  "eleccion": {
+    "tipo": "Municipal",
+    "año": 2026,
+    "fecha_estimada": "2026-10-04"
+  },
+
+  "fase_1": {
+    "parte_a_identidad": {
+      "estado": "completa",
+      "pct_completo": 95,
+      "secciones_pendientes": ["N5 — autodeclaración salud"]
+    },
+    "parte_b_terreno": {
+      "estado": "completa",
+      "pct_completo": 92,
+      "secciones_pendientes": ["C6 — segunda encuesta pendiente"]
+    }
+  },
+
+  "fase_2": {
+    "estado": "generada",
+    "fecha": "2026-05-13",
+    "slides_count": 14
+  },
+
+  "analisis": {
+    "vetting_report":          { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
+    "territorial_analysis":    { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
+    "crosses_ec":              { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
+    "crosses_cd":              { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
+    "crosses_ed":              { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
+    "nucleo_goberna":          { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
+    "fit_candidate_territory": { "estado": "generado", "fecha": "2026-05-13", "version": 1 },
+    "strategic_output":        { "estado": "generado", "fecha": "2026-05-13", "version": 1 }
+  },
+
+  "research_files": [
+    "ipsos-encuesta-marzo-2026.xlsx",
+    "padron-electoral-lima-norte-2026.pdf",
+    "informe-corrupcion-mml-2021.pdf"
+  ]
+}

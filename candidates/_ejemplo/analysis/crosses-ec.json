@@ -1,0 +1,55 @@
+{
+  "generado": "2026-05-13",
+  "version": 1,
+  "tipo": "estructura-conciencia",
+  "pregunta": "¿Cómo la posición estructural explica las actitudes detectadas?",
+  "inputs": ["territorial.json"],
+
+  "hallazgos": [
+    {
+      "id": "EC-01",
+      "estructura_ref": "e2.pct_informalidad",
+      "estructura": "62% informalidad económica",
+      "conciencia_ref": "c2.segmentos[Emprendedor Migrante]",
+      "conciencia": "Emprendedor Migrante (28%) prioriza formalización en aspiraciones",
+      "explicacion": "La informalidad estructural genera demanda de formalización como única vía de progreso material protegido.",
+      "implicancia_estrategica": "Promesa de formalización resuena en 28% del electorado — pieza central del mensaje, no accesorio."
+    },
+    {
+      "id": "EC-02",
+      "estructura_ref": "e1.migracion_remesas + e3.etnias_lenguas",
+      "estructura": "Migración andina masiva + 18% quechuahablantes",
+      "conciencia_ref": "c1.identidad_regional",
+      "conciencia": "Orgullo Lima Norte como territorio diferenciado",
+      "explicacion": "La concentración de migrantes andinos creó conciencia regional auto-construida — no descendieron del centro, llegaron del Ande.",
+      "implicancia_estrategica": "Discurso debe reconocer Lima Norte como construcción propia, no apéndice de Lima centro. Errores fatales: hablar de 'integración a Lima' o 'modernización'."
+    },
+    {
+      "id": "EC-03",
+      "estructura_ref": "e3.religion_predominante + e3.iglesias_influyentes",
+      "estructura": "28% evangélicos + iglesias activas (Comunidades Misioneras, Asambleas de Dios)",
+      "conciencia_ref": "c3.confianza_institucional.iglesia",
+      "conciencia": "Iglesia única institución con confianza alta (4/5)",
+      "explicacion": "Vacío institucional generalizado + comunidades evangélicas activas = único anclaje confiable en el territorio.",
+      "implicancia_estrategica": "Pastor Quispe (Asambleas de Dios, 3K feligreses directos) es nodo crítico de validación moral. Sin su aval o neutralidad, ruta evangélica cerrada."
+    },
+    {
+      "id": "EC-04",
+      "estructura_ref": "e4.nombres_quemados + e4.conflictos_activos",
+      "estructura": "Nombres quemados (Ramírez, Benavides) + conflicto Mercado Unicachi",
+      "conciencia_ref": "c4.hitos_traumaticos",
+      "conciencia": "Trauma reciente: corrupción municipal 2021 (3 funcionarios presos)",
+      "explicacion": "El campo político se autodestruyó y dejó cicatriz reciente — el rechazo no es ideológico, es moral.",
+      "implicancia_estrategica": "Limpieza moral es prerequisito de viabilidad — cualquier vínculo con élite quemada es game over."
+    },
+    {
+      "id": "EC-05",
+      "estructura_ref": "e2.desempleo + e2.pct_informalidad",
+      "estructura": "Desempleo 8.2% + informalidad 62% concentrados en jóvenes",
+      "conciencia_ref": "c2.segmentos[Joven Conectado]",
+      "conciencia": "Joven Conectado (18%) teme desempleo y rechaza el sistema corrupto",
+      "explicacion": "Estructura económica precaria + expectativas digitales generan frustración generacional que se canaliza como rechazo al sistema.",
+      "implicancia_estrategica": "Segmento más volátil — captura requiere autenticidad performada, no propuesta tradicional."
+    }
+  ]
+}

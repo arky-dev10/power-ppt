@@ -1,0 +1,59 @@
+{
+  "generado": "2026-05-13",
+  "version": 1,
+  "territorio": "Lima Norte",
+  "inputs": ["territorial.json"],
+
+  "lecturas_por_dimension": {
+    "e": {
+      "e1_demografia": "Territorio joven y urbano (50% bajo 30 años) con migración interna acelerada — masa con energía pero baja institucionalidad.",
+      "e2_economico": "Informalidad estructural (62%) define la economía — 'formalización' es el lenguaje del progreso material aspiracional.",
+      "e3_cultural": "Identidad andino-migrante con anclaje religioso doble (católico 65% + evangélico 28%) — moralidad familiar como código compartido transversal.",
+      "e4_politico": "Campo vaciado de figuras viables del establishment (Ramírez, Benavides quemados) — espacio para outsider con credenciales legítimas.",
+      "e5_cleavages": "4 cleavages activos simultáneos: centro/periferia + capital/trabajo + tradicional/moderno + religioso. Multiplicidad de tensiones, ninguna dominante."
+    },
+    "c": {
+      "c1_identidad": "Solo 12% identificación partidaria — voto personalista predomina sobre voto programático.",
+      "c2_segmentos": "4 segmentos distintos suman 84% del electorado — diseño de campaña debe ser segmentada, no genérica.",
+      "c3_clima": "Miedo + esperanza + indignación coexistiendo. Iglesia única institución con confianza alta (4/5). Resto en colapso institucional (1-2/5).",
+      "c4_memoria": "Trauma reciente: corrupción municipal 2021 con 3 funcionarios presos — hipersensibilidad a cualquier asociación con malas prácticas.",
+      "c5_issues": "Seguridad + empleo + transporte = top 3 con urgencia 5. Agenda municipal estructuralmente limitada por demandas que exceden sus competencias.",
+      "c6_medios": "Radio popular (Exitosa) + WhatsApp (cadenas juntas vecinales 80K) + influencer @limanortetv (52K) son los 3 canales reales con alcance masivo."
+    },
+    "d": {
+      "d1_universo": "82% participación anterior — alta tasa, electorado activo y politizado.",
+      "d2_historia": "Volatilidad media + 4.2 partidos efectivos — fragmentación creciente, ventaja para outsider con techo entre 25-30%.",
+      "d3_competidores": "Torres APP (techo 30%) + Condori regional (techo 22%) = espacio para tercer candidato si captura 25%+.",
+      "d4_calculo": "Clima de castigo + issue decisivo seguridad + búsqueda de gestor — exige credenciales técnicas, no ideológicas.",
+      "d5_matriz": "3 de 4 segmentos con alta o media prob. cambio. Solo Adulto Mayor Establecido prefiere status quo."
+    }
+  },
+
+  "insights_clave": [
+    {
+      "id": "TA-01",
+      "insight": "Volatilidad alta + clima de castigo + fragmentación = territorio ganable por outsider con credenciales y mensaje claro",
+      "prioridad": "crítica"
+    },
+    {
+      "id": "TA-02",
+      "insight": "Seguridad es el issue bisagra — ningún candidato sin propuesta seria supera el 20%",
+      "prioridad": "crítica"
+    },
+    {
+      "id": "TA-03",
+      "insight": "Pastor Quispe + Don Aurelio Condori son las dos llaves de validación moral y movilización",
+      "prioridad": "alta"
+    },
+    {
+      "id": "TA-04",
+      "insight": "Trauma corrupción 2021 + indignación activa = cualquier asociación con malas prácticas se amplifica geométricamente",
+      "prioridad": "alta"
+    },
+    {
+      "id": "TA-05",
+      "insight": "Diseño segmentado obligatorio — 4 segmentos suman 84%, ningún segmento supera 30%",
+      "prioridad": "media"
+    }
+  ]
+}

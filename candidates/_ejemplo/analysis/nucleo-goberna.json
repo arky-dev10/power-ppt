@@ -1,0 +1,89 @@
+{
+  "generado": "2026-05-13",
+  "version": 1,
+  "tipo": "triple-cruce",
+  "pregunta": "Síntesis E × C × D — ¿qué segmentos priorizar y con qué mensaje, canal y vocero?",
+  "inputs": [
+    "territorial.json",
+    "analysis/crosses-ec.json",
+    "analysis/crosses-cd.json",
+    "analysis/crosses-ed.json"
+  ],
+
+  "segmentos_prioritarios": [
+    {
+      "ranking": 1,
+      "segmento": "Emprendedor Migrante",
+      "pct_territorio": 28,
+      "rationale": "Mayor tamaño del electorado + alta prob. cambio + voto útil pragmático + convergencia E2-C2 sobre formalización + ED-02 conflicto Unicachi crítico aquí",
+      "mensaje_nucleo": "Lima Norte ya construyó su economía sola. Ahora necesita un gobierno que la formalice y proteja, no que la regule a la basura.",
+      "mensaje_secundario": "El que construye conoce lo que cuesta construir.",
+      "canal_recomendado": [
+        "Radio Exitosa (matutina, programa de paisanos)",
+        "WhatsApp con cadenas de mercados (vía dirigentes)",
+        "Activación física en mercados mayoristas: Unicachi, Caquetá, Tahuantinsuyo"
+      ],
+      "vocero_ideal": "El propio candidato + líderes de mercado como avales (Don Aurelio Condori como nodo crítico)",
+      "riesgos_segmento": [
+        "Si oposición captura el discurso de formalización primero, ventaja se diluye",
+        "Conflicto Unicachi mal manejado puede convertir aliado en adversario"
+      ],
+      "indicador_seguimiento": "Intención de voto en encuestas cualitativas a 4 mercados (n=100 c/u)"
+    },
+    {
+      "ranking": 2,
+      "segmento": "Ama de Casa Religiosa",
+      "pct_territorio": 24,
+      "rationale": "Segundo segmento más grande + canal evangélico ya estructurado (EC-03) + miedo activado + Pastor Quispe como nodo (4/5 confianza)",
+      "mensaje_nucleo": "Recuperar las calles, recuperar la familia, recuperar la tranquilidad.",
+      "mensaje_secundario": "Una madre sabe lo que su barrio necesita.",
+      "canal_recomendado": [
+        "Iglesias evangélicas (Asambleas de Dios, Comunidades Misioneras)",
+        "Radio AM matutina (Exitosa, Capital)",
+        "Volantes en mercados con horario madrugada/mediodía",
+        "Reuniones de comités de vaso de leche"
+      ],
+      "vocero_ideal": "Mujer/madre de Lima Norte como segunda voz del binomio + líder evangélico aliado (idealmente Pastor Quispe neutral, ideal: aliado)",
+      "riesgos_segmento": [
+        "Mensaje táctico/anti-rival lo aleja — no responde a voto útil",
+        "Asociación con escándalos morales destruye la ruta evangélica"
+      ],
+      "indicador_seguimiento": "Asistencia a encuentros con voceras + alcance digital en redes femeninas"
+    },
+    {
+      "ranking": 3,
+      "segmento": "Joven Conectado",
+      "pct_territorio": 18,
+      "rationale": "Alta prob. cambio (CD-03) + masa decisiva para diferencial + único segmento donde 'lo nuevo' es per se valioso",
+      "mensaje_nucleo": "No somos como ellos. Lima Norte merece un futuro, no una herencia.",
+      "mensaje_secundario": "El cambio no se pide, se construye.",
+      "canal_recomendado": [
+        "TikTok / Instagram (contenido nativo, no spots reciclados)",
+        "Influencer @limanortetv (52K — audiencia exacta)",
+        "Eventos en universidades y CETPROs",
+        "Podcast / espacios donde el candidato responde preguntas reales"
+      ],
+      "vocero_ideal": "Joven líder local con presencia digital establecida — candidato directamente NO funciona en este segmento (edad 54 + perfil empresarial)",
+      "riesgos_segmento": [
+        "Voto poco confiable — convertir 18% a votantes efectivos requiere movilización adicional",
+        "Mensaje genérico ('cambio') ya saturado — necesita autenticidad demostrada"
+      ],
+      "indicador_seguimiento": "Engagement orgánico en redes + asistencia a eventos universitarios"
+    }
+  ],
+
+  "segmentos_no_prioritarios": [
+    {
+      "segmento": "Adulto Mayor Establecido",
+      "pct_territorio": 14,
+      "razon_exclusion": "Prefiere status quo + baja prob. cambio + segmento más pequeño + costo de captura alto vs. retorno",
+      "estrategia_minima": "No atacar — mantener neutralidad. Asistir a eventos relevantes pero sin priorizar."
+    }
+  ],
+
+  "cobertura_total_priorizada": {
+    "pct_total": 70,
+    "segmentos": ["Emprendedor Migrante", "Ama de Casa Religiosa", "Joven Conectado"],
+    "comentario": "70% del electorado capturable con estrategia segmentada. Meta realista de captura efectiva: 28-32%."
+  }
+}

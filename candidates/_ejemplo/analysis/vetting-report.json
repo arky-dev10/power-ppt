@@ -1,0 +1,99 @@
+{
+  "generado": "2026-05-13",
+  "meta": {
+    "slug": "_ejemplo",
+    "nombre": "Carlos Mendoza Ríos",
+    "cargo": "Candidato a Alcalde Provincial — Lima Norte",
+    "tipo": "candidato-propio",
+    "eleccion": "Municipales 2026 (Lima Norte)"
+  },
+  "scorecard": {
+    "n1": {
+      "semaforo": "verde",
+      "hallazgos": [],
+      "nota": "Identidad verificada en RENIEC e InfoGob. Sin inconsistencias en datos básicos."
+    },
+    "n2": {
+      "semaforo": "amarillo",
+      "hallazgos": ["MBA en ESAN declarado en hoja de vida sin verificación SUNEDU"],
+      "nota": "Trayectoria laboral consistente. Cambio partidario en 2014 sin explicación pública."
+    },
+    "n3": {
+      "semaforo": "amarillo",
+      "hallazgos": [
+        "Investigación fiscal 2021 archivada — puede resurgir como titular",
+        "Tuits eliminados en 2020 — contenido recuperable vía Wayback Machine",
+        "Nota periodística Ojo Público 2022 sobre contratos pandemia"
+      ],
+      "nota": "Sin antecedentes penales activos. Riesgo reputacional medio por historial mediático."
+    },
+    "n4": {
+      "semaforo": "amarillo",
+      "hallazgos": [
+        "Terreno en Lurín sin origen de fondos justificado",
+        "Conflicto de interés: Constructora Mendoza con contratos MML 2020–2022"
+      ],
+      "nota": "Patrimonio mayormente consistente. Dos puntos requieren profundización."
+    },
+    "n5": {
+      "semaforo": "verde",
+      "hallazgos": [],
+      "nota": "Sin información de riesgo disponible. Nivel incompleto — sin autodeclaración."
+    },
+    "entorno": {
+      "semaforo": "amarillo",
+      "hallazgos": [
+        "Cónyuge socia activa en empresa vinculada a contratos municipales",
+        "Hermano fue funcionario MTPE — verificar potencial conflicto"
+      ],
+      "nota": "Entorno cercano con vínculos empresariales que pueden generar conflicto de interés."
+    },
+    "coherencia": {
+      "semaforo": "rojo",
+      "hallazgos": [
+        "Promete transparencia en contratos — contradice historial de contratos propios con MML",
+        "MBA declarado en hoja de vida sin verificación",
+        "Tuits eliminados: imagen pública inconsistente con comportamiento digital pasado"
+      ],
+      "nota": "Coherencia es el principal vector de ataque disponible para la oposición."
+    }
+  },
+  "riesgos": [
+    {
+      "id": 1,
+      "hallazgo": "Contradicción central: promete transparencia en contratos municipales habiendo contratado con la MML durante 2020–2022",
+      "nivel": "Coherencia",
+      "probabilidad": "alta",
+      "impacto": "alto",
+      "accion": "mitigacion-inmediata",
+      "mensaje_preparado": "Los contratos con la MML fueron adjudicados por concurso público en condiciones de competencia. Nuestra empresa cumplió todos los requisitos. Precisamente esa experiencia nos da la perspectiva para saber qué debe cambiar en la gestión municipal.",
+      "vocero": "Candidato directamente",
+      "material_respaldo": ["Expedientes de adjudicación pública", "Declaración jurada de no conflicto"]
+    },
+    {
+      "id": 2,
+      "hallazgo": "Tuits eliminados en 2020 — contenido potencialmente recuperable y dañino",
+      "nivel": "N3",
+      "probabilidad": "media",
+      "impacto": "alto",
+      "accion": "preparar-respuesta",
+      "mensaje_preparado": "En 2020, como muchos ciudadanos, expresé preocupaciones en un contexto de gran incertidumbre. He evolucionado en mis posiciones como cualquier persona que aprende.",
+      "vocero": "Comunicador de campaña",
+      "material_respaldo": ["Capturas de los tuits originales", "Contexto de la fecha"]
+    },
+    {
+      "id": 3,
+      "hallazgo": "MBA en ESAN declarado pero sin verificar en SUNEDU",
+      "nivel": "N2",
+      "probabilidad": "media",
+      "impacto": "medio",
+      "accion": "preparar-respuesta",
+      "mensaje_preparado": "El grado fue obtenido en la institución. Ponemos a disposición los documentos de graduación.",
+      "vocero": "Jefe de campaña",
+      "material_respaldo": ["Diploma original", "Certificado de ESAN", "Iniciar verificación SUNEDU proactiva"]
+    }
+  ],
+  "conclusion_ejecutiva": "Carlos Mendoza Ríos presenta un perfil de riesgo medio con concentración en Coherencia. Sin antecedentes penales activos ni patrimonio inexplicable estructural, su principal vulnerabilidad es la contradicción entre su discurso anticorrupción y su historial de contratos con la MML. Este es el vector más probable de ataque opositor. El MBA sin verificar y los tuits eliminados son riesgos secundarios manejables con preparación proactiva. Recomendación: auditoría interna urgente de coherencia discursiva y resolución del expediente SUNEDU antes del lanzamiento de campaña.",
+  "riesgo_global": "medio-alto",
+  "fecha_proxima_revision": "2026-06-01"
+}
