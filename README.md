@@ -9,7 +9,7 @@ Entorno local donde **Claude edita `presentation.json`** y Astro recarga el brow
 Necesitas: **Node.js 18+** y **Claude Code** instalado.
 
 ```bash
-git clone https://github.com/grupogoberna/power-ppt.git
+git clone https://github.com/arky-dev10/power-ppt.git
 cd power-ppt
 npm install
 npm run dev
