@@ -5,80 +5,256 @@ const categories = slide.data?.categories ?? [];
 const series     = slide.data?.series     ?? [];
 const chartType  = slide.chartType ?? 'bar';
 
-const COLORS = ['#fbc02d', '#ff9500', '#4ade80', '#60a5fa', '#c084fc', '#f87171'];
+const COLORS = ['#fbc02d', '#ff9500', '#4ade80', '#60a5fa', '#c084fc', '#f87171', '#34d399', '#fb923c'];
 
-function buildOption() {
-  const base = {
-    backgroundColor: 'transparent',
-    animation: true,
-    animationDuration: 900,
-    animationEasing: 'cubicOut' as const,
-    textStyle: { color: '#94a3b8', fontFamily: "'Inter', system-ui, sans-serif" },
-    tooltip: {
-      trigger: 'axis' as const,
-      backgroundColor: '#0a1538',
-      borderColor: 'rgba(251,192,45,0.3)',
-      borderWidth: 1,
-      textStyle: { color: '#f8fafc', fontSize: 13 },
-    },
-    grid: { top: 16, right: 16, bottom: 48, left: 60, containLabel: false },
-  };
+const BASE = {
+  backgroundColor: 'transparent',
+  animation: true,
+  animationDuration: 900,
+  animationEasing: 'cubicOut',
+  textStyle: { color: '#94a3b8', fontFamily: "'Inter', system-ui, sans-serif" },
+  tooltip: {
+    trigger: 'axis',
+    backgroundColor: '#0a1538',
+    borderColor: 'rgba(251,192,45,0.3)',
+    borderWidth: 1,
+    textStyle: { color: '#f8fafc', fontSize: 13 },
+  },
+  legend: {
+    textStyle: { color: '#64748b', fontSize: 11 },
+    inactiveColor: '#334155',
+  },
+  color: COLORS,
+};
 
-  if (chartType === 'pie') {
+const AXIS_X = {
+  type: 'category',
+  data: categories,
+  axisLine:  { lineStyle: { color: 'rgba(248,250,252,0.08)' } },
+  axisLabel: { color: '#64748b', fontSize: 11, interval: 0 },
+  splitLine: { show: false },
+};
+const AXIS_Y = {
+  type: 'value',
+  axisLine:  { show: false },
+  axisTick:  { show: false },
+  axisLabel: { color: '#64748b', fontSize: 11 },
+  splitLine: { lineStyle: { color: 'rgba(248,250,252,0.05)', type: 'dashed' } },
+};
+
+function buildOption(): object {
+  // Raw mode: pass a full ECharts option object directly
+  if (chartType === 'raw' && slide.option) {
     return {
-      ...base,
-      tooltip: { trigger: 'item' as const, ...base.tooltip },
-      color: COLORS,
+      ...BASE,
+      ...slide.option,
+      backgroundColor: 'transparent',
+    };
+  }
+
+  // Pie / Donut
+  if (chartType === 'pie' || chartType === 'donut') {
+    const radius = chartType === 'donut' ? ['35%', '65%'] : ['0%', '65%'];
+    return {
+      ...BASE,
+      tooltip: { trigger: 'item', ...BASE.tooltip },
+      legend: { ...BASE.legend, orient: 'vertical', right: '5%', top: 'center' },
       series: [{
-        type: 'pie' as const,
-        radius: ['35%', '65%'],
-        center: ['50%', '52%'],
+        type: 'pie',
+        radius,
+        center: ['42%', '52%'],
         data: categories.map((cat: string, i: number) => ({
           name: cat, value: series[0]?.data?.[i] ?? 0,
         })),
-        label: { color: '#94a3b8', fontSize: 12, formatter: '{b}: {d}%' },
+        label: { color: '#94a3b8', fontSize: 11, formatter: '{b}: {d}%' },
         itemStyle: { borderColor: '#050a1e', borderWidth: 3 },
         emphasis: { itemStyle: { shadowBlur: 20, shadowColor: 'rgba(251,192,45,0.4)' } },
       }],
     };
   }
 
-  return {
-    ...base,
-    color: COLORS,
-    xAxis: {
-      type: 'category' as const,
-      data: categories,
-      axisLine:  { lineStyle: { color: 'rgba(248,250,252,0.08)' } },
-      axisLabel: { color: '#64748b', fontSize: 12, interval: 0 },
-      splitLine: { show: false },
-    },
-    yAxis: {
-      type: 'value' as const,
-      axisLine:  { show: false },
-      axisTick:  { show: false },
-      axisLabel: { color: '#64748b', fontSize: 12 },
-      splitLine: { lineStyle: { color: 'rgba(248,250,252,0.05)', type: 'dashed' as const } },
-    },
-    series: series.map((s: any, si: number) => ({
-      name: s.name,
-      type: chartType === 'line' ? 'line' : 'bar',
-      data: s.data,
-      smooth: true,
-      barMaxWidth: 56,
-      itemStyle: {
-        color: COLORS[si % COLORS.length],
-        borderRadius: chartType === 'bar' ? [4, 4, 0, 0] : 0,
+  // Radar
+  if (chartType === 'radar') {
+    return {
+      ...BASE,
+      tooltip: { trigger: 'item', ...BASE.tooltip },
+      radar: {
+        indicator: categories.map((c: string, i: number) => ({ name: c, max: slide.data?.max ?? 100 })),
+        radius: '65%',
+        axisName: { color: '#64748b', fontSize: 11 },
+        splitLine: { lineStyle: { color: 'rgba(248,250,252,0.06)' } },
+        splitArea: { areaStyle: { color: ['rgba(10,21,56,0.4)', 'rgba(10,21,56,0.2)'] } },
+        axisLine: { lineStyle: { color: 'rgba(248,250,252,0.08)' } },
       },
-      lineStyle: { width: 2.5 },
-      areaStyle: chartType === 'line' ? {
-        color: { type: 'linear', x:0, y:0, x2:0, y2:1,
-          colorStops: [
-            { offset: 0, color: `${COLORS[si % COLORS.length]}40` },
-            { offset: 1, color: `${COLORS[si % COLORS.length]}00` },
-          ]
-        }
-      } : undefined,
+      series: series.map((s: any, i: number) => ({
+        type: 'radar',
+        name: s.name,
+        data: [{ value: s.data, name: s.name }],
+        symbol: 'circle',
+        symbolSize: 5,
+        lineStyle: { width: 2, color: COLORS[i % COLORS.length] },
+        areaStyle: { color: `${COLORS[i % COLORS.length]}22` },
+      })),
+    };
+  }
+
+  // Scatter
+  if (chartType === 'scatter') {
+    return {
+      ...BASE,
+      grid: { top: 16, right: 16, bottom: 48, left: 60 },
+      xAxis: { ...AXIS_Y, type: 'value', name: slide.data?.xName ?? '' },
+      yAxis: { ...AXIS_Y, name: slide.data?.yName ?? '' },
+      series: series.map((s: any, i: number) => ({
+        type: 'scatter',
+        name: s.name,
+        data: s.data,
+        symbolSize: s.symbolSize ?? 10,
+        itemStyle: { color: COLORS[i % COLORS.length], opacity: 0.85 },
+      })),
+    };
+  }
+
+  // Funnel
+  if (chartType === 'funnel') {
+    return {
+      ...BASE,
+      tooltip: { trigger: 'item', ...BASE.tooltip },
+      series: [{
+        type: 'funnel',
+        left: '10%', top: 20, bottom: 20, width: '80%',
+        sort: 'descending',
+        gap: 4,
+        data: categories.map((cat: string, i: number) => ({
+          name: cat, value: series[0]?.data?.[i] ?? 0,
+        })),
+        label: { position: 'inside', color: '#050a1e', fontWeight: 700, fontSize: 12 },
+        itemStyle: { borderWidth: 0 },
+      }],
+    };
+  }
+
+  // Gauge
+  if (chartType === 'gauge') {
+    const val = series[0]?.data?.[0] ?? 0;
+    const max = slide.data?.max ?? 100;
+    return {
+      ...BASE,
+      series: [{
+        type: 'gauge',
+        radius: '80%',
+        center: ['50%', '58%'],
+        startAngle: 205, endAngle: -25,
+        min: 0, max,
+        pointer: { length: '65%', width: 5, itemStyle: { color: '#fbc02d' } },
+        progress: { show: true, width: 14, itemStyle: { color: { type: 'linear', x:0, y:0, x2:1, y2:0, colorStops: [{ offset:0, color:'#fbc02d' }, { offset:1, color:'#ff9500' }] } } },
+        axisLine: { lineStyle: { width: 14, color: [[1, 'rgba(248,250,252,0.06)']] } },
+        axisTick: { show: false },
+        splitLine: { length: 10, lineStyle: { color: 'rgba(248,250,252,0.15)', width: 2 } },
+        axisLabel: { color: '#64748b', fontSize: 11, distance: 20 },
+        anchor: { show: true, size: 14, itemStyle: { color: '#fbc02d', borderColor: '#050a1e', borderWidth: 2 } },
+        title: { offsetCenter: ['0%', '25%'], color: '#94a3b8', fontSize: 12 },
+        detail: { valueAnimation: true, offsetCenter: ['0%', '-15%'], color: '#f8fafc', fontSize: 36, fontFamily: "'JetBrains Mono',monospace", fontWeight: 400, formatter: `{value}${slide.data?.unit ?? ''}` },
+        data: [{ value: val, name: series[0]?.name ?? '' }],
+      }],
+    };
+  }
+
+  // Heatmap
+  if (chartType === 'heatmap') {
+    return {
+      ...BASE,
+      tooltip: { trigger: 'item', ...BASE.tooltip },
+      grid: { top: 40, right: 16, bottom: 48, left: 80 },
+      xAxis: { type: 'category', data: categories, axisLabel: { color: '#64748b', fontSize: 10 }, splitArea: { show: true, areaStyle: { color: ['rgba(10,21,56,0.3)', 'rgba(5,10,30,0.3)'] } } },
+      yAxis: { type: 'category', data: slide.data?.rows ?? [], axisLabel: { color: '#64748b', fontSize: 10 }, splitArea: { show: true, areaStyle: { color: ['rgba(10,21,56,0.3)', 'rgba(5,10,30,0.3)'] } } },
+      visualMap: { min: slide.data?.min ?? 0, max: slide.data?.max ?? 100, calculable: true, orient: 'horizontal', left: 'center', bottom: -8, inRange: { color: ['#142058', '#fbc02d'] }, textStyle: { color: '#64748b', fontSize: 10 } },
+      series: [{ type: 'heatmap', data: series[0]?.data ?? [], label: { show: true, color: '#f8fafc', fontSize: 10 }, emphasis: { itemStyle: { shadowBlur: 10, shadowColor: 'rgba(251,192,45,0.4)' } } }],
+    };
+  }
+
+  // Treemap
+  if (chartType === 'treemap') {
+    return {
+      ...BASE,
+      series: [{
+        type: 'treemap',
+        top: 8, bottom: 8, left: 8, right: 8,
+        data: categories.map((cat: string, i: number) => ({
+          name: cat, value: series[0]?.data?.[i] ?? 0,
+        })),
+        label: { show: true, color: '#050a1e', fontWeight: 700, fontSize: 12 },
+        itemStyle: { borderWidth: 2, borderColor: '#050a1e' },
+        levels: [{ itemStyle: { borderWidth: 3, borderColor: '#050a1e', gapWidth: 3 } }],
+        breadcrumb: { show: false },
+      }],
+    };
+  }
+
+  // Bar (stacked or grouped)
+  if (chartType === 'bar-stacked') {
+    return {
+      ...BASE,
+      grid: { top: 40, right: 16, bottom: 48, left: 60, containLabel: false },
+      xAxis: AXIS_X,
+      yAxis: AXIS_Y,
+      legend: { ...BASE.legend, top: 4 },
+      series: series.map((s: any, si: number) => ({
+        type: 'bar', name: s.name, stack: 'total', data: s.data,
+        barMaxWidth: 56,
+        itemStyle: { color: COLORS[si % COLORS.length], borderRadius: si === series.length - 1 ? [4,4,0,0] : 0 },
+        label: { show: true, position: 'inside', color: '#050a1e', fontSize: 10, fontWeight: 600 },
+      })),
+    };
+  }
+
+  // Bar horizontal
+  if (chartType === 'bar-h') {
+    return {
+      ...BASE,
+      grid: { top: 8, right: 60, bottom: 8, left: 8, containLabel: true },
+      xAxis: { ...AXIS_Y },
+      yAxis: { ...AXIS_X, type: 'category', axisLabel: { ...AXIS_X.axisLabel, interval: 0, width: 140, overflow: 'truncate' } },
+      series: series.map((s: any, si: number) => ({
+        type: 'bar', name: s.name, data: s.data,
+        barMaxWidth: 32,
+        itemStyle: { color: COLORS[si % COLORS.length], borderRadius: [0,4,4,0] },
+        label: { show: true, position: 'right', color: '#64748b', fontSize: 10 },
+      })),
+    };
+  }
+
+  // Line
+  if (chartType === 'line') {
+    return {
+      ...BASE,
+      grid: { top: 40, right: 16, bottom: 48, left: 60, containLabel: false },
+      legend: series.length > 1 ? { ...BASE.legend, top: 4 } : undefined,
+      xAxis: AXIS_X,
+      yAxis: AXIS_Y,
+      series: series.map((s: any, si: number) => ({
+        type: 'line', name: s.name, data: s.data, smooth: true,
+        lineStyle: { width: 2.5, color: COLORS[si % COLORS.length] },
+        itemStyle: { color: COLORS[si % COLORS.length] },
+        areaStyle: {
+          color: { type: 'linear', x:0, y:0, x2:0, y2:1,
+            colorStops: [{ offset:0, color:`${COLORS[si % COLORS.length]}40` }, { offset:1, color:`${COLORS[si % COLORS.length]}00` }] }
+        },
+        symbol: 'circle', symbolSize: 5,
+      })),
+    };
+  }
+
+  // Default: bar grouped
+  return {
+    ...BASE,
+    grid: { top: series.length > 1 ? 40 : 16, right: 16, bottom: 48, left: 60, containLabel: false },
+    legend: series.length > 1 ? { ...BASE.legend, top: 4 } : undefined,
+    xAxis: AXIS_X,
+    yAxis: AXIS_Y,
+    series: series.map((s: any, si: number) => ({
+      type: 'bar', name: s.name, data: s.data, barMaxWidth: 56,
+      itemStyle: { color: COLORS[si % COLORS.length], borderRadius: [4,4,0,0] },
     })),
   };
 }
@@ -89,7 +265,6 @@ const hasModal = !!slide.modal;
 ---
 
 <section class="slide" style="background:#050a1e;">
-  <!-- Ambient -->
   <div class="absolute inset-0 pointer-events-none" style="
     background: radial-gradient(ellipse 60% 50% at 80% 80%, rgba(255,149,0,0.05) 0%, transparent 60%);
   "></div>
@@ -97,7 +272,7 @@ const hasModal = !!slide.modal;
   <div class="absolute flex flex-col" style="top:70px; bottom:24px; left:60px; right:60px;">
 
     <!-- Header -->
-    <div data-anim="left" data-delay="0" style="margin-bottom:2rem; flex-shrink:0;">
+    <div data-anim="left" data-delay="0" style="margin-bottom:1.5rem; flex-shrink:0;">
       {slide.kicker && (
         <p style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#fbc02d; margin-bottom:0.75rem;">
           {slide.kicker}
@@ -140,11 +315,7 @@ const hasModal = !!slide.modal;
 
 <script>
   import * as echarts from 'echarts';
-
-  // Global registry so layout JS can replay animations
-  if (!window.__echartsInstances) {
-    window.__echartsInstances = new Map();
-  }
+  if (!window.__echartsInstances) window.__echartsInstances = new Map();
 
   function initCharts() {
     document.querySelectorAll<HTMLElement>('.chart-target').forEach(el => {
@@ -158,9 +329,6 @@ const hasModal = !!slide.modal;
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCharts);
-  } else {
-    initCharts();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCharts);
+  else initCharts();
 </script>

@@ -20,7 +20,12 @@ function parseValue(val: string) {
   return { prefix: m[1], num: m[2], suffix: m[3], decimals: m[2].includes('.') ? m[2].split('.')[1].length : 0 };
 }
 
+const layout = slide.layout ?? 'grid';
 const cols = items.length <= 2 ? 'repeat(2, 1fr)' : items.length === 3 ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)';
+// spotlight: first item is large, rest are secondary
+const spotlight = layout === 'spotlight';
+const spotlightMain = spotlight ? items[0] : null;
+const spotlightRest = spotlight ? items.slice(1) : [];
 ---
 
 <section class="slide" style="background:#050a1e;">
@@ -55,7 +60,7 @@ const cols = items.length <= 2 ? 'repeat(2, 1fr)' : items.length === 3 ? 'repeat
     </div>
 
     <!-- KPI Grid -->
-    <div style={`display:grid; gap:1rem; grid-template-columns:${cols};`}>
+    {!spotlight && <div style={`display:grid; gap:1rem; grid-template-columns:${cols};`}>
       {items.map((item: any, i: number) => {
         const parsed = parseValue(String(item.value));
         return (
@@ -107,6 +112,60 @@ const cols = items.length <= 2 ? 'repeat(2, 1fr)' : items.length === 3 ? 'repeat
           </div>
         );
       })}
-    </div>
+    </div>}
+
+    <!-- Spotlight layout: 1 big KPI + secondary grid -->
+    {spotlight && spotlightMain && (() => {
+      const parsed = parseValue(String(spotlightMain.value));
+      return (
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:stretch;">
+          {/* Main KPI */}
+          <div data-anim data-delay="80"
+            style="background:rgba(10,21,56,0.7); border:1px solid rgba(251,192,45,0.25); border-radius:14px; padding:2.5rem; display:flex; flex-direction:column; justify-content:center; gap:0.75rem; backdrop-filter:blur(8px); position:relative; overflow:hidden;">
+            <div style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(251,192,45,0.3), transparent);"></div>
+            <div style="position:absolute; top:0; left:0; bottom:0; width:3px; background:linear-gradient(to bottom,#fbc02d,#ff9500); border-radius:0 0 0 14px;"></div>
+            <p style="font-family:'Inter',sans-serif; font-size:0.7rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:#64748b;">{spotlightMain.label}</p>
+            <p style="font-family:'JetBrains Mono',monospace; font-size:5rem; font-weight:400; line-height:1; letter-spacing:-0.03em; color:#f8fafc;">
+              {parsed
+                ? <span data-counter={parsed.num} data-prefix={parsed.prefix} data-suffix={parsed.suffix} data-decimals={String(parsed.decimals)}>{spotlightMain.value}</span>
+                : spotlightMain.value}
+            </p>
+            {(spotlightMain.trend || spotlightMain.delta) && (
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                {spotlightMain.trend && <span style={`font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:${trendColor(spotlightMain.trend)};`}>{trendIcon(spotlightMain.trend)}</span>}
+                {spotlightMain.delta && <span style="font-size:0.85rem; color:#64748b;">{spotlightMain.delta}</span>}
+              </div>
+            )}
+            {spotlightMain.modal && (
+              <button data-modal={JSON.stringify(spotlightMain.modal)}
+                style="margin-top:0.25rem; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(251,192,45,0.5); background:none; border:none; padding:0; cursor:pointer; text-align:left; transition:color 0.2s;"
+                onmouseenter="this.style.color='#fbc02d';" onmouseleave="this.style.color='rgba(251,192,45,0.5)';">
+                {spotlightMain.modal.label ?? '↗ detalle'}
+              </button>
+            )}
+          </div>
+          {/* Secondary KPIs */}
+          <div style="display:grid; grid-template-rows:repeat(auto-fill,1fr); gap:0.75rem;">
+            {spotlightRest.map((item: any, i: number) => {
+              const p2 = parseValue(String(item.value));
+              return (
+                <div data-anim data-delay={String(i * 80 + 160)}
+                  style="background:rgba(10,21,56,0.5); border:1px solid rgba(251,192,45,0.1); border-radius:10px; padding:1.25rem 1.5rem; display:flex; align-items:center; gap:1.25rem; backdrop-filter:blur(8px);">
+                  <div style="flex:1; min-width:0;">
+                    <p style="font-family:'Inter',sans-serif; font-size:0.65rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:#64748b; margin-bottom:0.25rem;">{item.label}</p>
+                    <p style="font-family:'JetBrains Mono',monospace; font-size:1.8rem; line-height:1; letter-spacing:-0.02em; color:#f8fafc;">
+                      {p2
+                        ? <span data-counter={p2.num} data-prefix={p2.prefix} data-suffix={p2.suffix} data-decimals={String(p2.decimals)}>{item.value}</span>
+                        : item.value}
+                    </p>
+                  </div>
+                  {item.trend && <span style={`font-family:'JetBrains Mono',monospace; font-size:1rem; font-weight:600; color:${trendColor(item.trend)};`}>{trendIcon(item.trend)}</span>}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    })()}
   </div>
 </section>

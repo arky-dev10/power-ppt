@@ -2,6 +2,7 @@
 const { slide } = Astro.props;
 const lines = (slide.title ?? '').split('\n');
 const hasModal = !!slide.modal;
+const isLeft = slide.layout === 'left';
 ---
 
 <section class="slide hero-slide" style="background: #050a1e;">
@@ -29,8 +30,8 @@ const hasModal = !!slide.modal;
   "></div>
 
   <!-- Content -->
-  <div class="absolute flex flex-col items-center justify-center text-center"
-    style="top:70px; bottom:24px; left:60px; right:60px;">
+  <div class={`absolute flex flex-col justify-center ${isLeft ? '' : 'items-center text-center'}`}
+    style={`top:70px; bottom:24px; left:60px; right:60px; ${isLeft ? 'max-width:56rem;' : ''}`}>
 
     {slide.kicker && (
       <p data-anim="fade" data-delay="0"
@@ -48,7 +49,7 @@ const hasModal = !!slide.modal;
 
     <!-- Separator -->
     <div data-anim="scale" data-delay="200"
-      style="width:56px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin:2rem auto; box-shadow:0 0 16px rgba(251,192,45,0.4);">
+      style={`width:56px; height:3px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:2px; margin:2rem ${isLeft ? '0' : 'auto'}; box-shadow:0 0 16px rgba(251,192,45,0.4);`}>
     </div>
 
     {slide.subtitle && (

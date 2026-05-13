@@ -1,0 +1,61 @@
+---
+const { slide } = Astro.props;
+const overlay = slide.overlay ?? 'dark';
+const hasModal = !!slide.modal;
+---
+
+<section class="slide" style="background:#050a1e;">
+  <!-- Full-bleed image -->
+  <div class="absolute inset-0">
+    <img
+      src={slide.src}
+      alt={slide.alt ?? ''}
+      style="width:100%; height:100%; object-fit:cover; display:block;"
+    />
+  </div>
+
+  {overlay === 'dark' && (
+    <div class="absolute inset-0 pointer-events-none" style="
+      background: linear-gradient(
+        to bottom,
+        rgba(5,10,30,0.75) 0%,
+        rgba(5,10,30,0.3) 40%,
+        rgba(5,10,30,0.55) 70%,
+        rgba(5,10,30,0.85) 100%
+      );
+    "></div>
+  )}
+
+  <!-- Content overlay at bottom -->
+  {(slide.title || slide.kicker) && (
+    <div class="absolute" style="bottom:48px; left:60px; right:60px;">
+      {slide.kicker && (
+        <p data-anim="fade" data-delay="0"
+          style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:#fbc02d; margin-bottom:0.75rem;">
+          {slide.kicker}
+        </p>
+      )}
+      {slide.title && (
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:1.5rem;">
+          <h2 data-anim data-delay="60"
+            style="font-family:'Inter Tight','Inter',sans-serif; font-weight:800; font-size:clamp(1.6rem,3vw,2.4rem); letter-spacing:-0.02em; color:#f8fafc; line-height:1.1;">
+            {slide.title}
+          </h2>
+          {hasModal && (
+            <button
+              data-modal={JSON.stringify(slide.modal)}
+              style="flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(251,192,45,0.6); background:rgba(5,10,30,0.7); border:1px solid rgba(251,192,45,0.25); border-radius:5px; padding:0.4rem 0.8rem; cursor:pointer; transition:all 0.2s;"
+              onmouseenter="this.style.color='#fbc02d'; this.style.borderColor='rgba(251,192,45,0.6)';"
+              onmouseleave="this.style.color='rgba(251,192,45,0.6)'; this.style.borderColor='rgba(251,192,45,0.25)';"
+            >
+              {slide.modal.label ?? '↗ más info'}
+            </button>
+          )}
+        </div>
+      )}
+      <div data-anim="scale" data-delay="160"
+        style="width:40px; height:2px; background:linear-gradient(90deg,#fbc02d,#ff9500); border-radius:1px; margin-top:0.75rem;">
+      </div>
+    </div>
+  )}
+</section>

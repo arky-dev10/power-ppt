@@ -4,6 +4,8 @@ import StatsSlide from './slides/StatsSlide.astro';
 import ChartSlide from './slides/ChartSlide.astro';
 import MapSlide   from './slides/MapSlide.astro';
 import TextSlide  from './slides/TextSlide.astro';
+import QuoteSlide from './slides/QuoteSlide.astro';
+import ImageSlide from './slides/ImageSlide.astro';
 
 const { slide, index } = Astro.props;
 ---
@@ -13,3 +15,5 @@ const { slide, index } = Astro.props;
 {slide.type === 'chart' && <ChartSlide slide={slide} index={index} />}
 {slide.type === 'map'   && <MapSlide   slide={slide} index={index} />}
 {slide.type === 'text'  && <TextSlide  slide={slide} index={index} />}
+{slide.type === 'quote' && <QuoteSlide slide={slide} index={index} />}
+{slide.type === 'image' && <ImageSlide slide={slide} index={index} />}
